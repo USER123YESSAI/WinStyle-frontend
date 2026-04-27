@@ -47,14 +47,23 @@ export default function Header() {
         <div className="max-w-6xl mx-auto px-6 flex items-center justify-between">
 
           {/* Logo */}
-          <Link href="/" className="flex items-center gap-3 group">
-            <div className="w-9 h-9 rounded-lg bg-[#C9A84C] flex items-center justify-center
-                            group-hover:scale-110 transition-transform duration-200">
-              <span className="text-[#0E2240] font-black text-sm">W</span>
+          <Link href="/" className="flex items-center group">
+            <div className="relative w-24 h-24 rounded-3xl bg-transparent flex items-center justify-center overflow-hidden transition-all duration-200 group-hover:scale-105">
+              <img
+                src="/images/logo.png"
+                alt="WinStyle Logo"
+                className="w-16 h-16 object-contain"
+                onError={(e) => {
+                  e.currentTarget.style.display = 'none';
+                  if (e.currentTarget.nextElementSibling) {
+                    (e.currentTarget.nextElementSibling as HTMLElement).style.display = 'flex';
+                  }
+                }}
+              />
+              <div className="absolute inset-0 w-full h-full rounded-3xl bg-[#C9A84C] flex items-center justify-center hidden">
+                <span className="text-[#0E2240] font-black text-xl">W</span>
+              </div>
             </div>
-            <span className="text-white font-bold text-lg tracking-wide">
-              WIN'S <span className="text-[#C9A84C]">AGENCY</span>
-            </span>
           </Link>
 
           {/* Navigation desktop */}
@@ -79,13 +88,13 @@ export default function Header() {
 
           {/* CTA desktop */}
           <Link
-            href="/services"
+            href="/admin/login"
             className="hidden md:flex items-center gap-2 bg-[#C9A84C] hover:bg-[#e0b954]
                        text-[#0E2240] font-semibold text-sm px-5 py-2.5 rounded-lg
                        transition-all duration-200 hover:shadow-lg hover:shadow-[#C9A84C]/30
                        hover:-translate-y-0.5"
           >
-            Demander un service
+            Espace Win
           </Link>
 
           {/* Burger mobile */}
@@ -123,10 +132,10 @@ export default function Header() {
               );
             })}
             <Link
-              href="/services"
+              href="/admin/login"
               className="mt-6 bg-[#C9A84C] text-[#0E2240] font-bold text-center py-4 rounded-xl text-lg"
             >
-              Demander un service
+              Espace Win
             </Link>
           </nav>
         </div>
@@ -134,3 +143,4 @@ export default function Header() {
     </>
   );
 }
+

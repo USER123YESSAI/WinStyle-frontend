@@ -1,17 +1,20 @@
+'use client';
+
 import Link from 'next/link';
+import Image from 'next/image';
 
 const SECTEURS = [
-  { num: '01', icon: '👔', titre: 'Agence de Placement', items: ['Hôtesses & Stewards pour événements', 'Employés domestiques (gouvernantes, nounous, cuisiniers)', 'Événementiel & Consultance RH', 'Formation & Coaching professionnel'] },
+  { num: '01', icon: '👔', titre: 'consultante en ressources humaine', items: ['Hôtesses & Stewards pour événements', 'Employés domestiques (gouvernantes, nounous, cuisiniers)', 'Événementiel & Consultance RH', 'Formation & Coaching professionnel'] },
   { num: '02', icon: '✂️', titre: 'Confection sur Mesure', items: ['Tenues de soirée & gala', 'Uniformes professionnels', 'Prêt-à-porter moderne', 'Collections femme & homme — à partir de 10 000 FCFA'] },
   { num: '03', icon: '🌿', titre: 'Cosmétique Naturelle', items: ['Shampoing ultra-doux au miel', 'Crème hydratante antipelliculaire', 'Huile essentielle pour la repousse', 'Huile de chébé anti-alopécie', 'Poudre de chébé du Tchad', 'Manuel capillaire — entre 5 000 et 15 000 FCFA'] },
 ];
 
 const TIMELINE = [
-  { annee: '2019', titre: "Création de WinStyle", desc: "Winnie Ronel Bou-Ah fonde WinStyle à N'Djaména avec la vision de créer une marque de référence en Afrique centrale." },
+  { annee: '2019', titre: 'Création de WinStyle', desc: "Winnie Ronel Bou-Ah fonde WinStyle à N'Djaména avec la vision de créer une marque de référence en Afrique centrale." },
   { annee: '2020', titre: 'Lancement des formations', desc: 'Mise en place du programme de formation professionnelle en accueil, protocole et développement personnel.' },
-  { annee: '2022', titre: 'Expansion des services', desc: 'Ajout des services cosmétiques et de la confection sur mesure pour compléter l\'offre agence.' },
+  { annee: '2022', titre: 'Expansion des services', desc: "Ajout des services cosmétiques et de la confection sur mesure pour compléter l'offre agence." },
   { annee: '2024', titre: 'Plateforme digitale', desc: 'Lancement du site web pour faciliter les demandes, candidatures et inscriptions en ligne.' },
-  { annee: '2025', titre: 'RASMA 2025', desc: "WinStyle organise le Rassemblement Annuel de N'Djaména — événement majeur qui marque l'ambition nationale de la marque." },
+  { annee: '2025', titre: 'RASMA 2025', desc: "WinStyle organise le Rassemblement Annuel — un événement majeur qui marque l'ambition nationale de la marque." },
 ];
 
 const VALEURS = [
@@ -21,33 +24,107 @@ const VALEURS = [
   { icon: '💡', titre: 'Adaptabilité', desc: 'Chaque client est unique. Nous personnalisons chaque mission selon vos besoins.' },
 ];
 
+// ── ÉQUIPE — remplace les noms et photos quand disponibles
+const EQUIPE = [
+  {
+    nom: 'Winnie Ronel Bou-Ah',
+    role: 'Directrice Générale',
+    desc: 'Fondatrice de WinStyle, Winnie porte la vision de l\'entreprise avec passion et détermination. Spécialisée dans l\'événementiel, la mode et la cosmétique naturelle.',
+    photo: '/images/team/fondatrice.jpg',
+    initiale: 'W',
+    contacts: ['+235 65 09 60 24', 'winstylewins@gmail.com'],
+  },
+  {
+    nom: 'Leatitia Nambatingué',
+    role: 'Responsable Comptable',
+    desc: 'Garant de la santé financière de WinStyle, elle assure la gestion rigoureuse des comptes et le suivi budgétaire de l\'entreprise.',
+    photo: '/images/team/comptable.jpg',
+    initiale: 'C',
+    contacts: [],
+  },
+  {
+    nom: 'Mbayo Yankimadji',
+    role: 'Responsable Administrative',
+    desc: 'Elle coordonne les opérations quotidiennes et assure le bon fonctionnement administratif de WinStyle.',
+    photo: '/images/team/administrative.jpg',
+    initiale: 'A',
+    contacts: [],
+  },
+  {
+    nom: 'Gakramta Debora',
+    role: 'Responsable RH',
+    desc: 'Elle gère le recrutement, la formation et le développement des talents au sein de WinStyle.',
+    photo: '/images/team/rh.jpg',
+    initiale: 'R',
+    contacts: [],
+  },
+];
+
 export default function AboutPage() {
   return (
     <div className="overflow-x-hidden">
 
-      {/* Hero */}
-      <section className="bg-[#0E2240] pt-32 pb-20 px-6 relative overflow-hidden">
-        <div className="absolute inset-0 opacity-[0.04]" style={{ backgroundImage: 'linear-gradient(#fff 1px, transparent 1px), linear-gradient(90deg, #fff 1px, transparent 1px)', backgroundSize: '60px 60px' }} />
-        <div className="relative max-w-4xl mx-auto text-center">
-          <p className="text-[#C9A84C] font-semibold text-sm uppercase tracking-widest mb-4">Notre histoire</p>
-          <h1 className="text-5xl sm:text-6xl font-black text-white mb-6 leading-tight">
-            À propos de<br /><span className="text-[#C9A84C]">WinStyle</span>
+      {/* ── HERO RASMA ── */}
+      <section className="relative min-h-screen flex flex-col items-center justify-center overflow-hidden">
+        <div className="absolute inset-0">
+          <Image src="/images/rasma/rasma1-hero.jpg" alt="RASMA 2025" fill className="object-cover object-center" priority />
+          <div className="absolute inset-0 bg-gradient-to-b from-[#0E2240]/80 via-[#0E2240]/70 to-[#0E2240]/90" />
+        </div>
+        <div className="absolute inset-0 pointer-events-none opacity-[0.03]"
+          style={{ backgroundImage: 'linear-gradient(#fff 1px, transparent 1px), linear-gradient(90deg, #fff 1px, transparent 1px)', backgroundSize: '60px 60px' }} />
+
+        <div className="relative max-w-5xl mx-auto px-6 py-32 text-center">
+          <div className="inline-flex items-center gap-2 bg-[#C9A84C]/20 border border-[#C9A84C]/40
+                          text-[#C9A84C] text-sm font-bold px-5 py-2 rounded-full mb-8 uppercase tracking-widest">
+            <span>🏆</span> WinStyle présente
+          </div>
+          <h1 className="text-6xl sm:text-7xl lg:text-8xl font-black text-white leading-none mb-4">
+            Ra<span className="text-[#C9A84C]">SMA</span>
           </h1>
-          <p className="text-white/60 text-lg max-w-2xl mx-auto leading-relaxed">
-            Une entreprise tchadienne innovante opérant dans trois secteurs complémentaires — fondée par Winnie Ronel Bou-Ah avec la vision de faire rayonner l'excellence africaine.
+          <p className="text-white/60 text-base sm:text-lg uppercase tracking-[0.2em] mb-8">
+            Retour aux Sources de la Mode Africaine
           </p>
+          <div className="max-w-2xl mx-auto bg-white/5 backdrop-blur-sm border border-white/10 rounded-2xl px-10 py-8 mb-10">
+            <div className="flex items-center justify-center gap-2 mb-4">
+              <span className="text-2xl">🌍</span>
+              <h2 className="text-[#C9A84C] font-bold text-lg uppercase tracking-widest">Mission Principale</h2>
+            </div>
+            <p className="text-white/80 text-base leading-relaxed">
+              RaSMA est un concept dédié à la <strong className="text-white">valorisation et à la célébration de l'élégance africaine</strong>.
+              Son objectif est de reconnecter les générations actuelles avec l'héritage vestimentaire du continent.
+            </p>
+          </div>
+          <div className="inline-flex items-center gap-3 bg-[#C9A84C]/15 border border-[#C9A84C]/30 rounded-full px-6 py-3 mb-10">
+            <span className="text-[#C9A84C] text-sm font-semibold">📅 Focus historique :</span>
+            <span className="text-white/80 text-sm">Années 60 → Années 2000</span>
+          </div>
+          <div className="flex flex-col sm:flex-row gap-4 justify-center">
+            <Link href="/contact"
+              className="group bg-[#C9A84C] hover:bg-[#e0b954] text-[#0E2240] font-bold px-8 py-4
+                         rounded-xl text-base transition-all duration-200 hover:shadow-xl hover:-translate-y-0.5 flex items-center justify-center gap-2">
+              Nous rejoindre <span className="group-hover:translate-x-1 transition-transform">→</span>
+            </Link>
+            <a href="#winstyle"
+              className="bg-white/10 hover:bg-white/20 text-white font-semibold px-8 py-4
+                         rounded-xl text-base transition-all duration-200 border border-white/20 backdrop-blur-sm flex items-center justify-center">
+              Découvrir WinStyle ↓
+            </a>
+          </div>
+        </div>
+        <div className="absolute bottom-8 left-1/2 -translate-x-1/2 animate-bounce">
+          <svg className="w-6 h-6 text-white/30" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+          </svg>
         </div>
       </section>
 
-      {/* RASMA 2025 */}
-      <section className="bg-[#C9A84C] py-10 px-6">
+      {/* Séparateur WinStyle */}
+      <div id="winstyle" className="bg-[#0E2240] py-8 px-6">
         <div className="max-w-4xl mx-auto text-center">
-          <p className="text-[#0E2240] font-black text-3xl mb-2">🏆 RASMA 2025</p>
-          <p className="text-[#0E2240]/80 text-lg font-medium max-w-2xl mx-auto">
-            WinStyle est fier d'avoir organisé le Rassemblement Annuel de N'Djaména — un événement marquant qui témoigne de notre expertise en événementiel et de notre ancrage national.
-          </p>
+          <p className="text-white font-black text-2xl">WinStyle — L'entreprise derrière RASMA</p>
+          <p className="text-white/70 mt-1">Agence de placement · Confection sur mesure · Cosmétique naturelle</p>
         </div>
-      </section>
+      </div>
 
       {/* Mission */}
       <section className="py-24 px-6 bg-white">
@@ -56,7 +133,7 @@ export default function AboutPage() {
             <p className="text-[#C9A84C] font-semibold text-sm uppercase tracking-widest mb-3">Notre mission</p>
             <h2 className="text-4xl font-black text-[#0E2240] mb-6 leading-tight">Valoriser l'excellence<br />au service de l'Afrique</h2>
             <p className="text-gray-500 leading-relaxed mb-5">WinStyle est une entreprise tchadienne innovante basée à N'Djaména, opérant dans trois secteurs complémentaires : agence de placement & événementiel, confection sur mesure, et cosmétique naturelle.</p>
-            <p className="text-gray-500 leading-relaxed mb-5">Fondée par <strong className="text-[#0E2240]">Winnie Ronel Bou-Ah</strong>, WinStyle s'engage pour l'autonomisation des femmes et l'excellence du service. Notre objectif : devenir la marque de référence en Afrique centrale.</p>
+            <p className="text-gray-500 leading-relaxed mb-5">Fondée par <strong className="text-[#0E2240]">Winnie Ronel Bou-Ah</strong>, WinStyle s'engage pour l'autonomisation des femmes et l'excellence du service.</p>
             <p className="text-gray-500 leading-relaxed mb-8">Actuellement Société Individuelle (SI), WinStyle sera transformée en SARL dans l'année, garantissant une structure solide pour une croissance ambitieuse.</p>
             <Link href="/contact" className="inline-flex items-center gap-2 bg-[#0E2240] text-white font-semibold px-7 py-3.5 rounded-xl hover:bg-[#C9A84C] hover:text-[#0E2240] transition-all duration-200">Nous contacter</Link>
           </div>
@@ -149,22 +226,58 @@ export default function AboutPage() {
         </div>
       </section>
 
-      {/* Fondatrice */}
-      <section className="py-24 px-6 bg-white">
-        <div className="max-w-4xl mx-auto">
-          <div className="text-center mb-14">
-            <p className="text-[#C9A84C] font-semibold text-sm uppercase tracking-widest mb-3">La personne derrière la marque</p>
-            <h2 className="text-4xl font-black text-[#0E2240]">Notre fondatrice</h2>
+      {/* ══════════════════════════════════════
+          ÉQUIPE — Les personnes derrière WinStyle
+      ══════════════════════════════════════ */}
+      <section className="py-24 px-6 bg-gray-50">
+        <div className="max-w-6xl mx-auto">
+          <div className="text-center mb-16">
+            <p className="text-[#C9A84C] font-semibold text-sm uppercase tracking-widest mb-3">Notre équipe</p>
+            <h2 className="text-4xl font-black text-[#0E2240]">Les personnes derrière WinStyle</h2>
+            <p className="text-gray-500 mt-4 max-w-xl mx-auto">
+              Une équipe engagée, professionnelle et passionnée au service de l'excellence africaine.
+            </p>
           </div>
-          <div className="bg-gray-50 rounded-3xl p-10 border border-gray-100">
-            <div className="flex flex-col sm:flex-row gap-8 items-center sm:items-start">
-              <div className="w-24 h-24 rounded-full bg-[#0E2240] flex items-center justify-center text-[#C9A84C] font-black text-3xl flex-shrink-0">W</div>
-              <div>
-                <h3 className="text-2xl font-black text-[#0E2240] mb-1">Winnie Ronel Bou-Ah</h3>
-                <p className="text-[#C9A84C] font-semibold mb-4">Fondatrice & Gérante — WinStyle</p>
-                <p className="text-gray-500 leading-relaxed mb-4">Entrepreneure tchadienne passionnée, Winnie a fondé WinStyle avec la conviction que l'Afrique centrale mérite une marque de prestige qui valorise le talent local. Spécialisée dans l'événementiel, la mode et la cosmétique naturelle, elle porte ce projet avec détermination et expertise.</p>
-                <p className="text-gray-500 leading-relaxed">Son engagement pour l'autonomisation des femmes est le moteur principal de WinStyle : chaque activité de l'entreprise crée des opportunités économiques pour les femmes tchadiennes et africaines.</p>
-                <div className="flex flex-wrap gap-4 mt-5 text-sm text-gray-500">
+
+          {/* Fondatrice — grande carte en premier */}
+          <div className="bg-white rounded-3xl overflow-hidden border border-gray-100 shadow-sm mb-8">
+            <div className="grid grid-cols-1 md:grid-cols-2">
+              {/* Photo */}
+              <div className="relative h-96 md:h-auto min-h-[400px] bg-[#0E2240] overflow-hidden">
+                <img
+                  src="/images/team/fondatrice.jpg"
+                  alt="Winnie Ronel Bou-Ah"
+                  className="w-full h-full object-cover object-top"
+                  onError={(e) => { e.currentTarget.style.display = 'none'; }}
+                />
+                {/* Fallback */}
+                <div className="absolute inset-0 bg-gradient-to-br from-[#0E2240] to-[#1a3a6b] flex flex-col items-center justify-center -z-10">
+                  <div className="w-28 h-28 rounded-full bg-[#C9A84C]/20 border-4 border-[#C9A84C]/40 flex items-center justify-center mb-3">
+                    <span className="text-[#C9A84C] font-black text-5xl">W</span>
+                  </div>
+                </div>
+                {/* Badge rôle sur photo */}
+                <div className="absolute bottom-4 left-4">
+                  <span className="bg-[#C9A84C] text-[#0E2240] text-xs font-black px-3 py-1.5 rounded-full uppercase tracking-wider">
+                    Directrice Générale
+                  </span>
+                </div>
+              </div>
+              {/* Texte */}
+              <div className="p-10 flex flex-col justify-center">
+                <p className="text-[#C9A84C] font-semibold text-xs uppercase tracking-widest mb-2">Fondatrice</p>
+                <h3 className="text-3xl font-black text-[#0E2240] mb-2">Winnie Ronel Bou-Ah</h3>
+                <p className="text-[#C9A84C] font-semibold text-sm mb-5">Fondatrice & Directrice Générale</p>
+                <p className="text-gray-500 leading-relaxed mb-5">
+                  Entrepreneure tchadienne passionnée, Winnie a fondé WinStyle avec la conviction que l'Afrique
+                  centrale mérite une marque de prestige qui valorise le talent local. Spécialisée dans
+                  l'événementiel, la mode et la cosmétique naturelle.
+                </p>
+                <p className="text-gray-500 leading-relaxed mb-6">
+                  Son engagement pour <strong className="text-[#0E2240]">l'autonomisation des femmes</strong> est
+                  le moteur principal de WinStyle.
+                </p>
+                <div className="flex flex-wrap gap-3 text-sm text-gray-500">
                   <span>📞 +235 65 09 60 24</span>
                   <span>📞 +237 698 617 237</span>
                   <span>✉️ winstylewins@gmail.com</span>
@@ -172,6 +285,47 @@ export default function AboutPage() {
                 </div>
               </div>
             </div>
+          </div>
+
+          {/* 3 autres membres — grille */}
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
+            {EQUIPE.slice(1).map((membre) => (
+              <div key={membre.role}
+                className="bg-white rounded-3xl overflow-hidden border border-gray-100 shadow-sm
+                           hover:shadow-xl hover:-translate-y-1 transition-all duration-300 flex flex-col">
+
+                {/* Photo */}
+                <div className="relative h-72 bg-[#0E2240] overflow-hidden">
+                  <img
+                    src={membre.photo}
+                    alt={membre.nom}
+                    className="w-full h-full object-cover object-top"
+                    onError={(e) => { e.currentTarget.style.display = 'none'; }}
+                  />
+                  {/* Fallback toujours présent derrière */}
+                  <div className="absolute inset-0 bg-gradient-to-br from-[#0E2240] to-[#1a3a6b]
+                                  flex flex-col items-center justify-center -z-10">
+                    <div className="w-20 h-20 rounded-full bg-[#C9A84C]/20 border-3 border-[#C9A84C]/40
+                                    flex items-center justify-center mb-2">
+                      <span className="text-[#C9A84C] font-black text-3xl">{membre.initiale}</span>
+                    </div>
+                  </div>
+                  {/* Badge rôle */}
+                  <div className="absolute bottom-3 left-3">
+                    <span className="bg-[#C9A84C] text-[#0E2240] text-xs font-black px-2.5 py-1 rounded-full uppercase tracking-wide">
+                      {membre.role.replace('Responsable ', '')}
+                    </span>
+                  </div>
+                </div>
+
+                {/* Infos */}
+                <div className="p-6 flex-1 flex flex-col">
+                  <h4 className="font-black text-[#0E2240] text-lg mb-1">{membre.nom}</h4>
+                  <p className="text-[#C9A84C] text-xs font-semibold uppercase tracking-wider mb-3">{membre.role}</p>
+                  <p className="text-gray-500 text-sm leading-relaxed flex-1">{membre.desc}</p>
+                </div>
+              </div>
+            ))}
           </div>
         </div>
       </section>
