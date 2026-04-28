@@ -2,20 +2,10 @@ import Link from 'next/link';
 import Image from 'next/image';
 import PartnerMarquee from '@/components/ui/PartnerMarquee';
 
-const PARTENAIRES = [
-  { nom: 'Partenaire 2', logo: '/images/partenaires/partenaire2.png' },
-  { nom: 'Partenaire 3', logo: '/images/partenaires/partenaire3.png' },
-  { nom: 'Partenaire 4', logo: '/images/partenaires/partenaire4.png' },
-  { nom: 'Partenaire 5', logo: '/images/partenaires/partenaire5.png' },
-  { nom: 'Partenaire 6', logo: '/images/partenaires/partenaire6.png' },
-  { nom: 'Partenaire 7', logo: '/images/partenaires/partenaire7.png' },
-  { nom: 'Partenaire 8', logo: '/images/partenaires/partenaire8.png' },
-];
-
 const SECTEURS = [
   {
     num: '01',
-    titre: 'consultante en ressources humaine',
+    titre: 'Agence de Placement',
     sous: 'Événementiel · Formation · RH',
     desc: 'Hôtesses, stewards, employés domestiques et personnel qualifié pour vos événements et entreprises. Recrutement rigoureux, suivi professionnel.',
     img: '/images/services/hotesses-stewards.jpg',
@@ -59,14 +49,26 @@ const VALEURS = [
 const TEMOIGNAGES = [
   {
 
-    texte: 'Vos filles sont professionnelles,propres et naturelle mais surtout propres.Je vous encourage vivement à continuer dans cette lancée.',
+    texte: 'Vos filles sont professionnelles,propres et naturelles mais surtout propres.Je vous encourage vivement à continuer dans cette lancée.',
   },
   {
-    texte: 'Bonjour boss,merci pour le service,tes filles ont assuré.',
+    texte: 'Bonjour boss!merci  pour le service ,tes filles ont assuré.',
   },
-  {  
-    texte: "Coucou chérie,super bien,j'ai aimé.",
+  {
+  
+    texte: "Coucou chérie! super bien,j'ai aimé.",
+   
   },
+];
+
+const PARTENAIRES = [
+  { nom: 'RASMA', logo: '/images/partenaires/partenaire2.png' },
+  { nom: 'Partenaire 3', logo: '/images/partenaires/partenaire3.png' },
+  { nom: 'Partenaire 4', logo: '/images/partenaires/partenaire4.png' },
+  { nom: 'Partenaire 5', logo: '/images/partenaires/partenaire5.png' },
+  { nom: 'Partenaire 6', logo: '/images/partenaires/partenaire6.png' },
+  { nom: 'Partenaire 7', logo: '/images/partenaires/partenaire7.png' },
+  { nom: 'Partenaire 8', logo: '/images/partenaires/partenaire8.png' },
 ];
 
 export default function HomePage() {
@@ -108,7 +110,8 @@ export default function HomePage() {
                 Excellence · Style · Service
               </p>
               <p className="text-white/90 text-lg sm:text-xl max-w-xl leading-relaxed mb-4">
-                Une entreprise innovante opérant dans la confection sur mesure,consultante en ressources humaines  et la cosmétique naturelle .
+                Une entreprise innovante opérant dans l'agence de placement, la confection sur mesure
+                et la cosmétique naturelle — au service de l'excellence africaine.
               </p>
               <p className="text-[#C9A84C] text-sm font-semibold mb-10">
                 ✨ Organisateur officiel de RASMA 2025
@@ -209,8 +212,9 @@ export default function HomePage() {
         </div>
       </section>
 
+   
       {/* ── POURQUOI WINSTYLE ── */}
-      <section className="py-24 px-6 bg-gray-50">
+      <section className="py-24 px-6 bg-white">
         <div className="max-w-6xl mx-auto">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
             <div>
@@ -238,7 +242,7 @@ export default function HomePage() {
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               {VALEURS.map((v) => (
                 <div key={v.title}
-                  className="bg-white border border-gray-100 rounded-xl p-5 hover:shadow-lg transition-all duration-300">
+                  className="bg-gray-50 border border-gray-100 rounded-xl p-5 hover:shadow-lg transition-all duration-300">
                   <div className="text-3xl mb-3">{v.icon}</div>
                   <h4 className="text-[#0E2240] font-bold mb-1.5">{v.title}</h4>
                   <p className="text-gray-500 text-sm leading-relaxed">{v.desc}</p>
@@ -250,9 +254,9 @@ export default function HomePage() {
       </section>
 
       {/* ── FORMATIONS CTA ── */}
-      <section className="py-24 px-6 bg-white">
+      <section className="py-24 px-6 bg-gray-50">
         <div className="max-w-5xl mx-auto">
-          <div className="bg-gray-50 border border-gray-100 rounded-3xl p-10 sm:p-14
+          <div className="bg-white border border-gray-100 rounded-3xl p-10 sm:p-14
                           text-center relative overflow-hidden">
             <div className="absolute top-0 right-0 w-64 h-64 bg-[#C9A84C]/10 rounded-full -translate-y-1/2 translate-x-1/2 blur-2xl" />
             <div className="relative">
@@ -284,16 +288,16 @@ export default function HomePage() {
       </section>
 
       {/* ── TÉMOIGNAGES ── */}
-      <section className="py-24 px-6 bg-gray-50">
+      <section className="py-24 px-6 bg-white">
         <div className="max-w-6xl mx-auto">
           <div className="text-center mb-14">
             <p className="text-[#C9A84C] font-semibold text-sm uppercase tracking-widest mb-3">Témoignages</p>
-            <h2 className="text-4xl font-black text-[#0E2240]">Ce que nos clients disent de nous</h2>
+            <h2 className="text-4xl font-black text-[#0E2240]">Ils nous font confiance</h2>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             {TEMOIGNAGES.map((t) => (
               <div key={t.nom}
-                className="bg-white rounded-2xl p-7 border border-gray-100 hover:shadow-lg hover:-translate-y-0.5 transition-all duration-300">
+                className="bg-gray-50 rounded-2xl p-7 border border-gray-100 hover:shadow-lg hover:-translate-y-0.5 transition-all duration-300">
                 <div className="flex gap-1 mb-4">
                   {[...Array(5)].map((_, i) => (
                     <svg key={i} className="w-4 h-4 text-[#C9A84C] fill-current" viewBox="0 0 20 20">
@@ -314,22 +318,16 @@ export default function HomePage() {
           </div>
         </div>
       </section>
-
-      {/* ── NOS PARTENAIRES ── */}
-      <section className="py-16 px-6 bg-white">
+         {/* ── NOS PARTENAIRES ── */}
+      <section className="py-20 px-6 bg-gray-50 border-y border-gray-100">
         <div className="max-w-6xl mx-auto">
-          <div className="text-center mb-10">
-            <p className="text-[#C9A84C] font-semibold text-xs uppercase tracking-[0.25em] mb-3">
-               Nos Partenaires 
-            </p>
-            <h2 className="text-3xl sm:text-4xl font-black text-[#0E2240]">
-              Ils nous ont fait confiance
-            </h2>
-          </div>
-
+          <p className="text-center text-[#C9A84C] font-semibold text-sm uppercase tracking-widest mb-10">
+            Ils nous ont fait confiance
+          </p>
           <PartnerMarquee partenaires={PARTENAIRES} />
         </div>
       </section>
+
 
       {/* ── CTA FINAL ── */}
       <section className="py-20 px-6 bg-[#C9A84C]">
@@ -345,7 +343,6 @@ export default function HomePage() {
               className="bg-[#0E2240] hover:bg-[#0a1a30] text-white font-bold px-8 py-4 rounded-xl transition-all duration-200 hover:shadow-xl">
               Nous contacter
             </Link>
-
           </div>
         </div>
       </section>

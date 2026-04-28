@@ -247,7 +247,7 @@ export default function AboutPage() {
                 <img
                   src="/images/team/fondatrice.jpg"
                   alt="Winnie Ronel Bou-Ah"
-                  className="w-full h-full object-cover object-top"
+                  className="w-full h-full object-cover object-center"
                   onError={(e) => { e.currentTarget.style.display = 'none'; }}
                 />
                 {/* Fallback */}
@@ -345,3 +345,4 @@ export default function AboutPage() {
     </div>
   );
 }
+

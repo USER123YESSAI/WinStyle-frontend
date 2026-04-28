@@ -34,13 +34,23 @@
   .font-body {
     font-family: var(--font-body);
   }
+}
 
-  @keyframes marquee {
-    0% { transform: translateX(0); }
-    100% { transform: translateX(-50%); }
+/* Animation marquee pour la section partenaires */
+@keyframes marquee {
+  0% {
+    transform: translateX(0);
   }
-
-  .animate-marquee {
-    animation: marquee 30s linear infinite;
+  100% {
+    transform: translateX(-50%);
   }
 }
+
+.animate-marquee {
+  animation: marquee 30s linear infinite;
+}
+
+.animate-marquee:hover {
+  animation-play-state: paused;
+}
+
