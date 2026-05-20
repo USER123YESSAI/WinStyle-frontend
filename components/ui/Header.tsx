@@ -28,7 +28,7 @@ export default function Header() {
     window.addEventListener('scroll', check);
     return () => window.removeEventListener('scroll', check);
   }, [pathname]);
-
+  if (!pathname) return null;
   if (pathname.startsWith('/admin')) return null;
 
   // Sombre si page sans hero OU si scrollé
@@ -135,7 +135,7 @@ export default function Header() {
               href="/admin/login"
               className="mt-6 bg-[#C9A84C] text-[#0E2240] font-bold text-center py-4 rounded-xl text-lg"
             >
-              Espace Win
+              connexion
             </Link>
           </nav>
         </div>
