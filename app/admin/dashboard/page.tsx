@@ -30,6 +30,7 @@ export default function AdminDashboard() {
   const [tab, setTab]               = useState<Tab>('stats');
   const [stats, setStats]           = useState<Stats | null>(null);
   const [formations, setFormations] = useState<Formation[]>([]);
+  const [realisations, setRealisations] = useState<Realisation[]>([]);
   const [inscriptions, setInscriptions] = useState<Inscription[]>([]);
   const [candidatures, setCandidatures] = useState<Candidature[]>([]);
   const [services, setServices]     = useState<any[]>([]);
@@ -61,8 +62,8 @@ export default function AdminDashboard() {
     } catch {}
     Promise.all([
       api.get('/formations'), api.get('/inscriptions'), api.get('/candidatures'),
-      api.get('/services'), api.get('/contact'),
-    ]).then(([f, i, c, s, co]) => {
+      api.get('/realisations'), api.get('/services'), api.get('/contact'),
+    ]).then(([f, i, c, r, s, co]) => {
       const parse = (res: any) => Array.isArray(res.data) ? res.data : Array.isArray(res.data?.data) ? res.data.data : [];
       const formations = parse(f); const inscriptions = parse(i); const candidatures = parse(c);
       const services = parse(s); const contacts = parse(co);
@@ -148,6 +149,7 @@ export default function AdminDashboard() {
   const TABS: { key: Tab; label: string; icon: string; superOnly?: boolean }[] = [
     { key: 'stats',        label: 'Tableau de bord', icon: '📊' },
     { key: 'formations',   label: 'Formations',      icon: '🎓' },
+      { key: 'realisations', label: 'Réalisations',    icon: '🏆' },
     { key: 'inscriptions', label: 'Inscriptions',    icon: '📝' },
     { key: 'candidatures', label: 'Candidatures',    icon: '👤' },
     { key: 'services',     label: 'Demandes',        icon: '💼' },
@@ -159,6 +161,7 @@ export default function AdminDashboard() {
     { label: 'Formations',   value: stats?.formations,   icon: '🎓', bg: 'bg-blue-600',   tab: 'formations' as Tab },
     { label: 'Inscriptions', value: stats?.inscriptions, icon: '📝', bg: 'bg-green-600',  tab: 'inscriptions' as Tab },
     { label: 'Candidatures', value: stats?.candidatures, icon: '👤', bg: 'bg-cyan-500',   tab: 'candidatures' as Tab },
+    { label: 'Réalisations', value: stats?.realisations, icon: '🏆', bg: 'bg-purple-600', tab: 'realisations' as Tab },
     { label: 'Demandes',     value: stats?.services,     icon: '💼', bg: 'bg-yellow-500', tab: 'services' as Tab },
     { label: 'Messages',     value: stats?.contacts,     icon: '✉️', bg: 'bg-green-700',  tab: 'contacts' as Tab },
     { label: 'Acceptées',    value: candidatures.filter(c => c.statut === 'acceptée').length,   icon: '✅', bg: 'bg-gray-700', tab: undefined },
@@ -348,7 +351,25 @@ export default function AdminDashboard() {
               </div>
             </div>
           )}
-
+          {tab === 'realisations' && (
+            <div className="bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden">
+              <div className="px-6 py-4 border-b border-gray-100"><h2 className="font-bold text-gray-800">🏆 Réalisations ({realisations.length})</h2></div>
+              <div className="overflow-x-auto">
+                <table className="w-full text-sm">
+                  <thead className="bg-gray-50 text-gray-500 text-xs uppercase"><tr>{['Titre','Description','Date'].map(h => <th key={h} className="px-5 py-3 text-left font-semibold">{h}</th>)}</tr></thead>
+                  <tbody className="divide-y divide-gray-100">
+                    {realisations.map(r => (
+                      <tr key={r.id} className="hover:bg-gray-50">
+                        <td className="px-5 py-3 font-medium">{r.title}</td>
+                        <td className="px-5 py-3 text-gray-500">{r.description}</td>
+                        <td className="px-5 py-3 text-gray-400">{new Date(r.createdAt).toLocaleDateString('fr-FR')}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          )}
           {tab === 'inscriptions' && (
             <div className="bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden">
               <div className="px-6 py-4 border-b border-gray-100"><h2 className="font-bold text-gray-800">📝 Inscriptions ({inscriptions.length})</h2></div>
