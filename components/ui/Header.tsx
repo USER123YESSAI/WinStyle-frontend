@@ -8,6 +8,7 @@ const LINKS = [
   { href: '/about',       label: 'À propos' },
   { href: '/services',    label: 'Services' },
   { href: '/formations',  label: 'Formations' },
+  { href: '/realisations',     label: 'Réalisation' },
   { href: '/candidature', label: 'Candidature' },
   { href: '/contact',     label: 'Contact' },
 ];
@@ -94,7 +95,7 @@ export default function Header() {
                        transition-all duration-200 hover:shadow-lg hover:shadow-[#C9A84C]/30
                        hover:-translate-y-0.5"
           >
-            Espace Win
+            connexion
           </Link>
 
           {/* Burger mobile */}
