@@ -3,7 +3,7 @@ import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import api from '@/lib/api';
 
-interface Stats { formations: number; inscriptions: number; candidatures: number; services: number; contacts: number; }
+interface Stats { formations: number; inscriptions: number; candidatures: number; realisations: number; services: number; contacts: number; }
 interface Formation { id: number; title: string; description: string; date: string; lieu: string; prix: number; places_disponibles: number; }
 interface Candidature { id: number; nom: string; email: string; poste: string; statut: string; createdAt: string; cv_url?: string; }
 interface Inscription { id: number; nom: string; email: string; createdAt: string; Formation?: { title: string; date: string }; }
@@ -12,8 +12,8 @@ interface AdminUser { id: number; nom: string; email: string; createdAt: string;
 interface Log { id: number; adminNom: string; adminEmail: string; action: string; cible?: string; ip?: string; createdAt: string; }
 type Tab = 'stats' | 'formations' | 'inscriptions' | 'candidatures' | 'realisations' | 'services' | 'contacts' | 'admins' | 'logs';
 
-const EMPTY_ADMIN = { nom: '', email: '', password: '' };
-const EMPTY_FORMATION = { title: '', description: '', date: '', lieu: '', prix: '', places_disponibles: '' };
+const EMPTY_ADMIN      = { nom: '', email: '', password: '' };
+const EMPTY_FORMATION  = { title: '', description: '', date: '', lieu: '', prix: '', places_disponibles: '' };
 const EMPTY_REALISATION = { title: '', description: '', image_url: '' };
 
 function ActionBadge({ action }: { action: string }) {
@@ -40,16 +40,28 @@ export default function AdminDashboard() {
   const [logFilter, setLogFilter]   = useState('');
   const [isSuperAdmin, setIsSuperAdmin] = useState(false);
   const [loading, setLoading]       = useState(true);
+
+  // ── Admin form ──
   const [adminForm, setAdminForm]   = useState(EMPTY_ADMIN);
   const [adminFormErrors, setAdminFormErrors] = useState<Record<string, string>>({});
   const [adminFormLoading, setAdminFormLoading] = useState(false);
   const [adminFormMsg, setAdminFormMsg] = useState<{ type: 'success' | 'error'; text: string } | null>(null);
+
+  // ── Formation form ──
   const [formationForm, setFormationForm] = useState(EMPTY_FORMATION);
   const [formationFormErrors, setFormationFormErrors] = useState<Record<string, string>>({});
   const [formationFormLoading, setFormationFormLoading] = useState(false);
   const [formationFormMsg, setFormationFormMsg] = useState<{ type: 'success' | 'error'; text: string } | null>(null);
   const [editingFormation, setEditingFormation] = useState<Formation | null>(null);
   const [showFormationForm, setShowFormationForm] = useState(false);
+
+  // ── Réalisation form ──
+  const [realisationForm, setRealisationForm] = useState(EMPTY_REALISATION);
+  const [realisationFormErrors, setRealisationFormErrors] = useState<Record<string, string>>({});
+  const [realisationFormLoading, setRealisationFormLoading] = useState(false);
+  const [realisationFormMsg, setRealisationFormMsg] = useState<{ type: 'success' | 'error'; text: string } | null>(null);
+  const [editingRealisation, setEditingRealisation] = useState<Realisation | null>(null);
+  const [showRealisationForm, setShowRealisationForm] = useState(false);
 
   const logout = () => { localStorage.removeItem('wins_token'); router.push('/admin/login'); };
 
@@ -65,22 +77,21 @@ export default function AdminDashboard() {
       api.get('/realisations'), api.get('/services'), api.get('/contact'),
     ]).then(([f, i, c, r, s, co]) => {
       const parse = (res: any) => Array.isArray(res.data) ? res.data : Array.isArray(res.data?.data) ? res.data.data : [];
-      const formations = parse(f); const inscriptions = parse(i); const candidatures = parse(c);
-      const services = parse(s); const contacts = parse(co);
-      setStats({ formations: formations.length, inscriptions: inscriptions.length, candidatures: candidatures.length, services: services.length, contacts: contacts.length });
-      setFormations(formations); setInscriptions(inscriptions); setCandidatures(candidatures); setServices(services); setContacts(contacts);
+      const fData = parse(f); const iData = parse(i); const cData = parse(c);
+      const rData = parse(r); const sData = parse(s); const coData = parse(co);
+      setStats({ formations: fData.length, inscriptions: iData.length, candidatures: cData.length, realisations: rData.length, services: sData.length, contacts: coData.length });
+      setFormations(fData); setInscriptions(iData); setCandidatures(cData);
+      setRealisations(rData); setServices(sData); setContacts(coData);
     }).catch(() => router.push('/admin/login')).finally(() => setLoading(false));
   }, []);
 
   useEffect(() => {
     if (tab === 'admins' && isSuperAdmin) api.get('/auth/admins').then(r => setAdmins(r.data)).catch(() => {});
-    if (tab === 'logs' && isSuperAdmin) api.get('/auth/logs').then(r => setLogs(r.data)).catch(() => {});
+    if (tab === 'logs'   && isSuperAdmin) api.get('/auth/logs').then(r => setLogs(r.data)).catch(() => {});
   }, [tab, isSuperAdmin]);
 
-  const openCreateFormation = () => {
-    setEditingFormation(null); setFormationForm(EMPTY_FORMATION);
-    setFormationFormErrors({}); setFormationFormMsg(null); setShowFormationForm(true);
-  };
+  // ── Formation handlers ──
+  const openCreateFormation = () => { setEditingFormation(null); setFormationForm(EMPTY_FORMATION); setFormationFormErrors({}); setFormationFormMsg(null); setShowFormationForm(true); };
   const openEditFormation = (f: Formation) => {
     setEditingFormation(f);
     setFormationForm({ title: f.title, description: f.description || '', date: f.date ? f.date.slice(0, 10) : '', lieu: f.lieu || '', prix: String(f.prix || ''), places_disponibles: String(f.places_disponibles || '') });
@@ -90,9 +101,9 @@ export default function AdminDashboard() {
     e.preventDefault();
     const errors: Record<string, string> = {};
     if (!formationForm.title.trim())       errors.title = 'Le titre est obligatoire';
-    if (!formationForm.date)               errors.date = 'La date est obligatoire';
-    if (!formationForm.lieu.trim())        errors.lieu = 'Le lieu est obligatoire';
-    if (!formationForm.prix)               errors.prix = 'Le prix est obligatoire';
+    if (!formationForm.date)               errors.date  = 'La date est obligatoire';
+    if (!formationForm.lieu.trim())        errors.lieu  = 'Le lieu est obligatoire';
+    if (!formationForm.prix)               errors.prix  = 'Le prix est obligatoire';
     if (!formationForm.places_disponibles) errors.places_disponibles = 'Les places sont obligatoires';
     if (Object.keys(errors).length > 0) { setFormationFormErrors(errors); return; }
     setFormationFormLoading(true); setFormationFormMsg(null);
@@ -115,6 +126,45 @@ export default function AdminDashboard() {
     const updated = formations.filter(f => f.id !== id);
     setFormations(updated); setStats(prev => prev ? { ...prev, formations: updated.length } : prev);
   };
+
+  // ── Réalisation handlers ──
+  const openCreateRealisation = () => { setEditingRealisation(null); setRealisationForm(EMPTY_REALISATION); setRealisationFormErrors({}); setRealisationFormMsg(null); setShowRealisationForm(true); };
+  const openEditRealisation = (r: Realisation) => {
+    setEditingRealisation(r);
+    setRealisationForm({ title: r.title, description: r.description || '', image_url: r.image_url || '' });
+    setRealisationFormErrors({}); setRealisationFormMsg(null); setShowRealisationForm(true);
+  };
+  const handleRealisationSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    const errors: Record<string, string> = {};
+    if (!realisationForm.title.trim()) errors.title = 'Le titre est obligatoire';
+    if (Object.keys(errors).length > 0) { setRealisationFormErrors(errors); return; }
+    setRealisationFormLoading(true); setRealisationFormMsg(null);
+    try {
+      if (editingRealisation) {
+        await api.put(`/realisations/${editingRealisation.id}`, realisationForm);
+        setRealisationFormMsg({ type: 'success', text: 'Réalisation modifiée !' });
+      } else {
+        await api.post('/realisations', realisationForm);
+        setRealisationFormMsg({ type: 'success', text: 'Réalisation créée !' });
+      }
+      const res = await api.get('/realisations');
+      const data = Array.isArray(res.data) ? res.data : res.data?.data ?? [];
+      setRealisations(data); setStats(prev => prev ? { ...prev, realisations: data.length } : prev);
+      setRealisationForm(EMPTY_REALISATION); setEditingRealisation(null);
+      setTimeout(() => { setShowRealisationForm(false); setRealisationFormMsg(null); }, 1500);
+    } catch (err: any) {
+      setRealisationFormMsg({ type: 'error', text: err.response?.data?.message || 'Erreur lors de la sauvegarde' });
+    } finally { setRealisationFormLoading(false); }
+  };
+  const deleteRealisation = async (id: number) => {
+    if (!confirm('Supprimer cette réalisation ?')) return;
+    await api.delete(`/realisations/${id}`);
+    const updated = realisations.filter(r => r.id !== id);
+    setRealisations(updated); setStats(prev => prev ? { ...prev, realisations: updated.length } : prev);
+  };
+
+  // ── Candidature handlers ──
   const updateStatut = async (id: number, statut: string) => {
     await api.patch(`/candidatures/${id}/statut`, { statut });
     setCandidatures(prev => prev.map(c => c.id === id ? { ...c, statut } : c));
@@ -124,6 +174,8 @@ export default function AdminDashboard() {
     await api.delete(`/candidatures/${id}`);
     setCandidatures(prev => prev.filter(c => c.id !== id));
   };
+
+  // ── Admin handlers ──
   const deleteAdmin = async (id: number) => {
     if (!confirm('Supprimer ce compte admin ?')) return;
     await api.delete(`/auth/admins/${id}`); setAdmins(prev => prev.filter(a => a.id !== id));
@@ -149,7 +201,7 @@ export default function AdminDashboard() {
   const TABS: { key: Tab; label: string; icon: string; superOnly?: boolean }[] = [
     { key: 'stats',        label: 'Tableau de bord', icon: '📊' },
     { key: 'formations',   label: 'Formations',      icon: '🎓' },
-      { key: 'realisations', label: 'Réalisations',    icon: '🏆' },
+    { key: 'realisations', label: 'Réalisations',    icon: '🏆' },
     { key: 'inscriptions', label: 'Inscriptions',    icon: '📝' },
     { key: 'candidatures', label: 'Candidatures',    icon: '👤' },
     { key: 'services',     label: 'Demandes',        icon: '💼' },
@@ -157,19 +209,22 @@ export default function AdminDashboard() {
     { key: 'admins',       label: 'Admins',          icon: '🔑', superOnly: true },
     { key: 'logs',         label: 'Logs activité',   icon: '📋', superOnly: true },
   ];
+
   const statCards = [
-    { label: 'Formations',   value: stats?.formations,   icon: '🎓', bg: 'bg-blue-600',   tab: 'formations' as Tab },
+    { label: 'Formations',   value: stats?.formations,   icon: '🎓', bg: 'bg-blue-600',   tab: 'formations'   as Tab },
     { label: 'Inscriptions', value: stats?.inscriptions, icon: '📝', bg: 'bg-green-600',  tab: 'inscriptions' as Tab },
     { label: 'Candidatures', value: stats?.candidatures, icon: '👤', bg: 'bg-cyan-500',   tab: 'candidatures' as Tab },
     { label: 'Réalisations', value: stats?.realisations, icon: '🏆', bg: 'bg-purple-600', tab: 'realisations' as Tab },
-    { label: 'Demandes',     value: stats?.services,     icon: '💼', bg: 'bg-yellow-500', tab: 'services' as Tab },
-    { label: 'Messages',     value: stats?.contacts,     icon: '✉️', bg: 'bg-green-700',  tab: 'contacts' as Tab },
-    { label: 'Acceptées',    value: candidatures.filter(c => c.statut === 'acceptée').length,   icon: '✅', bg: 'bg-gray-700', tab: undefined },
-    { label: 'En attente',   value: candidatures.filter(c => c.statut === 'en attente').length, icon: '⏳', bg: 'bg-gray-900', tab: undefined },
-    { label: 'Refusées',     value: candidatures.filter(c => c.statut === 'refusée').length,    icon: '❌', bg: 'bg-red-600',  tab: undefined },
+    { label: 'Demandes',     value: stats?.services,     icon: '💼', bg: 'bg-yellow-500', tab: 'services'     as Tab },
+    { label: 'Messages',     value: stats?.contacts,     icon: '✉️', bg: 'bg-green-700',  tab: 'contacts'     as Tab },
+    { label: 'Acceptées',  value: candidatures.filter(c => c.statut === 'acceptée').length,   icon: '✅', bg: 'bg-gray-700', tab: undefined },
+    { label: 'En attente', value: candidatures.filter(c => c.statut === 'en attente').length, icon: '⏳', bg: 'bg-gray-900', tab: undefined },
+    { label: 'Refusées',   value: candidatures.filter(c => c.statut === 'refusée').length,    icon: '❌', bg: 'bg-red-600',  tab: undefined },
   ];
+
   const filteredLogs = logs.filter(l =>
-    !logFilter || l.adminNom.toLowerCase().includes(logFilter.toLowerCase()) ||
+    !logFilter ||
+    l.adminNom.toLowerCase().includes(logFilter.toLowerCase()) ||
     l.adminEmail.toLowerCase().includes(logFilter.toLowerCase()) ||
     l.action.toLowerCase().includes(logFilter.toLowerCase()) ||
     (l.cible || '').toLowerCase().includes(logFilter.toLowerCase())
@@ -181,10 +236,13 @@ export default function AdminDashboard() {
     </div>
   );
 
-  const inputCls = (err?: string) => `w-full border rounded-lg px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-blue-500 ${err ? 'border-red-400 bg-red-50' : 'border-gray-300'}`;
+  const inputCls = (err?: string) =>
+    `w-full border rounded-lg px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-blue-500 ${err ? 'border-red-400 bg-red-50' : 'border-gray-300'}`;
 
   return (
     <div className="min-h-screen bg-gray-100 flex">
+
+      {/* ── Sidebar ── */}
       <aside className="w-64 bg-gray-900 text-white flex flex-col flex-shrink-0">
         <div className="px-6 py-5 border-b border-gray-700">
           <div className="flex items-center gap-3">
@@ -215,6 +273,7 @@ export default function AdminDashboard() {
         </div>
       </aside>
 
+      {/* ── Main ── */}
       <main className="flex-1 overflow-auto">
         <header className="bg-white border-b border-gray-200 px-8 py-4 flex items-center justify-between">
           <div className="flex items-center gap-2 text-gray-600 text-sm"><span>👤</span><span className="font-medium">{isSuperAdmin ? 'Super Administrateur' : 'Administrateur'}</span></div>
@@ -223,6 +282,7 @@ export default function AdminDashboard() {
 
         <div className="px-8 py-8">
 
+          {/* ── STATS ── */}
           {tab === 'stats' && (
             <>
               <h2 className="text-2xl font-bold text-gray-800 mb-6">📊 Tableau de bord</h2>
@@ -238,6 +298,7 @@ export default function AdminDashboard() {
             </>
           )}
 
+          {/* ── FORMATIONS ── */}
           {tab === 'formations' && (
             <div className="space-y-6">
               <div className="flex items-center justify-between">
@@ -246,7 +307,6 @@ export default function AdminDashboard() {
                   ➕ Nouvelle formation
                 </button>
               </div>
-
               {showFormationForm && (
                 <div className="bg-white rounded-xl border border-gray-200 shadow-sm p-6">
                   <div className="flex items-center justify-between mb-5">
@@ -281,7 +341,7 @@ export default function AdminDashboard() {
                     </div>
                     <div>
                       <label className="text-xs font-semibold text-gray-600 mb-1 block">Lieu *</label>
-                      <input value={formationForm.lieu} placeholder="Ex : Dakar, Sénégal"
+                      <input value={formationForm.lieu} placeholder="Ex : N'Djaména, Tchad"
                         onChange={e => { setFormationForm(p => ({ ...p, lieu: e.target.value })); setFormationFormErrors(p => ({ ...p, lieu: '' })); }}
                         className={inputCls(formationFormErrors.lieu)} />
                       {formationFormErrors.lieu && <p className="text-xs text-red-500 mt-1">{formationFormErrors.lieu}</p>}
@@ -314,7 +374,6 @@ export default function AdminDashboard() {
                   </form>
                 </div>
               )}
-
               <div className="bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden">
                 <div className="overflow-x-auto">
                   <table className="w-full text-sm">
@@ -351,25 +410,100 @@ export default function AdminDashboard() {
               </div>
             </div>
           )}
+
+          {/* ── RÉALISATIONS ── */}
           {tab === 'realisations' && (
-            <div className="bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden">
-              <div className="px-6 py-4 border-b border-gray-100"><h2 className="font-bold text-gray-800">🏆 Réalisations ({realisations.length})</h2></div>
-              <div className="overflow-x-auto">
-                <table className="w-full text-sm">
-                  <thead className="bg-gray-50 text-gray-500 text-xs uppercase"><tr>{['Titre','Description','Date'].map(h => <th key={h} className="px-5 py-3 text-left font-semibold">{h}</th>)}</tr></thead>
-                  <tbody className="divide-y divide-gray-100">
-                    {realisations.map(r => (
-                      <tr key={r.id} className="hover:bg-gray-50">
-                        <td className="px-5 py-3 font-medium">{r.title}</td>
-                        <td className="px-5 py-3 text-gray-500">{r.description}</td>
-                        <td className="px-5 py-3 text-gray-400">{new Date(r.createdAt).toLocaleDateString('fr-FR')}</td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
+            <div className="space-y-6">
+              <div className="flex items-center justify-between">
+                <h2 className="text-2xl font-bold text-gray-800">🏆 Réalisations ({realisations.length})</h2>
+                <button onClick={openCreateRealisation} className="flex items-center gap-2 bg-purple-600 hover:bg-purple-700 text-white px-4 py-2 rounded-lg text-sm font-semibold transition">
+                  ➕ Nouvelle réalisation
+                </button>
               </div>
+
+              {/* Formulaire créer / modifier */}
+              {showRealisationForm && (
+                <div className="bg-white rounded-xl border border-gray-200 shadow-sm p-6">
+                  <div className="flex items-center justify-between mb-5">
+                    <h3 className="font-bold text-gray-800">{editingRealisation ? '✏️ Modifier la réalisation' : '➕ Créer une réalisation'}</h3>
+                    <button onClick={() => setShowRealisationForm(false)} className="text-gray-400 hover:text-gray-600 text-xl">✕</button>
+                  </div>
+                  {realisationFormMsg && (
+                    <div className={`mb-4 px-4 py-3 rounded-lg text-sm font-medium ${realisationFormMsg.type === 'success' ? 'bg-green-50 text-green-700 border border-green-200' : 'bg-red-50 text-red-700 border border-red-200'}`}>
+                      {realisationFormMsg.text}
+                    </div>
+                  )}
+                  <form onSubmit={handleRealisationSubmit} className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div className="sm:col-span-2">
+                      <label className="text-xs font-semibold text-gray-600 mb-1 block">Titre *</label>
+                      <input value={realisationForm.title} placeholder="Ex : RASMA 2025"
+                        onChange={e => { setRealisationForm(p => ({ ...p, title: e.target.value })); setRealisationFormErrors(p => ({ ...p, title: '' })); }}
+                        className={inputCls(realisationFormErrors.title)} />
+                      {realisationFormErrors.title && <p className="text-xs text-red-500 mt-1">{realisationFormErrors.title}</p>}
+                    </div>
+                    <div className="sm:col-span-2">
+                      <label className="text-xs font-semibold text-gray-600 mb-1 block">Description</label>
+                      <textarea value={realisationForm.description} rows={3} placeholder="Décrivez cette réalisation..."
+                        onChange={e => setRealisationForm(p => ({ ...p, description: e.target.value }))}
+                        className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-purple-500 resize-none" />
+                    </div>
+                    <div className="sm:col-span-2">
+                      <label className="text-xs font-semibold text-gray-600 mb-1 block">URL de l'image</label>
+                      <input value={realisationForm.image_url} placeholder="https://... ou /images/..."
+                        onChange={e => setRealisationForm(p => ({ ...p, image_url: e.target.value }))}
+                        className={inputCls()} />
+                      {realisationForm.image_url && (
+                        <img src={realisationForm.image_url} alt="aperçu" className="mt-2 h-28 w-auto rounded-lg object-cover border border-gray-200" onError={e => (e.currentTarget.style.display = 'none')} />
+                      )}
+                    </div>
+                    <div className="sm:col-span-2 flex gap-3">
+                      <button type="submit" disabled={realisationFormLoading}
+                        className="bg-purple-600 hover:bg-purple-700 disabled:opacity-60 text-white px-6 py-2 rounded-lg text-sm font-semibold transition flex items-center gap-2">
+                        {realisationFormLoading ? <span className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" /> : editingRealisation ? '💾' : '➕'}
+                        {editingRealisation ? 'Enregistrer les modifications' : 'Créer la réalisation'}
+                      </button>
+                      <button type="button" onClick={() => setShowRealisationForm(false)}
+                        className="border border-gray-300 text-gray-600 px-4 py-2 rounded-lg text-sm font-medium hover:bg-gray-50 transition">
+                        Annuler
+                      </button>
+                    </div>
+                  </form>
+                </div>
+              )}
+
+              {/* Grille de cartes */}
+              {realisations.length > 0 ? (
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
+                  {realisations.map(r => (
+                    <div key={r.id} className="bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden hover:shadow-md transition">
+                      {r.image_url ? (
+                        <img src={r.image_url} alt={r.title} className="w-full h-44 object-cover" onError={e => (e.currentTarget.style.display = 'none')} />
+                      ) : (
+                        <div className="w-full h-44 bg-purple-50 flex items-center justify-center text-4xl">🏆</div>
+                      )}
+                      <div className="p-4">
+                        <h3 className="font-bold text-gray-800 mb-1 truncate">{r.title}</h3>
+                        {r.description && <p className="text-sm text-gray-500 line-clamp-2 mb-3">{r.description}</p>}
+                        <div className="flex items-center justify-between">
+                          <span className="text-xs text-gray-400">{new Date(r.createdAt).toLocaleDateString('fr-FR')}</span>
+                          <div className="flex gap-3">
+                            <button onClick={() => openEditRealisation(r)} className="text-blue-500 hover:text-blue-700 text-xs font-medium">Modifier</button>
+                            <button onClick={() => deleteRealisation(r.id)} className="text-red-400 hover:text-red-600 text-xs font-medium">Supprimer</button>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              ) : (
+                <div className="bg-white rounded-xl border border-gray-200 shadow-sm px-5 py-16 text-center text-gray-400">
+                  Aucune réalisation — <button onClick={openCreateRealisation} className="text-purple-500 hover:underline">créer la première</button>
+                </div>
+              )}
             </div>
           )}
+
+          {/* ── INSCRIPTIONS ── */}
           {tab === 'inscriptions' && (
             <div className="bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden">
               <div className="px-6 py-4 border-b border-gray-100"><h2 className="font-bold text-gray-800">📝 Inscriptions ({inscriptions.length})</h2></div>
@@ -379,7 +513,8 @@ export default function AdminDashboard() {
                   <tbody className="divide-y divide-gray-100">
                     {inscriptions.map(i => (
                       <tr key={i.id} className="hover:bg-gray-50">
-                        <td className="px-5 py-3 font-medium">{i.nom}</td><td className="px-5 py-3 text-gray-500">{i.email}</td>
+                        <td className="px-5 py-3 font-medium">{i.nom}</td>
+                        <td className="px-5 py-3 text-gray-500">{i.email}</td>
                         <td className="px-5 py-3">{i.Formation?.title ?? '—'}</td>
                         <td className="px-5 py-3 text-gray-400">{new Date(i.createdAt).toLocaleDateString('fr-FR')}</td>
                       </tr>
@@ -391,6 +526,7 @@ export default function AdminDashboard() {
             </div>
           )}
 
+          {/* ── CANDIDATURES ── */}
           {tab === 'candidatures' && (
             <div className="bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden">
               <div className="px-6 py-4 border-b border-gray-100"><h2 className="font-bold text-gray-800">👤 Candidatures ({candidatures.length})</h2></div>
@@ -400,14 +536,22 @@ export default function AdminDashboard() {
                   <tbody className="divide-y divide-gray-100">
                     {candidatures.map(c => (
                       <tr key={c.id} className="hover:bg-gray-50">
-                        <td className="px-5 py-3 font-medium">{c.nom}</td><td className="px-5 py-3 text-gray-500">{c.email}</td><td className="px-5 py-3">{c.poste}</td>
+                        <td className="px-5 py-3 font-medium">{c.nom}</td>
+                        <td className="px-5 py-3 text-gray-500">{c.email}</td>
+                        <td className="px-5 py-3">{c.poste}</td>
                         <td className="px-5 py-3">
                           <select value={c.statut} onChange={e => updateStatut(c.id, e.target.value)}
                             className={`text-xs font-semibold px-3 py-1 rounded-full border-0 outline-none cursor-pointer ${c.statut === 'acceptée' ? 'bg-green-100 text-green-700' : c.statut === 'refusée' ? 'bg-red-100 text-red-700' : 'bg-yellow-100 text-yellow-700'}`}>
-                            <option value="en attente">En attente</option><option value="acceptée">Acceptée</option><option value="refusée">Refusée</option>
+                            <option value="en attente">En attente</option>
+                            <option value="acceptée">Acceptée</option>
+                            <option value="refusée">Refusée</option>
                           </select>
                         </td>
-                        <td className="px-5 py-3">{c.cv_url ? <a href={`${process.env.NEXT_PUBLIC_API_URL?.replace('/api', '')}${c.cv_url}`} target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:text-blue-800 font-medium">Voir CV</a> : <span className="text-gray-300">—</span>}</td>
+                        <td className="px-5 py-3">
+                          {c.cv_url
+                            ? <a href={`${process.env.NEXT_PUBLIC_API_URL?.replace('/api', '')}${c.cv_url}`} target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:text-blue-800 font-medium">Voir CV</a>
+                            : <span className="text-gray-300">—</span>}
+                        </td>
                         <td className="px-5 py-3"><button onClick={() => deleteCandidature(c.id)} className="text-red-400 hover:text-red-600 text-xs font-medium">Supprimer</button></td>
                       </tr>
                     ))}
@@ -418,6 +562,7 @@ export default function AdminDashboard() {
             </div>
           )}
 
+          {/* ── SERVICES ── */}
           {tab === 'services' && (
             <div className="bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden">
               <div className="px-6 py-4 border-b border-gray-100"><h2 className="font-bold text-gray-800">💼 Demandes de service ({services.length})</h2></div>
@@ -427,8 +572,10 @@ export default function AdminDashboard() {
                   <tbody className="divide-y divide-gray-100">
                     {services.map(s => (
                       <tr key={s.id} className="hover:bg-gray-50">
-                        <td className="px-5 py-3 font-medium">{s.nom}</td><td className="px-5 py-3 text-gray-500">{s.entreprise || '—'}</td>
-                        <td className="px-5 py-3">{s.service}</td><td className="px-5 py-3 text-gray-500">{s.telephone || '—'}</td>
+                        <td className="px-5 py-3 font-medium">{s.nom}</td>
+                        <td className="px-5 py-3 text-gray-500">{s.entreprise || '—'}</td>
+                        <td className="px-5 py-3">{s.service}</td>
+                        <td className="px-5 py-3 text-gray-500">{s.telephone || '—'}</td>
                         <td className="px-5 py-3 text-gray-400">{s.date_evenement ? new Date(s.date_evenement).toLocaleDateString('fr-FR') : '—'}</td>
                         <td className="px-5 py-3 max-w-xs"><p className="truncate text-gray-500" title={s.message}>{s.message}</p></td>
                       </tr>
@@ -440,6 +587,7 @@ export default function AdminDashboard() {
             </div>
           )}
 
+          {/* ── CONTACTS ── */}
           {tab === 'contacts' && (
             <div className="bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden">
               <div className="px-6 py-4 border-b border-gray-100"><h2 className="font-bold text-gray-800">✉️ Messages ({contacts.length})</h2></div>
@@ -456,13 +604,14 @@ export default function AdminDashboard() {
             </div>
           )}
 
+          {/* ── ADMINS ── */}
           {tab === 'admins' && isSuperAdmin && (
             <div className="space-y-8">
               <div className="bg-white rounded-xl border border-gray-200 shadow-sm p-6">
                 <h2 className="font-bold text-gray-800 mb-5">🔑 Créer un compte administrateur</h2>
                 {adminFormMsg && <div className={`mb-4 px-4 py-3 rounded-lg text-sm font-medium ${adminFormMsg.type === 'success' ? 'bg-green-50 text-green-700 border border-green-200' : 'bg-red-50 text-red-700 border border-red-200'}`}>{adminFormMsg.text}</div>}
                 <form onSubmit={handleCreateAdmin} className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-                  {[{ field: 'nom', label: 'Nom complet *', type: 'text', placeholder: 'Ex : Fatou Diallo' }, { field: 'email', label: 'Adresse e-mail *', type: 'email', placeholder: 'fatou@wins-agency.sn' }, { field: 'password', label: 'Mot de passe * (min. 8)', type: 'password', placeholder: '••••••••' }].map(({ field, label, type, placeholder }) => (
+                  {[{ field: 'nom', label: 'Nom complet *', type: 'text', placeholder: 'Ex : Fatou Diallo' }, { field: 'email', label: 'Adresse e-mail *', type: 'email', placeholder: 'fatou@wins-agency.td' }, { field: 'password', label: 'Mot de passe * (min. 8)', type: 'password', placeholder: '••••••••' }].map(({ field, label, type, placeholder }) => (
                     <div key={field}>
                       <label className="text-xs font-semibold text-gray-600 mb-1 block">{label}</label>
                       <input type={type} value={(adminForm as any)[field]} placeholder={placeholder}
@@ -485,7 +634,8 @@ export default function AdminDashboard() {
                   <tbody className="divide-y divide-gray-100">
                     {admins.map(a => (
                       <tr key={a.id} className="hover:bg-gray-50">
-                        <td className="px-5 py-3 font-medium">{a.nom}</td><td className="px-5 py-3 text-gray-500">{a.email}</td>
+                        <td className="px-5 py-3 font-medium">{a.nom}</td>
+                        <td className="px-5 py-3 text-gray-500">{a.email}</td>
                         <td className="px-5 py-3 text-gray-400">{new Date(a.createdAt).toLocaleDateString('fr-FR')}</td>
                         <td className="px-5 py-3"><button onClick={() => deleteAdmin(a.id)} className="text-red-400 hover:text-red-600 text-xs font-medium">Supprimer</button></td>
                       </tr>
@@ -497,6 +647,7 @@ export default function AdminDashboard() {
             </div>
           )}
 
+          {/* ── LOGS ── */}
           {tab === 'logs' && isSuperAdmin && (
             <div className="space-y-4">
               <div className="flex items-center justify-between">
