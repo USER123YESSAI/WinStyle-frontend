@@ -7,12 +7,14 @@ interface Stats { formations: number; inscriptions: number; candidatures: number
 interface Formation { id: number; title: string; description: string; date: string; lieu: string; prix: number; places_disponibles: number; }
 interface Candidature { id: number; nom: string; email: string; poste: string; statut: string; createdAt: string; cv_url?: string; }
 interface Inscription { id: number; nom: string; email: string; createdAt: string; Formation?: { title: string; date: string }; }
+interface Realisation { id: number; title: string; description: string; image_url: string; createdAt: string; }
 interface AdminUser { id: number; nom: string; email: string; createdAt: string; }
 interface Log { id: number; adminNom: string; adminEmail: string; action: string; cible?: string; ip?: string; createdAt: string; }
-type Tab = 'stats' | 'formations' | 'inscriptions' | 'candidatures' | 'services' | 'contacts' | 'admins' | 'logs';
+type Tab = 'stats' | 'formations' | 'inscriptions' | 'candidatures' | 'realisations' | 'services' | 'contacts' | 'admins' | 'logs';
 
 const EMPTY_ADMIN = { nom: '', email: '', password: '' };
 const EMPTY_FORMATION = { title: '', description: '', date: '', lieu: '', prix: '', places_disponibles: '' };
+const EMPTY_REALISATION = { title: '', description: '', image_url: '' };
 
 function ActionBadge({ action }: { action: string }) {
   const a = action.toLowerCase();

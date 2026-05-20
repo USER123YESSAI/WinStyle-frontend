@@ -50,7 +50,7 @@ export default function AdminLoginPage() {
 
         <form onSubmit={handleSubmit} className="space-y-4" noValidate>
           <Input label="E-mail" type="email" required
-            value={form.email} onChange={set('email')} placeholder="admin@winsagency.com"
+            value={form.email} onChange={set('email')} placeholder="Email@gmail.com"
             error={errors.email ? { message: errors.email } as any : undefined} />
 
           <Input label="Mot de passe" type="password" required
