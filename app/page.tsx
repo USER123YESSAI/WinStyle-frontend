@@ -94,7 +94,7 @@ export default function HomePage() {
           <div className="absolute bottom-1/4 right-1/4 w-80 h-80 bg-blue-500/10 rounded-full blur-3xl" />
         </div>
 
-        <div className="relative max-w-6xl mx-auto px-6 lg:px-16 py-32 w-full">
+              <div className="relative max-w-6xl mx-auto px-6 lg:px-16 py-32 w-full">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
             <div>
               <div className="inline-flex items-center gap-2 bg-[#C9A84C]/15 border border-[#C9A84C]/30

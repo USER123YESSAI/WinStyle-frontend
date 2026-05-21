@@ -49,11 +49,12 @@ export default function Header() {
 
           {/* Logo */}
           <Link href="/" className="flex items-center group">
-            <div className="relative w-24 h-24 rounded-3xl bg-transparent flex items-center justify-center overflow-hidden transition-all duration-200 group-hover:scale-105">
+                <div className="relative w-28 h-28 rounded-3xl bg-transparent flex items-center justify-center overflow-hidden transition-all duration-200 group-hover:scale-105">
               <img
                 src="/images/logo.png"
                 alt="WinStyle Logo"
-                className="w-16 h-16 object-contain"
+                className="w-20 h-20 object-contain"
+
                 onError={(e) => {
                   e.currentTarget.style.display = 'none';
                   if (e.currentTarget.nextElementSibling) {
