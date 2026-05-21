@@ -60,6 +60,15 @@ export default function AdminLoginPage() {
           <Button loading={loading} className="w-full mt-2">Se connecter</Button>
         </form>
       </div>
+
+      <div className="w-full max-w-sm mt-4">
+        <button
+          onClick={() => router.push('/')}
+          className="w-full flex items-center justify-center gap-2 border border-gray-300 text-gray-700 hover:bg-gray-50 px-4 py-2 rounded-lg text-sm font-semibold transition"
+        >
+          ↩︎ Retour accueil
+        </button>
+      </div>
     </main>
   );
 }

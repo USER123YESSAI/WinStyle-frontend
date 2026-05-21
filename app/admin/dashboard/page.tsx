@@ -212,7 +212,8 @@ export default function AdminDashboard() {
     `w-full border rounded-lg px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-blue-500 ${err ? 'border-red-400 bg-red-50' : 'border-gray-300'}`;
 
   return (
-    <div className="min-h-screen bg-gray-100 flex">
+    <div className="min-h-screen bg-gray-100 flex flex-col md:flex-row">
+
 
       {/* ── Sidebar ── */}
       <aside className="w-64 bg-gray-900 text-white flex flex-col flex-shrink-0">
@@ -388,12 +389,6 @@ export default function AdminDashboard() {
             <div className="space-y-6">
               <div className="flex items-center justify-between">
                 <h2 className="text-2xl font-bold text-gray-800">🏆 Réalisations ({realisations.length})</h2>
-                <button
-                  onClick={() => router.push('/')}
-                  className="flex items-center gap-2 border border-gray-300 text-gray-700 hover:bg-gray-50 px-4 py-2 rounded-lg text-sm font-semibold transition"
-                >
-                  ↩︎ Retour accueil
-                </button>
               </div>
 
               <RealisationTab
