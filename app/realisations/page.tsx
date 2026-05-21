@@ -218,7 +218,7 @@ export default function RealisationsPage() {
 
         {/* Grille de cartes */}
         <section className="py-16 px-6">
-          <div className="max-w-5xl mx-auto">
+            <div className="max-w-5xl mx-auto">
             {loading ? (
               <div className="flex justify-center py-16">
                 <div className="w-8 h-8 border-4 border-[#C9A84C] border-t-transparent rounded-full animate-spin" />

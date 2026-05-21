@@ -389,10 +389,10 @@ export default function AdminDashboard() {
               <div className="flex items-center justify-between">
                 <h2 className="text-2xl font-bold text-gray-800">🏆 Réalisations ({realisations.length})</h2>
                 <button
-                  onClick={retourVersLogin}
+                  onClick={() => router.push('/')}
                   className="flex items-center gap-2 border border-gray-300 text-gray-700 hover:bg-gray-50 px-4 py-2 rounded-lg text-sm font-semibold transition"
                 >
-                  ↩︎ Retour login
+                  ↩︎ Retour accueil
                 </button>
               </div>
 
