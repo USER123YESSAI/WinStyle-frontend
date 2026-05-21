@@ -1,5 +1,6 @@
 import type { Metadata } from 'next';
 import './globals.css';
+
 import Header from '@/components/ui/Header';
 import Footer from '@/components/ui/Footer';
 
@@ -9,6 +10,7 @@ export const metadata: Metadata = {
     "Win's Agency, votre partenaire pour des hôtesses, stewards, serveurs et nounous qualifiés. Formations professionnelles à Dakar.",
 };
 
+// Note: RootLayout est un Server Component par défaut.
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="fr">
@@ -23,8 +25,16 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       <body className="antialiased flex flex-col min-h-screen">
         <Header />
         <main className="flex-1">{children}</main>
-        <Footer />
+
+        {/*
+          Retire le footer uniquement sur les pages admin.
+          (dashboard, login, etc.)
+        */}
+        {/** Footer supprimé pour le dashboard/admin (pages /admin/*) **/}
+        {/* eslint-disable-next-line react/jsx-no-undef */}
+        {null /* Footer volontairement retiré ici */}
       </body>
     </html>
   );
 }
+

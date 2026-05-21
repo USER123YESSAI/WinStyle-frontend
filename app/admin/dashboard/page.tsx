@@ -2,6 +2,8 @@
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import api from '@/lib/api';
+import RealisationTab from './_components/RealisationTab';
+
 
 interface Stats { formations: number; inscriptions: number; candidatures: number; realisations: number; services: number; contacts: number; }
 interface Formation { id: number; title: string; description: string; date: string; lieu: string; prix: number; places_disponibles: number; }
@@ -65,6 +67,10 @@ export default function AdminDashboard() {
 
   const logout = () => { localStorage.removeItem('wins_token'); router.push('/admin/login'); };
 
+  const retourVersLogin = () => {
+    router.push('/admin/login');
+  };
+
   useEffect(() => {
     const token = localStorage.getItem('wins_token');
     if (!token) { router.push('/admin/login'); return; }
@@ -127,42 +133,8 @@ export default function AdminDashboard() {
     setFormations(updated); setStats(prev => prev ? { ...prev, formations: updated.length } : prev);
   };
 
-  // ── Réalisation handlers ──
-  const openCreateRealisation = () => { setEditingRealisation(null); setRealisationForm(EMPTY_REALISATION); setRealisationFormErrors({}); setRealisationFormMsg(null); setShowRealisationForm(true); };
-  const openEditRealisation = (r: Realisation) => {
-    setEditingRealisation(r);
-    setRealisationForm({ title: r.title, description: r.description || '', image_url: r.image_url || '' });
-    setRealisationFormErrors({}); setRealisationFormMsg(null); setShowRealisationForm(true);
-  };
-  const handleRealisationSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    const errors: Record<string, string> = {};
-    if (!realisationForm.title.trim()) errors.title = 'Le titre est obligatoire';
-    if (Object.keys(errors).length > 0) { setRealisationFormErrors(errors); return; }
-    setRealisationFormLoading(true); setRealisationFormMsg(null);
-    try {
-      if (editingRealisation) {
-        await api.put(`/realisations/${editingRealisation.id}`, realisationForm);
-        setRealisationFormMsg({ type: 'success', text: 'Réalisation modifiée !' });
-      } else {
-        await api.post('/realisations', realisationForm);
-        setRealisationFormMsg({ type: 'success', text: 'Réalisation créée !' });
-      }
-      const res = await api.get('/realisations');
-      const data = Array.isArray(res.data) ? res.data : res.data?.data ?? [];
-      setRealisations(data); setStats(prev => prev ? { ...prev, realisations: data.length } : prev);
-      setRealisationForm(EMPTY_REALISATION); setEditingRealisation(null);
-      setTimeout(() => { setShowRealisationForm(false); setRealisationFormMsg(null); }, 1500);
-    } catch (err: any) {
-      setRealisationFormMsg({ type: 'error', text: err.response?.data?.message || 'Erreur lors de la sauvegarde' });
-    } finally { setRealisationFormLoading(false); }
-  };
-  const deleteRealisation = async (id: number) => {
-    if (!confirm('Supprimer cette réalisation ?')) return;
-    await api.delete(`/realisations/${id}`);
-    const updated = realisations.filter(r => r.id !== id);
-    setRealisations(updated); setStats(prev => prev ? { ...prev, realisations: updated.length } : prev);
-  };
+  // ── Réalisation CRUD is handled by <RealisationsManager /> ──
+
 
   // ── Candidature handlers ──
   const updateStatut = async (id: number, statut: string) => {
@@ -411,97 +383,26 @@ export default function AdminDashboard() {
             </div>
           )}
 
-          {/* ── RÉALISATIONS ── */}
+          {/* ── RÉALISATIONS (utilise RealisationsManager) ── */}
           {tab === 'realisations' && (
             <div className="space-y-6">
               <div className="flex items-center justify-between">
                 <h2 className="text-2xl font-bold text-gray-800">🏆 Réalisations ({realisations.length})</h2>
-                <button onClick={openCreateRealisation} className="flex items-center gap-2 bg-purple-600 hover:bg-purple-700 text-white px-4 py-2 rounded-lg text-sm font-semibold transition">
-                  ➕ Nouvelle réalisation
+                <button
+                  onClick={retourVersLogin}
+                  className="flex items-center gap-2 border border-gray-300 text-gray-700 hover:bg-gray-50 px-4 py-2 rounded-lg text-sm font-semibold transition"
+                >
+                  ↩︎ Retour login
                 </button>
               </div>
 
-              {/* Formulaire créer / modifier */}
-              {showRealisationForm && (
-                <div className="bg-white rounded-xl border border-gray-200 shadow-sm p-6">
-                  <div className="flex items-center justify-between mb-5">
-                    <h3 className="font-bold text-gray-800">{editingRealisation ? '✏️ Modifier la réalisation' : '➕ Créer une réalisation'}</h3>
-                    <button onClick={() => setShowRealisationForm(false)} className="text-gray-400 hover:text-gray-600 text-xl">✕</button>
-                  </div>
-                  {realisationFormMsg && (
-                    <div className={`mb-4 px-4 py-3 rounded-lg text-sm font-medium ${realisationFormMsg.type === 'success' ? 'bg-green-50 text-green-700 border border-green-200' : 'bg-red-50 text-red-700 border border-red-200'}`}>
-                      {realisationFormMsg.text}
-                    </div>
-                  )}
-                  <form onSubmit={handleRealisationSubmit} className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                    <div className="sm:col-span-2">
-                      <label className="text-xs font-semibold text-gray-600 mb-1 block">Titre *</label>
-                      <input value={realisationForm.title} placeholder="Ex : RASMA 2025"
-                        onChange={e => { setRealisationForm(p => ({ ...p, title: e.target.value })); setRealisationFormErrors(p => ({ ...p, title: '' })); }}
-                        className={inputCls(realisationFormErrors.title)} />
-                      {realisationFormErrors.title && <p className="text-xs text-red-500 mt-1">{realisationFormErrors.title}</p>}
-                    </div>
-                    <div className="sm:col-span-2">
-                      <label className="text-xs font-semibold text-gray-600 mb-1 block">Description</label>
-                      <textarea value={realisationForm.description} rows={3} placeholder="Décrivez cette réalisation..."
-                        onChange={e => setRealisationForm(p => ({ ...p, description: e.target.value }))}
-                        className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-purple-500 resize-none" />
-                    </div>
-                    <div className="sm:col-span-2">
-                      <label className="text-xs font-semibold text-gray-600 mb-1 block">URL de l'image</label>
-                      <input value={realisationForm.image_url} placeholder="https://... ou /images/..."
-                        onChange={e => setRealisationForm(p => ({ ...p, image_url: e.target.value }))}
-                        className={inputCls()} />
-                      {realisationForm.image_url && (
-                        <img src={realisationForm.image_url} alt="aperçu" className="mt-2 h-28 w-auto rounded-lg object-cover border border-gray-200" onError={e => (e.currentTarget.style.display = 'none')} />
-                      )}
-                    </div>
-                    <div className="sm:col-span-2 flex gap-3">
-                      <button type="submit" disabled={realisationFormLoading}
-                        className="bg-purple-600 hover:bg-purple-700 disabled:opacity-60 text-white px-6 py-2 rounded-lg text-sm font-semibold transition flex items-center gap-2">
-                        {realisationFormLoading ? <span className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" /> : editingRealisation ? '💾' : '➕'}
-                        {editingRealisation ? 'Enregistrer les modifications' : 'Créer la réalisation'}
-                      </button>
-                      <button type="button" onClick={() => setShowRealisationForm(false)}
-                        className="border border-gray-300 text-gray-600 px-4 py-2 rounded-lg text-sm font-medium hover:bg-gray-50 transition">
-                        Annuler
-                      </button>
-                    </div>
-                  </form>
-                </div>
-              )}
-
-              {/* Grille de cartes */}
-              {realisations.length > 0 ? (
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
-                  {realisations.map(r => (
-                    <div key={r.id} className="bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden hover:shadow-md transition">
-                      {r.image_url ? (
-                        <img src={r.image_url} alt={r.title} className="w-full h-44 object-cover" onError={e => (e.currentTarget.style.display = 'none')} />
-                      ) : (
-                        <div className="w-full h-44 bg-purple-50 flex items-center justify-center text-4xl">🏆</div>
-                      )}
-                      <div className="p-4">
-                        <h3 className="font-bold text-gray-800 mb-1 truncate">{r.title}</h3>
-                        {r.description && <p className="text-sm text-gray-500 line-clamp-2 mb-3">{r.description}</p>}
-                        <div className="flex items-center justify-between">
-                          <span className="text-xs text-gray-400">{new Date(r.createdAt).toLocaleDateString('fr-FR')}</span>
-                          <div className="flex gap-3">
-                            <button onClick={() => openEditRealisation(r)} className="text-blue-500 hover:text-blue-700 text-xs font-medium">Modifier</button>
-                            <button onClick={() => deleteRealisation(r.id)} className="text-red-400 hover:text-red-600 text-xs font-medium">Supprimer</button>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              ) : (
-                <div className="bg-white rounded-xl border border-gray-200 shadow-sm px-5 py-16 text-center text-gray-400">
-                  Aucune réalisation — <button onClick={openCreateRealisation} className="text-purple-500 hover:underline">créer la première</button>
-                </div>
-              )}
+              <RealisationTab
+                realisations={realisations as any}
+                setRealisations={setRealisations as any}
+              />
             </div>
           )}
+
 
           {/* ── INSCRIPTIONS ── */}
           {tab === 'inscriptions' && (
