@@ -101,12 +101,16 @@ export default function ServicesPage() {
     <main className="min-h-screen bg-gray-50">
 
       {/* Hero */}
-      <section className="relative bg-[#0E2240] pt-36 pb-20 px-6 overflow-hidden">
+      <section className="relative bg-navy-600 pt-28 pb-16 px-6 overflow-hidden">
         <div className="absolute inset-0 opacity-[0.04]"
           style={{ backgroundImage: 'linear-gradient(#fff 1px, transparent 1px), linear-gradient(90deg, #fff 1px, transparent 1px)', backgroundSize: '60px 60px' }} />
-        <div className="relative max-w-4xl mx-auto text-center">
-          <p className="text-[#C9A84C] font-semibold text-sm uppercase tracking-widest mb-4">Ce que nous proposons</p>
-          <h1 className="text-5xl font-black text-white mb-4">Nos Services</h1>
+        <div className="absolute inset-0 pointer-events-none">
+          <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-gold-400/10 rounded-full blur-3xl animate-float" />
+          <div className="absolute bottom-1/4 right-1/4 w-80 h-80 bg-navy-400/10 rounded-full blur-3xl animate-float delay-500" />
+        </div>
+        <div className="relative max-w-4xl mx-auto text-center animate-fade-in">
+          <p className="text-gold-400 font-semibold text-sm uppercase tracking-widest mb-3">Ce que nous proposons</p>
+          <h1 className="text-5xl font-black text-white mb-3">Nos Services</h1>
           <p className="text-white/60 text-lg max-w-2xl mx-auto">
             Trois domaines d'excellence complémentaires — Agence de placement, Confection sur mesure et Cosmétique naturelle.
           </p>
@@ -114,14 +118,14 @@ export default function ServicesPage() {
       </section>
 
       {/* Onglets secteurs */}
-      <section className="bg-white border-b border-gray-200 sticky top-0 z-20">
+      <section className="bg-white border-b border-gray-200 sticky top-0 z-20 glass">
         <div className="max-w-5xl mx-auto px-6">
           <div className="flex overflow-x-auto">
             {SECTEURS.map((s, i) => (
               <button key={s.num} onClick={() => setActiveTab(i)}
-                className={`flex items-center gap-2 px-6 py-4 text-sm font-semibold whitespace-nowrap border-b-2 transition-all ${
+                className={`flex items-center gap-2 px-5 py-3 text-sm font-semibold whitespace-nowrap border-b-2 transition-all ${
                   activeTab === i
-                    ? 'border-[#C9A84C] text-[#0E2240]'
+                    ? 'border-gold-400 text-navy-600'
                     : 'border-transparent text-gray-400 hover:text-gray-600'
                 }`}>
                 <span>{s.icon}</span> {s.titre}
@@ -134,16 +138,16 @@ export default function ServicesPage() {
       {/* Secteur actif */}
       {SECTEURS.map((s, i) => (
         activeTab === i && (
-          <section key={s.num} className="py-16 px-6">
+          <section key={s.num} className="py-12 px-6 animate-fade-in">
             <div className="max-w-5xl mx-auto">
-              <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-start">
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-start">
 
                 {/* Image du secteur */}
-                <div className={`relative h-80 sm:h-96 rounded-3xl overflow-hidden ${s.couleur}`}>
+                <div className={`relative h-72 sm:h-80 rounded-3xl overflow-hidden ${s.couleur} card-modern`}>
                   <img src={s.img} alt={s.titre} className="w-full h-full object-cover opacity-80" />
-                  <div className="absolute inset-0 bg-gradient-to-t from-[#0E2240]/70 to-transparent" />
+                  <div className="absolute inset-0 bg-gradient-to-t from-navy-600/70 to-transparent" />
                   <div className="absolute bottom-4 sm:bottom-6 left-4 sm:left-6">
-                    <span className="text-[#C9A84C] text-xs font-black uppercase tracking-widest">{s.num}</span>
+                    <span className="text-gold-400 text-xs font-black uppercase tracking-widest">{s.num}</span>
                     <h2 className="text-white font-black text-2xl sm:text-3xl">{s.titre}</h2>
                     <p className="text-white/60 text-xs sm:text-sm mt-1">{s.detail}</p>
                   </div>
@@ -151,15 +155,15 @@ export default function ServicesPage() {
 
                 {/* Liste des services */}
                 <div>
-                  <h3 className="text-xl font-bold text-[#0E2240] mb-6">Ce que nous proposons</h3>
-                  <div className="space-y-4">
+                  <h3 className="text-xl font-bold text-navy-600 mb-5">Ce que nous proposons</h3>
+                  <div className="space-y-3">
                     {s.services.map((srv, j) => (
-                      <div key={j} className="flex items-start gap-4 p-4 bg-white rounded-xl border border-gray-100 hover:shadow-md transition-shadow">
-                        <div className="w-8 h-8 rounded-lg bg-[#C9A84C]/10 flex items-center justify-center flex-shrink-0">
-                          <span className="text-[#C9A84C] font-black text-xs">{String(j + 1).padStart(2, '0')}</span>
+                      <div key={j} className="flex items-start gap-4 p-3 bg-white rounded-xl border border-gray-100 card-modern">
+                        <div className="w-8 h-8 rounded-lg bg-gold-400/10 flex items-center justify-center flex-shrink-0">
+                          <span className="text-gold-400 font-black text-xs">{String(j + 1).padStart(2, '0')}</span>
                         </div>
                         <div>
-                          <p className="font-semibold text-[#0E2240] text-sm">{srv.label}</p>
+                          <p className="font-semibold text-navy-600 text-sm">{srv.label}</p>
                           <p className="text-gray-400 text-xs mt-0.5">{srv.desc}</p>
                         </div>
                       </div>
@@ -172,43 +176,6 @@ export default function ServicesPage() {
         )
       ))}
 
-      {/* Formulaire */}
-      <section className="py-16 px-6 bg-[#0E2240]">
-        <div className="max-w-2xl mx-auto">
-          <div className="text-center mb-10">
-            <p className="text-[#C9A84C] font-semibold text-sm uppercase tracking-widest mb-3">Travaillons ensemble</p>
-            <h2 className="text-3xl font-black text-white mb-3">Faire une demande</h2>
-            <p className="text-white/50">Décrivez votre besoin, nous vous répondons dans les 24h.</p>
-          </div>
-
-          <div className="bg-white rounded-2xl p-8">
-            {status !== 'idle' && (
-              <div className="mb-6"><Alert type={status} message={serverMsg} /></div>
-            )}
-            <form onSubmit={handleSubmit} className="space-y-5" noValidate>
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
-                <Input label="Nom complet" required value={form.nom} onChange={set('nom')} placeholder="Votre nom"
-                  error={errors.nom ? { message: errors.nom } as any : undefined} />
-                <Input label="Entreprise / Organisation" value={form.entreprise} onChange={set('entreprise')} placeholder="Optionnel"
-                  error={errors.entreprise ? { message: errors.entreprise } as any : undefined} />
-              </div>
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
-                <Input label="Téléphone" type="tel" value={form.telephone} onChange={set('telephone')} placeholder="+235 XX XX XX XX"
-                  error={errors.telephone ? { message: errors.telephone } as any : undefined} />
-                <Input label="Date de l'événement" type="date" value={form.date_evenement} onChange={set('date_evenement')}
-                  error={errors.date_evenement ? { message: errors.date_evenement } as any : undefined} />
-              </div>
-              <Select label="Type de service" required value={form.service} onChange={set('service')}
-                options={FORM_SERVICES} placeholder="-- Sélectionnez un service --"
-                error={errors.service ? { message: errors.service } as any : undefined} />
-              <Textarea label="Décrivez votre besoin" required value={form.message} onChange={set('message')}
-                placeholder="Détails, nombre de personnes, contexte..." rows={4}
-                error={errors.message ? { message: errors.message } as any : undefined} />
-              <Button loading={loading} className="w-full">Envoyer ma demande</Button>
-            </form>
-          </div>
-        </div>
-      </section>
     </main>
   );
 }

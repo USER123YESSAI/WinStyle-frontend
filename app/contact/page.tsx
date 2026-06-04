@@ -40,17 +40,17 @@ export default function ContactPage() {
   };
 
   return (
-    <main className="min-h-screen bg-gray-50 pt-28 pb-16 px-4">
+    <main className="min-h-screen bg-gray-50 pt-24 pb-12 px-4">
       <div className="max-w-2xl mx-auto">
-        <h1 className="text-3xl font-bold text-[#1E3A5F] mb-2">Contactez-nous</h1>
-        <p className="text-gray-500 mb-8">Nous répondons dans les 24h ouvrées.</p>
+        <h1 className="text-3xl font-bold text-navy-600 mb-2 animate-fade-in">Contactez-nous</h1>
+        <p className="text-gray-500 mb-6 animate-slide-up">Nous répondons dans les 24h ouvrées.</p>
 
-        <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-8">
+        <div className="card-modern bg-white rounded-2xl border border-gray-100 p-6 animate-slide-up delay-100">
           {status !== 'idle' && (
             <div className="mb-6"><Alert type={status} message={serverMsg} /></div>
           )}
 
-          <form onSubmit={handleSubmit} className="space-y-5" noValidate>
+          <form onSubmit={handleSubmit} className="space-y-4" noValidate>
             <Input label="Nom complet" required
               value={form.nom} onChange={set('nom')} placeholder="Votre nom"
               error={errors.nom ? { message: errors.nom } as any : undefined} />
@@ -67,10 +67,10 @@ export default function ContactPage() {
             <Button loading={loading} className="w-full">Envoyer le message</Button>
           </form>
 
-          <div className="mt-8 pt-8 border-t border-gray-100 grid grid-cols-1 sm:grid-cols-2 gap-4 text-sm text-gray-600">
+          <div className="mt-6 pt-6 border-t border-gray-100 grid grid-cols-1 sm:grid-cols-2 gap-4 text-sm text-gray-600">
             <div>
-              <p className="font-semibold text-[#1E3A5F] mb-1">Email</p>
-              <a href="mailto:contact@winsagency.com" className="hover:text-[#C9A84C] transition">
+              <p className="font-semibold text-navy-600 mb-1">Email</p>
+              <a href="mailto:contact@winsagency.com" className="hover:text-gold-400 transition-colors">
                 contact@winsagency.com
               </a>
             </div>

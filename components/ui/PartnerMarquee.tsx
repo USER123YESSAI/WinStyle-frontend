@@ -39,8 +39,8 @@ export default function PartnerMarquee({ partenaires }: PartnerMarqueeProps) {
               }}
             />
 
-            <div className="hidden h-14 items-center justify-center border-2 border-dashed border-gray-200 rounded-xl flex-col px-3">
-              <span className="text-[#C9A84C] font-black text-lg">
+            <div className="hidden h-14 items-center justify-center border-2 border-dashed border-gray-200 rounded-xl flex-col px-3 card-modern">
+              <span className="text-gold-400 font-black text-lg">
                 {p.nom[0]}
               </span>
               <span className="text-gray-400 text-[10px]">

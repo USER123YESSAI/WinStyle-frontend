@@ -20,10 +20,10 @@ const EMPTY_REALISATION = { title: '', description: '', image_url: '' };
 
 function ActionBadge({ action }: { action: string }) {
   const a = action.toLowerCase();
-  if (a.includes('connexion'))  return <span className="px-2 py-0.5 rounded-full text-xs font-semibold bg-blue-100 text-blue-700">🔐 {action}</span>;
-  if (a.includes('supprimé'))   return <span className="px-2 py-0.5 rounded-full text-xs font-semibold bg-red-100 text-red-700">🗑️ {action}</span>;
-  if (a.includes('créé'))       return <span className="px-2 py-0.5 rounded-full text-xs font-semibold bg-green-100 text-green-700">➕ {action}</span>;
-  if (a.includes('modifié') || a.includes('statut')) return <span className="px-2 py-0.5 rounded-full text-xs font-semibold bg-yellow-100 text-yellow-700">✏️ {action}</span>;
+  if (a.includes('connexion'))  return <span className="px-2 py-0.5 rounded-full text-xs font-semibold bg-navy-100 text-navy-700">🔐 {action}</span>;
+  if (a.includes('supprimé'))   return <span className="px-2 py-0.5 rounded-full text-xs font-semibold bg-error-100 text-error-700">🗑️ {action}</span>;
+  if (a.includes('créé'))       return <span className="px-2 py-0.5 rounded-full text-xs font-semibold bg-success-100 text-success-700">➕ {action}</span>;
+  if (a.includes('modifié') || a.includes('statut')) return <span className="px-2 py-0.5 rounded-full text-xs font-semibold bg-warning-100 text-warning-700">✏️ {action}</span>;
   return <span className="px-2 py-0.5 rounded-full text-xs font-semibold bg-gray-100 text-gray-700">{action}</span>;
 }
 
@@ -203,44 +203,44 @@ export default function AdminDashboard() {
   );
 
   if (loading) return (
-    <div className="min-h-screen bg-gray-100 flex items-center justify-center">
-      <div className="w-8 h-8 border-4 border-[#C9A84C] border-t-transparent rounded-full animate-spin" />
+    <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+      <div className="w-8 h-8 border-4 border-gold-400 border-t-transparent rounded-full animate-spin" />
     </div>
   );
 
   const inputCls = (err?: string) =>
-    `w-full border rounded-lg px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-blue-500 ${err ? 'border-red-400 bg-red-50' : 'border-gray-300'}`;
+    `w-full border rounded-lg px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-gold-400 transition-all ${err ? 'border-error-500 bg-error-50' : 'border-gray-300 focus:border-gold-400'}`;
 
   return (
-    <div className="min-h-screen bg-gray-100 flex flex-col md:flex-row">
+    <div className="min-h-screen bg-gray-50 flex flex-col md:flex-row">
 
 
       {/* ── Sidebar ── */}
-      <aside className="w-64 bg-gray-900 text-white flex flex-col flex-shrink-0">
-        <div className="px-6 py-5 border-b border-gray-700">
+      <aside className="w-64 bg-navy-900 text-white flex flex-col flex-shrink-0">
+        <div className="px-6 py-5 border-b border-navy-700">
           <div className="flex items-center gap-3">
-            <div className="w-9 h-9 bg-[#C9A84C] rounded-lg flex items-center justify-center font-bold text-gray-900 text-sm">W</div>
+            <div className="w-9 h-9 bg-gradient-to-br from-gold-400 to-gold-500 rounded-lg flex items-center justify-center font-bold text-navy-900 text-sm shadow-glow">W</div>
             <span className="font-bold text-base">Win's Agency</span>
           </div>
         </div>
         <nav className="flex-1 px-3 py-4 space-y-1">
           {TABS.filter(t => !t.superOnly || isSuperAdmin).map(t => (
             <button key={t.key} onClick={() => setTab(t.key)}
-              className={`w-full flex items-center gap-3 px-4 py-2.5 rounded-lg text-sm font-medium transition-all ${tab === t.key ? 'bg-blue-600 text-white' : 'text-gray-400 hover:bg-gray-800 hover:text-white'}`}>
+              className={`w-full flex items-center gap-3 px-4 py-2.5 rounded-lg text-sm font-medium transition-all ${tab === t.key ? 'bg-gold-400 text-navy-900 shadow-glow' : 'text-gray-400 hover:bg-navy-800 hover:text-white'}`}>
               <span>{t.icon}</span> {t.label}
-              {(t.key === 'admins' || t.key === 'logs') && <span className="ml-auto text-xs bg-yellow-500 text-gray-900 px-1.5 py-0.5 rounded font-bold">SA</span>}
+              {(t.key === 'admins' || t.key === 'logs') && <span className="ml-auto text-xs bg-gold-400 text-navy-900 px-1.5 py-0.5 rounded font-bold">SA</span>}
             </button>
           ))}
         </nav>
-        <div className="px-4 py-4 border-t border-gray-700">
+        <div className="px-4 py-4 border-t border-navy-700">
           <div className="flex items-center gap-3 mb-3">
-            <div className="w-8 h-8 bg-gray-600 rounded-full flex items-center justify-center text-xs font-bold">{isSuperAdmin ? '★' : 'A'}</div>
+            <div className="w-8 h-8 bg-navy-600 rounded-full flex items-center justify-center text-xs font-bold">{isSuperAdmin ? '★' : 'A'}</div>
             <div className="text-xs">
               <p className="font-medium text-white">{isSuperAdmin ? 'Super Admin' : 'Administrateur'}</p>
               <p className="text-gray-400">{isSuperAdmin ? 'superadmin' : 'admin'}</p>
             </div>
           </div>
-          <button onClick={logout} className="w-full flex items-center gap-2 px-3 py-2 rounded-lg text-sm text-gray-400 hover:bg-gray-800 hover:text-white transition">
+          <button onClick={logout} className="w-full flex items-center gap-2 px-3 py-2 rounded-lg text-sm text-gray-400 hover:bg-navy-800 hover:text-white transition">
             <span>🚪</span> Déconnexion
           </button>
         </div>
@@ -248,9 +248,9 @@ export default function AdminDashboard() {
 
       {/* ── Main ── */}
       <main className="flex-1 overflow-auto">
-        <header className="bg-white border-b border-gray-200 px-8 py-4 flex items-center justify-between">
+        <header className="bg-white border-b border-gray-200 px-8 py-4 flex items-center justify-between shadow-sm">
           <div className="flex items-center gap-2 text-gray-600 text-sm"><span>👤</span><span className="font-medium">{isSuperAdmin ? 'Super Administrateur' : 'Administrateur'}</span></div>
-          <button onClick={logout} className="flex items-center gap-2 border border-red-300 text-red-500 hover:bg-red-50 px-4 py-1.5 rounded-lg text-sm transition">🚪 Déconnexion</button>
+          <button onClick={logout} className="flex items-center gap-2 border border-error-300 text-error-500 hover:bg-error-50 px-4 py-1.5 rounded-lg text-sm transition-all hover:shadow-md">🚪 Déconnexion</button>
         </header>
 
         <div className="px-8 py-8">
@@ -258,11 +258,11 @@ export default function AdminDashboard() {
           {/* ── STATS ── */}
           {tab === 'stats' && (
             <>
-              <h2 className="text-2xl font-bold text-gray-800 mb-6">📊 Tableau de bord</h2>
+              <h2 className="text-2xl font-bold text-navy-600 mb-6">📊 Tableau de bord</h2>
               <div className="grid grid-cols-2 sm:grid-cols-4 gap-5">
                 {statCards.map(s => (
                   <button key={s.label} onClick={() => s.tab && setTab(s.tab)}
-                    className={`${s.bg} text-white rounded-xl p-5 text-left shadow hover:opacity-90 transition flex items-start justify-between`}>
+                    className={`${s.bg} text-white rounded-xl p-5 text-left shadow-card hover:shadow-card-hover hover:-translate-y-1 transition-all duration-300 flex items-start justify-between`}>
                     <div><p className="text-sm font-medium opacity-90 mb-1">{s.label}</p><p className="text-4xl font-bold">{s.value ?? 0}</p></div>
                     <span className="text-3xl opacity-80">{s.icon}</span>
                   </button>
@@ -275,19 +275,19 @@ export default function AdminDashboard() {
           {tab === 'formations' && (
             <div className="space-y-6">
               <div className="flex items-center justify-between">
-                <h2 className="text-2xl font-bold text-gray-800">🎓 Formations ({formations.length})</h2>
-                <button onClick={openCreateFormation} className="flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg text-sm font-semibold transition">
+                <h2 className="text-2xl font-bold text-navy-600">🎓 Formations ({formations.length})</h2>
+                <button onClick={openCreateFormation} className="flex items-center gap-2 bg-gradient-to-r from-gold-400 to-gold-500 hover:from-gold-300 hover:to-gold-400 text-navy-900 px-4 py-2 rounded-lg text-sm font-semibold transition-all duration-300 hover:shadow-glow">
                   ➕ Nouvelle formation
                 </button>
               </div>
               {showFormationForm && (
-                <div className="bg-white rounded-xl border border-gray-200 shadow-sm p-6">
+                <div className="card-modern bg-white rounded-xl border border-gray-200 p-6">
                   <div className="flex items-center justify-between mb-5">
-                    <h3 className="font-bold text-gray-800">{editingFormation ? '✏️ Modifier la formation' : '➕ Créer une formation'}</h3>
-                    <button onClick={() => setShowFormationForm(false)} className="text-gray-400 hover:text-gray-600 text-xl">✕</button>
+                    <h3 className="font-bold text-navy-600">{editingFormation ? '✏️ Modifier la formation' : '➕ Créer une formation'}</h3>
+                    <button onClick={() => setShowFormationForm(false)} className="text-gray-400 hover:text-gray-600 text-xl transition-colors">✕</button>
                   </div>
                   {formationFormMsg && (
-                    <div className={`mb-4 px-4 py-3 rounded-lg text-sm font-medium ${formationFormMsg.type === 'success' ? 'bg-green-50 text-green-700 border border-green-200' : 'bg-red-50 text-red-700 border border-red-200'}`}>
+                    <div className={`mb-4 px-4 py-3 rounded-lg text-sm font-medium ${formationFormMsg.type === 'success' ? 'bg-success-50 text-success-700 border border-success-200' : 'bg-error-50 text-error-700 border border-error-200'}`}>
                       {formationFormMsg.text}
                     </div>
                   )}
@@ -335,19 +335,19 @@ export default function AdminDashboard() {
                     </div>
                     <div className="sm:col-span-2 flex gap-3">
                       <button type="submit" disabled={formationFormLoading}
-                        className="bg-blue-600 hover:bg-blue-700 disabled:opacity-60 text-white px-6 py-2 rounded-lg text-sm font-semibold transition flex items-center gap-2">
-                        {formationFormLoading ? <span className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" /> : editingFormation ? '💾' : '➕'}
+                        className="bg-gradient-to-r from-gold-400 to-gold-500 hover:from-gold-300 hover:to-gold-400 disabled:opacity-60 text-navy-900 px-6 py-2 rounded-lg text-sm font-semibold transition-all duration-300 hover:shadow-glow flex items-center gap-2">
+                        {formationFormLoading ? <span className="w-4 h-4 border-2 border-navy-900 border-t-transparent rounded-full animate-spin" /> : editingFormation ? '💾' : '➕'}
                         {editingFormation ? 'Enregistrer les modifications' : 'Créer la formation'}
                       </button>
                       <button type="button" onClick={() => setShowFormationForm(false)}
-                        className="border border-gray-300 text-gray-600 px-4 py-2 rounded-lg text-sm font-medium hover:bg-gray-50 transition">
+                        className="border border-gray-300 text-gray-600 px-4 py-2 rounded-lg text-sm font-medium hover:bg-gray-50 transition-all duration-300">
                         Annuler
                       </button>
                     </div>
                   </form>
                 </div>
               )}
-              <div className="bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden">
+              <div className="card-modern bg-white rounded-xl border border-gray-200 overflow-hidden">
                 <div className="overflow-x-auto">
                   <table className="w-full text-sm">
                     <thead className="bg-gray-50 text-gray-500 text-xs uppercase">
@@ -355,26 +355,26 @@ export default function AdminDashboard() {
                     </thead>
                     <tbody className="divide-y divide-gray-100">
                       {formations.map(f => (
-                        <tr key={f.id} className="hover:bg-gray-50">
-                          <td className="px-5 py-3 font-medium text-gray-800 max-w-xs">
+                        <tr key={f.id} className="hover:bg-gray-50 transition-colors">
+                          <td className="px-5 py-3 font-medium text-navy-600 max-w-xs">
                             <p className="truncate">{f.title}</p>
                             {f.description && <p className="text-xs text-gray-400 truncate mt-0.5">{f.description}</p>}
                           </td>
                           <td className="px-5 py-3 text-gray-500 whitespace-nowrap">{f.date ? new Date(f.date).toLocaleDateString('fr-FR') : '—'}</td>
                           <td className="px-5 py-3 text-gray-500">{f.lieu || '—'}</td>
                           <td className="px-5 py-3 text-gray-700 whitespace-nowrap">{f.prix ? `${Number(f.prix).toLocaleString('fr-FR')} FCFA` : '—'}</td>
-                          <td className="px-5 py-3"><span className="bg-blue-50 text-blue-700 text-xs font-semibold px-2 py-1 rounded-full">{f.places_disponibles} places</span></td>
+                          <td className="px-5 py-3"><span className="bg-navy-50 text-navy-700 text-xs font-semibold px-2 py-1 rounded-full">{f.places_disponibles} places</span></td>
                           <td className="px-5 py-3">
                             <div className="flex items-center gap-3">
-                              <button onClick={() => openEditFormation(f)} className="text-blue-500 hover:text-blue-700 text-xs font-medium">Modifier</button>
-                              <button onClick={() => deleteFormation(f.id)} className="text-red-400 hover:text-red-600 text-xs font-medium">Supprimer</button>
+                              <button onClick={() => openEditFormation(f)} className="text-navy-500 hover:text-navy-700 text-xs font-medium transition-colors">Modifier</button>
+                              <button onClick={() => deleteFormation(f.id)} className="text-error-400 hover:text-error-600 text-xs font-medium transition-colors">Supprimer</button>
                             </div>
                           </td>
                         </tr>
                       ))}
                       {formations.length === 0 && (
                         <tr><td colSpan={6} className="px-5 py-12 text-center text-gray-400">
-                          Aucune formation — <button onClick={openCreateFormation} className="text-blue-500 hover:underline">créer la première</button>
+                          Aucune formation — <button onClick={openCreateFormation} className="text-gold-500 hover:underline transition-colors">créer la première</button>
                         </td></tr>
                       )}
                     </tbody>
@@ -397,15 +397,15 @@ export default function AdminDashboard() {
 
           {/* ── INSCRIPTIONS ── */}
           {tab === 'inscriptions' && (
-            <div className="bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden">
-              <div className="px-6 py-4 border-b border-gray-100"><h2 className="font-bold text-gray-800">📝 Inscriptions ({inscriptions.length})</h2></div>
+            <div className="card-modern bg-white rounded-xl border border-gray-200 overflow-hidden">
+              <div className="px-6 py-4 border-b border-gray-100"><h2 className="font-bold text-navy-600">📝 Inscriptions ({inscriptions.length})</h2></div>
               <div className="overflow-x-auto">
                 <table className="w-full text-sm">
                   <thead className="bg-gray-50 text-gray-500 text-xs uppercase"><tr>{['Nom','Email','Formation','Date'].map(h => <th key={h} className="px-5 py-3 text-left font-semibold">{h}</th>)}</tr></thead>
                   <tbody className="divide-y divide-gray-100">
                     {inscriptions.map(i => (
-                      <tr key={i.id} className="hover:bg-gray-50">
-                        <td className="px-5 py-3 font-medium">{i.nom}</td>
+                      <tr key={i.id} className="hover:bg-gray-50 transition-colors">
+                        <td className="px-5 py-3 font-medium text-navy-600">{i.nom}</td>
                         <td className="px-5 py-3 text-gray-500">{i.email}</td>
                         <td className="px-5 py-3">{i.Formation?.title ?? '—'}</td>
                         <td className="px-5 py-3 text-gray-400">{new Date(i.createdAt).toLocaleDateString('fr-FR')}</td>
@@ -420,20 +420,20 @@ export default function AdminDashboard() {
 
           {/* ── CANDIDATURES ── */}
           {tab === 'candidatures' && (
-            <div className="bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden">
-              <div className="px-6 py-4 border-b border-gray-100"><h2 className="font-bold text-gray-800">👤 Candidatures ({candidatures.length})</h2></div>
+            <div className="card-modern bg-white rounded-xl border border-gray-200 overflow-hidden">
+              <div className="px-6 py-4 border-b border-gray-100"><h2 className="font-bold text-navy-600">👤 Candidatures ({candidatures.length})</h2></div>
               <div className="overflow-x-auto">
                 <table className="w-full text-sm">
                   <thead className="bg-gray-50 text-gray-500 text-xs uppercase"><tr>{['Nom','Email','Poste','Statut','CV','Actions'].map(h => <th key={h} className="px-5 py-3 text-left font-semibold">{h}</th>)}</tr></thead>
                   <tbody className="divide-y divide-gray-100">
                     {candidatures.map(c => (
-                      <tr key={c.id} className="hover:bg-gray-50">
-                        <td className="px-5 py-3 font-medium">{c.nom}</td>
+                      <tr key={c.id} className="hover:bg-gray-50 transition-colors">
+                        <td className="px-5 py-3 font-medium text-navy-600">{c.nom}</td>
                         <td className="px-5 py-3 text-gray-500">{c.email}</td>
                         <td className="px-5 py-3">{c.poste}</td>
                         <td className="px-5 py-3">
                           <select value={c.statut} onChange={e => updateStatut(c.id, e.target.value)}
-                            className={`text-xs font-semibold px-3 py-1 rounded-full border-0 outline-none cursor-pointer ${c.statut === 'acceptée' ? 'bg-green-100 text-green-700' : c.statut === 'refusée' ? 'bg-red-100 text-red-700' : 'bg-yellow-100 text-yellow-700'}`}>
+                            className={`text-xs font-semibold px-3 py-1 rounded-full border-0 outline-none cursor-pointer transition-colors ${c.statut === 'acceptée' ? 'bg-success-100 text-success-700' : c.statut === 'refusée' ? 'bg-error-100 text-error-700' : 'bg-warning-100 text-warning-700'}`}>
                             <option value="en attente">En attente</option>
                             <option value="acceptée">Acceptée</option>
                             <option value="refusée">Refusée</option>
@@ -441,10 +441,10 @@ export default function AdminDashboard() {
                         </td>
                         <td className="px-5 py-3">
                           {c.cv_url
-                            ? <a href={`${process.env.NEXT_PUBLIC_API_URL?.replace('/api', '')}${c.cv_url}`} target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:text-blue-800 font-medium">Voir CV</a>
+                            ? <a href={`${process.env.NEXT_PUBLIC_API_URL?.replace('/api', '')}${c.cv_url}`} target="_blank" rel="noopener noreferrer" className="text-navy-500 hover:text-navy-700 font-medium transition-colors">Voir CV</a>
                             : <span className="text-gray-300">—</span>}
                         </td>
-                        <td className="px-5 py-3"><button onClick={() => deleteCandidature(c.id)} className="text-red-400 hover:text-red-600 text-xs font-medium">Supprimer</button></td>
+                        <td className="px-5 py-3"><button onClick={() => deleteCandidature(c.id)} className="text-error-400 hover:text-error-600 text-xs font-medium transition-colors">Supprimer</button></td>
                       </tr>
                     ))}
                     {candidatures.length === 0 && <tr><td colSpan={6} className="px-5 py-12 text-center text-gray-400">Aucune candidature</td></tr>}
@@ -456,15 +456,15 @@ export default function AdminDashboard() {
 
           {/* ── SERVICES ── */}
           {tab === 'services' && (
-            <div className="bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden">
-              <div className="px-6 py-4 border-b border-gray-100"><h2 className="font-bold text-gray-800">💼 Demandes de service ({services.length})</h2></div>
+            <div className="card-modern bg-white rounded-xl border border-gray-200 overflow-hidden">
+              <div className="px-6 py-4 border-b border-gray-100"><h2 className="font-bold text-navy-600">💼 Demandes de service ({services.length})</h2></div>
               <div className="overflow-x-auto">
                 <table className="w-full text-sm">
                   <thead className="bg-gray-50 text-gray-500 text-xs uppercase"><tr>{['Nom','Entreprise','Service','Téléphone','Date événement','Message'].map(h => <th key={h} className="px-5 py-3 text-left font-semibold">{h}</th>)}</tr></thead>
                   <tbody className="divide-y divide-gray-100">
                     {services.map(s => (
-                      <tr key={s.id} className="hover:bg-gray-50">
-                        <td className="px-5 py-3 font-medium">{s.nom}</td>
+                      <tr key={s.id} className="hover:bg-gray-50 transition-colors">
+                        <td className="px-5 py-3 font-medium text-navy-600">{s.nom}</td>
                         <td className="px-5 py-3 text-gray-500">{s.entreprise || '—'}</td>
                         <td className="px-5 py-3">{s.service}</td>
                         <td className="px-5 py-3 text-gray-500">{s.telephone || '—'}</td>
@@ -481,13 +481,13 @@ export default function AdminDashboard() {
 
           {/* ── CONTACTS ── */}
           {tab === 'contacts' && (
-            <div className="bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden">
-              <div className="px-6 py-4 border-b border-gray-100"><h2 className="font-bold text-gray-800">✉️ Messages ({contacts.length})</h2></div>
+            <div className="card-modern bg-white rounded-xl border border-gray-200 overflow-hidden">
+              <div className="px-6 py-4 border-b border-gray-100"><h2 className="font-bold text-navy-600">✉️ Messages ({contacts.length})</h2></div>
               <div className="divide-y divide-gray-100">
                 {contacts.map(c => (
-                  <div key={c.id} className="px-6 py-5 hover:bg-gray-50">
-                    <div className="flex items-center justify-between mb-1"><span className="font-semibold text-gray-800">{c.nom}</span><span className="text-xs text-gray-400">{new Date(c.createdAt).toLocaleDateString('fr-FR')}</span></div>
-                    <p className="text-sm text-blue-600 mb-2">{c.email}</p>
+                  <div key={c.id} className="px-6 py-5 hover:bg-gray-50 transition-colors">
+                    <div className="flex items-center justify-between mb-1"><span className="font-semibold text-navy-600">{c.nom}</span><span className="text-xs text-gray-400">{new Date(c.createdAt).toLocaleDateString('fr-FR')}</span></div>
+                    <p className="text-sm text-navy-500 mb-2">{c.email}</p>
                     <p className="text-sm text-gray-700 bg-gray-50 rounded-lg p-3">{c.message}</p>
                   </div>
                 ))}
@@ -499,9 +499,9 @@ export default function AdminDashboard() {
           {/* ── ADMINS ── */}
           {tab === 'admins' && isSuperAdmin && (
             <div className="space-y-8">
-              <div className="bg-white rounded-xl border border-gray-200 shadow-sm p-6">
-                <h2 className="font-bold text-gray-800 mb-5">🔑 Créer un compte administrateur</h2>
-                {adminFormMsg && <div className={`mb-4 px-4 py-3 rounded-lg text-sm font-medium ${adminFormMsg.type === 'success' ? 'bg-green-50 text-green-700 border border-green-200' : 'bg-red-50 text-red-700 border border-red-200'}`}>{adminFormMsg.text}</div>}
+              <div className="card-modern bg-white rounded-xl border border-gray-200 p-6">
+                <h2 className="font-bold text-navy-600 mb-5">🔑 Créer un compte administrateur</h2>
+                {adminFormMsg && <div className={`mb-4 px-4 py-3 rounded-lg text-sm font-medium ${adminFormMsg.type === 'success' ? 'bg-success-50 text-success-700 border border-success-200' : 'bg-error-50 text-error-700 border border-error-200'}`}>{adminFormMsg.text}</div>}
                 <form onSubmit={handleCreateAdmin} className="grid grid-cols-1 sm:grid-cols-3 gap-4">
                   {[{ field: 'nom', label: 'Nom complet *', type: 'text', placeholder: 'Ex : Fatou Diallo' }, { field: 'email', label: 'Adresse e-mail *', type: 'email', placeholder: 'fatou@wins-agency.td' }, { field: 'password', label: 'Mot de passe * (min. 8)', type: 'password', placeholder: '••••••••' }].map(({ field, label, type, placeholder }) => (
                     <div key={field}>

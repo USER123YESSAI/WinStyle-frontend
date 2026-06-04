@@ -48,16 +48,22 @@ const VALEURS = [
 
 const TEMOIGNAGES = [
   {
-
-    texte: 'Vos filles sont professionnelles,propres et naturelles mais surtout propres.Je vous encourage vivement à continuer dans cette lancée.',
+    nom: 'Marie Kouassi',
+    fonction: 'Directrice Événements',
+    texte: 'Vos filles sont professionnelles, propres et naturelles mais surtout professionnelles. Je vous encourage vivement à continuer dans cette lancée.',
+    photo: '/images/team/team-1.jpg',
   },
   {
-    texte: 'Bonjour boss!merci  pour le service ,tes filles ont assuré.',
+    nom: 'Jean-Pierre Mbengue',
+    fonction: 'Organisateur Conférences',
+    texte: 'Bonjour boss! Merci pour le service, tes filles ont assuré. Service impeccable et ponctuel.',
+    photo: '/images/team/team-2.jpg',
   },
   {
-  
-    texte: "Coucou chérie! super bien,j'ai aimé.",
-   
+    nom: 'Fatou Ndiaye',
+    fonction: 'Responsable Communication',
+    texte: "Coucou chérie! Super bien, j'ai aimé. Une équipe dynamique et toujours prête à rendre service.",
+    photo: '/images/team/team-3.jpg',
   },
 ];
 
@@ -76,58 +82,58 @@ export default function HomePage() {
     <div className="overflow-x-hidden">
 
       {/* ── HERO ── */}
-      <section className="relative min-h-screen flex items-center bg-[#0E2240] overflow-hidden">
+      <section className="relative min-h-[85vh] flex items-center bg-navy-600 overflow-hidden">
         {/* Image de fond bien visible */}
         <div className="absolute inset-0">
           <Image
             src="/images/services/hotesses-stewards.jpg"
             alt="WinStyle"
             fill
-            className="object-cover object-center lg:object-right"
+            className="object-cover object-top lg:object-top"
             priority
           />
-          <div className="absolute inset-0 bg-gradient-to-r from-[#0E2240]/90 via-[#0E2240]/70 to-[#0E2240]/50" />
+          <div className="absolute inset-0 bg-gradient-to-r from-navy-600/90 via-navy-600/75 to-navy-600/50" />
         </div>
 
         <div className="absolute inset-0 pointer-events-none">
-          <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-[#C9A84C]/10 rounded-full blur-3xl" />
-          <div className="absolute bottom-1/4 right-1/4 w-80 h-80 bg-blue-500/10 rounded-full blur-3xl" />
+          <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-gold-400/10 rounded-full blur-3xl animate-float" />
+          <div className="absolute bottom-1/4 right-1/4 w-80 h-80 bg-navy-400/10 rounded-full blur-3xl animate-float delay-500" />
         </div>
 
-              <div className="relative max-w-6xl mx-auto px-6 lg:px-16 py-32 w-full">
+              <div className="relative max-w-7xl mx-auto px-6 lg:px-16 py-20 w-full animate-fade-in">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
-            <div>
-              <div className="inline-flex items-center gap-2 bg-[#C9A84C]/15 border border-[#C9A84C]/30
-                              text-[#C9A84C] text-sm font-medium px-4 py-2 rounded-full mb-8">
-                <span className="w-2 h-2 rounded-full bg-[#C9A84C] animate-pulse" />
+            <div className="animate-slide-up">
+              <div className="inline-flex items-center gap-2 bg-gold-400/15 border border-gold-400/30
+                              text-gold-400 text-sm font-medium px-4 py-2 rounded-full mb-6 backdrop-blur-sm">
+                <span className="w-2 h-2 rounded-full bg-gold-400 animate-pulse" />
                 Entreprise tchadienne · N'Djaména, Tchad
               </div>
 
-              <h1 className="text-5xl sm:text-6xl lg:text-7xl font-black text-white leading-tight mb-4">
-                Win<span className="text-[#C9A84C]">Style</span>
+              <h1 className="text-5xl sm:text-6xl lg:text-7xl font-black text-white leading-tight mb-3">
+                Win<span className="text-gold-400">Style</span>
               </h1>
-              <p className="text-white/90 text-lg sm:text-xl uppercase tracking-widest mb-6">
+              <p className="text-white/90 text-lg sm:text-xl uppercase tracking-widest mb-4">
                 Excellence · Style · Service
               </p>
-              <p className="text-white/90 text-lg sm:text-xl max-w-xl leading-relaxed mb-4">
+              <p className="text-white/90 text-lg sm:text-xl max-w-xl leading-relaxed mb-3">
                 Une entreprise innovante opérant dans l'agence de placement, la confection sur mesure
                 et la cosmétique naturelle — au service de l'excellence africaine.
               </p>
-              <p className="text-[#C9A84C] text-sm font-semibold mb-10">
+              <p className="text-gold-400 text-sm font-semibold mb-8">
                 ✨ Organisateur officiel de RASMA 2025
               </p>
 
               <div className="flex flex-col sm:flex-row gap-4">
                 <Link href="/services"
-                  className="group bg-[#C9A84C] hover:bg-[#e0b954] text-[#0E2240] font-bold px-8 py-4
-                             rounded-xl text-base transition-all duration-200 hover:shadow-xl
-                             hover:shadow-[#C9A84C]/30 hover:-translate-y-0.5 flex items-center justify-center gap-2">
+                  className="group bg-gradient-to-r from-gold-400 to-gold-500 hover:from-gold-300 hover:to-gold-400 text-navy-900 font-bold px-8 py-4
+                             rounded-xl text-base transition-all duration-300 hover:shadow-glow
+                             hover:-translate-y-0.5 flex items-center justify-center gap-2">
                   Nos services
                   <span className="group-hover:translate-x-1 transition-transform">→</span>
                 </Link>
                 <Link href="/contact"
-                  className="bg-white/10 hover:bg-white/20 text-white font-semibold px-8 py-4
-                             rounded-xl text-base transition-all duration-200 border border-white/20
+                  className="glass-dark hover:bg-white/20 text-white font-semibold px-8 py-4
+                             rounded-xl text-base transition-all duration-300 border border-white/20
                              hover:border-white/40 flex items-center justify-center gap-2">
                   Nous contacter
                 </Link>
@@ -137,17 +143,17 @@ export default function HomePage() {
             <div className="hidden lg:block" />
           </div>
 
-          <div className="mt-16 grid grid-cols-2 sm:grid-cols-4 gap-6 border-t border-white/10 pt-10 max-w-3xl">
+          <div className="mt-12 grid grid-cols-2 sm:grid-cols-4 gap-6 border-t border-white/10 pt-8 max-w-3xl animate-slide-up delay-200">
             {STATS.map(({ value, label }) => (
               <div key={label} className="text-center lg:text-left">
-                <div className="text-3xl font-black text-[#C9A84C] mb-1">{value}</div>
+                <div className="text-3xl font-black text-gold-400 mb-1">{value}</div>
                 <div className="text-white/80 text-xs uppercase tracking-wider">{label}</div>
               </div>
             ))}
           </div>
         </div>
 
-        <div className="absolute bottom-8 left-1/2 -translate-x-1/2 animate-bounce">
+        <div className="absolute bottom-6 left-1/2 -translate-x-1/2 animate-bounce">
           <svg className="w-6 h-6 text-white/40" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
           </svg>
@@ -155,188 +161,75 @@ export default function HomePage() {
       </section>
 
       {/* ── RASMA 2025 ── */}
-      <section className="py-12 px-6 bg-[#C9A84C]">
-        <div className="max-w-4xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-6">
+      <section className="py-6 px-6 bg-gradient-to-r from-gold-400 to-gold-500">
+        <div className="max-w-4xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4">
           <div>
-            <p className="text-[#0E2240] font-black text-2xl mb-1">🏆 RASMA 2025</p>
-            <p className="text-[#0E2240]/80 font-medium">
+            <p className="text-navy-900 font-black text-2xl mb-1">🏆 RASMA 2025</p>
+            <p className="text-navy-900/80 font-medium">
               WinStyle est fier d'avoir organisé le Rassemblement Annuel — un événement majeur de N'Djaména, Tchad.
             </p>
           </div>
           <Link href="/about"
-            className="flex-shrink-0 bg-[#0E2240] hover:bg-[#0a1a30] text-white font-bold px-6 py-3
-                       rounded-xl transition-all duration-200 whitespace-nowrap">
+            className="flex-shrink-0 bg-navy-900 hover:bg-navy-700 text-white font-bold px-6 py-3
+                       rounded-xl transition-all duration-300 whitespace-nowrap hover:shadow-lg">
             En savoir plus →
           </Link>
         </div>
       </section>
 
-      {/* ── NOS 3 SECTEURS ── */}
-      <section className="py-24 px-6 bg-white">
-        <div className="max-w-6xl mx-auto">
-          <div className="text-center mb-16">
-            <p className="text-[#C9A84C] font-semibold text-sm uppercase tracking-widest mb-3">
-              Notre entreprise
-            </p>
-            <h2 className="text-4xl font-black text-[#0E2240]">Trois secteurs, une vision</h2>
-            <p className="text-gray-500 mt-4 max-w-xl mx-auto">
-              WinStyle combine trois activités complémentaires pour une offre unique en Afrique centrale.
-            </p>
+      {/* ── TÉMOIGNAGES ── */}
+      <section className="py-16 px-6 bg-gradient-to-b from-gold-50 via-white to-slate-50 border-t border-gold-200">
+        <div className="max-w-7xl mx-auto">
+          <div className="text-center mb-12">
+            <p className="text-gold-600 font-semibold text-sm uppercase tracking-widest mb-3">Témoignages</p>
+            <h2 className="text-4xl sm:text-5xl font-black text-navy-700">Ils nous font confiance</h2>
+            <p className="text-gray-600 mt-4 max-w-2xl mx-auto text-base sm:text-lg">Découvrez l'expérience de nos clients avec un service professionnel, fiable et 100 % humain.</p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            {SECTEURS.map((s) => (
-              <Link href={s.lien} key={s.titre}
-                className="group rounded-3xl overflow-hidden border border-gray-100 hover:shadow-2xl
-                           hover:-translate-y-2 transition-all duration-400 bg-white flex flex-col">
-                {/* Image */}
-                <div className={`relative h-52 overflow-hidden bg-gradient-to-br ${s.color} to-gray-800`}>
-                  <Image src={s.img} alt={s.titre} fill className="object-cover opacity-70 group-hover:scale-105 transition-transform duration-500" />
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
-                  <div className="absolute bottom-4 left-5">
-                    <span className="text-[#C9A84C] text-xs font-black uppercase tracking-widest">{s.num}</span>
-                    <h3 className="text-white font-black text-xl leading-tight">{s.titre}</h3>
-                    <p className="text-white/60 text-xs mt-0.5">{s.sous}</p>
+          <div className="grid gap-8 md:grid-cols-3">
+            {TEMOIGNAGES.map((t, i) => (
+              <article
+                key={i}
+                className="group relative overflow-hidden rounded-[2rem] border border-slate-200 bg-white/95 p-8 shadow-[0_30px_80px_-45px_rgba(15,23,42,0.25)] transition-all duration-500 hover:-translate-y-1 hover:shadow-[0_35px_90px_-20px_rgba(249,208,83,0.2)]"
+                style={{ animationDelay: `${i * 100}ms` }}>
+                <div className="absolute inset-x-0 top-0 h-28 bg-gradient-to-r from-gold-100 via-white to-slate-100 opacity-95" />
+                <div className="relative flex items-center gap-4 mb-6">
+                  <div className="relative h-20 w-20 rounded-full border-4 border-white bg-slate-100 shadow-lg overflow-hidden">
+                    {t.photo ? (
+                      <Image src={t.photo} alt={t.nom} fill className="object-cover" />
+                    ) : (
+                      <div className="flex h-full w-full items-center justify-center bg-navy-600 text-white text-2xl font-bold">
+                        {t.nom.split(' ').map((part) => part[0]).join('')}
+                      </div>
+                    )}
+                  </div>
+                  <div className="text-left">
+                    <h3 className="text-xl font-semibold text-navy-700">{t.nom}</h3>
+                    <p className="text-sm uppercase tracking-[0.2em] text-gold-500">{t.fonction}</p>
                   </div>
                 </div>
-                {/* Texte */}
-                <div className="p-6 flex-1 flex flex-col">
-                  <p className="text-gray-500 text-sm leading-relaxed flex-1">{s.desc}</p>
-                  <div className="mt-5 text-[#C9A84C] text-sm font-semibold flex items-center gap-1 group-hover:gap-2 transition-all">
-                    Découvrir <span>→</span>
-                  </div>
+
+                <div className="flex items-center justify-center gap-1 mb-5 text-gold-400">
+                  {[...Array(5)].map((_, star) => (
+                    <svg key={star} className="w-5 h-5" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+                      <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+                    </svg>
+                  ))}
                 </div>
-              </Link>
+
+                <p className="text-gray-700 text-base leading-7 italic">“{t.texte}”</p>
+              </article>
             ))}
           </div>
         </div>
       </section>
-
-   
-      {/* ── POURQUOI WINSTYLE ── */}
-      <section className="py-24 px-6 bg-white">
-        <div className="max-w-6xl mx-auto">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
-            <div>
-              <p className="text-[#C9A84C] font-semibold text-sm uppercase tracking-widest mb-3">
-                Pourquoi nous choisir
-              </p>
-              <h2 className="text-4xl font-black text-[#0E2240] mb-6 leading-tight">
-                L'excellence au cœur<br />
-                <span className="text-[#C9A84C]">de tout ce que nous faisons</span>
-              </h2>
-              <p className="text-gray-600 leading-relaxed mb-6">
-                Fondée par <strong className="text-[#0E2240]">Winnie Ronel Bou-Ah</strong>, WinStyle est bien plus qu'une entreprise.
-                C'est une vision d'avenir pour l'Afrique centrale, portée par l'innovation,
-                l'excellence du service et l'autonomisation des femmes.
-              </p>
-              <p className="text-gray-600 leading-relaxed mb-8">
-                De N'Djaména au reste du continent, WinStyle ambitionne de devenir
-                la marque de référence en Afrique centrale.
-              </p>
-              <Link href="/about"
-                className="inline-flex items-center gap-2 text-[#C9A84C] font-semibold hover:gap-3 transition-all">
-                Découvrir notre histoire →
-              </Link>
-            </div>
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              {VALEURS.map((v) => (
-                <div key={v.title}
-                  className="bg-gray-50 border border-gray-100 rounded-xl p-5 hover:shadow-lg transition-all duration-300">
-                  <div className="text-3xl mb-3">{v.icon}</div>
-                  <h4 className="text-[#0E2240] font-bold mb-1.5">{v.title}</h4>
-                  <p className="text-gray-500 text-sm leading-relaxed">{v.desc}</p>
-                </div>
-              ))}
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* ── FORMATIONS CTA ── */}
-      <section className="py-24 px-6 bg-gray-50">
-        <div className="max-w-5xl mx-auto">
-          <div className="bg-white border border-gray-100 rounded-3xl p-10 sm:p-14
-                          text-center relative overflow-hidden">
-            <div className="absolute top-0 right-0 w-64 h-64 bg-[#C9A84C]/10 rounded-full -translate-y-1/2 translate-x-1/2 blur-2xl" />
-            <div className="relative">
-              <p className="text-[#C9A84C] font-semibold text-sm uppercase tracking-widest mb-3">
-                Formation & Développement personnel
-              </p>
-              <h2 className="text-3xl sm:text-4xl font-black text-[#0E2240] mb-5">
-                Développez vos compétences
-              </h2>
-              <p className="text-gray-600 max-w-xl mx-auto mb-8 leading-relaxed">
-                Nos programmes en accueil, protocole, posture et présentation professionnelle
-                vous préparent aux plus hauts standards du secteur.
-              </p>
-              <div className="flex flex-col sm:flex-row gap-4 justify-center">
-                <Link href="/formations"
-                  className="bg-[#C9A84C] hover:bg-[#e0b954] text-[#0E2240] font-bold px-8 py-4
-                             rounded-xl transition-all duration-200 hover:shadow-lg hover:shadow-[#C9A84C]/30">
-                  Voir les formations
-                </Link>
-                <Link href="/candidature"
-                  className="bg-[#0E2240] hover:bg-[#1a3050] text-white font-semibold px-8 py-4
-                             rounded-xl transition-all duration-200">
-                  Rejoindre l'équipe
-                </Link>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* ── TÉMOIGNAGES ── */}
-      <section className="py-24 px-6 bg-white">
-        <div className="max-w-6xl mx-auto">
-          <div className="text-center mb-14">
-            <p className="text-[#C9A84C] font-semibold text-sm uppercase tracking-widest mb-3">Témoignages</p>
-            <h2 className="text-4xl font-black text-[#0E2240]">Ils nous font confiance</h2>
-          </div>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          {TEMOIGNAGES.map((t, i) => (
-  <div key={i}
-    className="bg-gray-50 rounded-2xl p-7 border border-gray-100 hover:shadow-lg hover:-translate-y-0.5 transition-all duration-300">
-    <div className="flex gap-1 mb-4">
-      {[...Array(5)].map((_, j) => (
-        <svg key={j} className="w-4 h-4 text-[#C9A84C] fill-current" viewBox="0 0 20 20">
-          <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/>
-        </svg>
-      ))}
-    </div>
-    <p className="text-gray-600 text-sm leading-relaxed italic">"{t.texte}"</p>
-  </div>
-))}
-          </div>
-        </div>
-      </section>
          {/* ── NOS PARTENAIRES ── */}
-      <section className="py-20 px-6 bg-gray-50 border-y border-gray-100">
-        <div className="max-w-6xl mx-auto">
-          <p className="text-center text-[#C9A84C] font-semibold text-sm uppercase tracking-widest mb-10">
+      <section className="py-8 px-6 bg-white border-y border-gray-100">
+        <div className="max-w-7xl mx-auto">
+          <p className="text-center text-gold-400 font-semibold text-sm uppercase tracking-widest mb-6">
             Ils nous ont fait confiance
           </p>
           <PartnerMarquee partenaires={PARTENAIRES} />
-        </div>
-      </section>
-
-
-      {/* ── CTA FINAL ── */}
-      <section className="py-20 px-6 bg-[#C9A84C]">
-        <div className="max-w-3xl mx-auto text-center">
-          <h2 className="text-3xl sm:text-4xl font-black text-[#0E2240] mb-4">
-            Prêt à travailler ensemble ?
-          </h2>
-          <p className="text-[#0E2240]/70 mb-8 text-lg">
-            Contactez-nous dès aujourd'hui — nous répondons sous 24h.
-          </p>
-          <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Link href="/contact"
-              className="bg-[#0E2240] hover:bg-[#0a1a30] text-white font-bold px-8 py-4 rounded-xl transition-all duration-200 hover:shadow-xl">
-              Nous contacter
-            </Link>
-          </div>
         </div>
       </section>
     </div>

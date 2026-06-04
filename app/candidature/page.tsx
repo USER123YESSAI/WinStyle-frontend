@@ -81,21 +81,21 @@ export default function CandidaturePage() {
   };
 
   return (
-    <main className="min-h-screen bg-gray-50 pt-28 pb-16 px-4">
+    <main className="min-h-screen bg-gray-50 pt-24 pb-12 px-4">
       <div className="max-w-2xl mx-auto">
-        <h1 className="text-3xl font-bold text-[#1E3A5F] mb-2">Rejoignez notre équipe</h1>
-        <p className="text-gray-500 mb-8">
+        <h1 className="text-3xl font-bold text-navy-600 mb-2 animate-fade-in">Rejoignez notre équipe</h1>
+        <p className="text-gray-500 mb-6 animate-slide-up">
           Vous êtes disponible, présentable et motivé ? Envoyez-nous votre candidature.
         </p>
 
-        <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-8">
+        <div className="card-modern bg-white rounded-2xl border border-gray-100 p-6 animate-slide-up delay-100">
           {status !== 'idle' && (
             <div className="mb-6">
               <Alert type={status} message={serverMsg} />
             </div>
           )}
 
-          <form onSubmit={handleSubmit} className="space-y-5" noValidate>
+          <form onSubmit={handleSubmit} className="space-y-4" noValidate>
             <Input
               label="Nom complet" required
               value={form.nom} onChange={set('nom')}
@@ -103,7 +103,7 @@ export default function CandidaturePage() {
               error={errors.nom ? { message: errors.nom } as any : undefined}
             />
 
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <Input
                 label="Adresse e-mail" type="email" required
                 value={form.email} onChange={set('email')}
@@ -126,19 +126,19 @@ export default function CandidaturePage() {
             />
 
             <div className="flex flex-col gap-1">
-              <label className="text-sm font-medium text-gray-700">
-                Votre CV <span className="text-red-500">*</span>
+              <label className="text-sm font-medium text-navy-600">
+                Votre CV <span className="text-error-500">*</span>
               </label>
               <input
                 type="file" accept=".pdf" onChange={handleCv}
-                className={`w-full rounded-lg border px-4 py-2.5 text-sm cursor-pointer
+                className={`w-full rounded-lg border px-4 py-2.5 text-sm cursor-pointer transition-all duration-300
                   file:mr-3 file:py-1 file:px-3 file:rounded file:border-0
-                  file:text-sm file:font-medium file:bg-[#1E3A5F] file:text-white
-                  hover:file:bg-[#C9A84C] transition
-                  ${errors.cv ? 'border-red-400 bg-red-50' : 'border-gray-300 bg-white'}`}
+                  file:text-sm file:font-medium file:bg-navy-600 file:text-white
+                  hover:file:bg-gold-400 hover:border-gold-400
+                  ${errors.cv ? 'border-error-400 bg-error-50' : 'border-gray-300 bg-white hover:border-gray-400'}`}
               />
               <p className="text-xs text-gray-400">PDF uniquement · 5 Mo maximum</p>
-              {errors.cv && <p className="text-xs text-red-500">{errors.cv}</p>}
+              {errors.cv && <p className="text-xs text-error-500">{errors.cv}</p>}
             </div>
 
             <Button loading={loading} className="w-full">

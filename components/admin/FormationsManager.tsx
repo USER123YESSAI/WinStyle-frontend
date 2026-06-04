@@ -103,31 +103,31 @@ export default function FormationsManager({ formations, setFormations }: Formati
   };
 
   const inputCls = (err?: string) =>
-    `w-full border rounded-lg px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-blue-500 ${
-      err ? 'border-red-400 bg-red-50' : 'border-gray-300'
+    `w-full border rounded-lg px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-gold-400 transition-all duration-300 ${
+      err ? 'border-error-400 bg-error-50' : 'border-gray-300 hover:border-gray-400'
     }`;
 
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
-        <h2 className="text-2xl font-bold text-gray-800">🎓 Formations ({formations.length})</h2>
+        <h2 className="text-2xl font-bold text-navy-600">🎓 Formations ({formations.length})</h2>
         <button
           onClick={openCreate}
-          className="flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg text-sm font-semibold transition"
+          className="flex items-center gap-2 bg-gradient-to-r from-gold-400 to-gold-500 hover:from-gold-300 hover:to-gold-400 text-navy-900 px-4 py-2 rounded-lg text-sm font-semibold transition-all duration-300 hover:shadow-glow"
         >
           ➕ Nouvelle formation
         </button>
       </div>
 
       {showForm && (
-        <div className="bg-white rounded-xl border border-gray-200 shadow-sm p-6">
+        <div className="card-modern bg-white rounded-xl border border-gray-200 p-6">
           <div className="flex items-center justify-between mb-5">
-            <h3 className="font-bold text-gray-800">
+            <h3 className="font-bold text-navy-600">
               {editingItem ? '✏️ Modifier la formation' : '➕ Créer une formation'}
             </h3>
             <button
               onClick={() => setShowForm(false)}
-              className="text-gray-400 hover:text-gray-600 text-xl"
+              className="text-gray-400 hover:text-gray-600 text-xl transition-colors"
             >
               ✕
             </button>
@@ -136,8 +136,8 @@ export default function FormationsManager({ formations, setFormations }: Formati
           {message && (
             <div className={`mb-4 px-4 py-3 rounded-lg text-sm font-medium ${
               message.type === 'success'
-                ? 'bg-green-50 text-green-700 border border-green-200'
-                : 'bg-red-50 text-red-700 border border-red-200'
+                ? 'bg-success-50 text-success-700 border border-success-200'
+                : 'bg-error-50 text-error-700 border border-error-200'
             }`}>
               {message.text}
             </div>
@@ -145,47 +145,47 @@ export default function FormationsManager({ formations, setFormations }: Formati
           
           <form onSubmit={handleSubmit} className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div className="sm:col-span-2">
-              <label className="text-xs font-semibold text-gray-600 mb-1 block">Titre *</label>
+              <label className="text-xs font-semibold text-navy-600 mb-1 block">Titre *</label>
               <input
                 value={form.title}
                 placeholder="Ex : Formation Hôtesse d'accueil"
                 onChange={e => { setForm(p => ({ ...p, title: e.target.value })); setErrors(p => ({ ...p, title: '' })); }}
                 className={inputCls(errors.title)}
               />
-              {errors.title && <p className="text-xs text-red-500 mt-1">{errors.title}</p>}
+              {errors.title && <p className="text-xs text-error-500 mt-1">{errors.title}</p>}
             </div>
             <div className="sm:col-span-2">
-              <label className="text-xs font-semibold text-gray-600 mb-1 block">Description</label>
+              <label className="text-xs font-semibold text-navy-600 mb-1 block">Description</label>
               <textarea
                 value={form.description}
                 rows={3}
                 placeholder="Décrivez la formation..."
                 onChange={e => setForm(p => ({ ...p, description: e.target.value }))}
-                className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-blue-500 resize-none"
+                className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-gold-400 resize-none transition-all duration-300 hover:border-gray-400"
               />
             </div>
             <div>
-              <label className="text-xs font-semibold text-gray-600 mb-1 block">Date *</label>
+              <label className="text-xs font-semibold text-navy-600 mb-1 block">Date *</label>
               <input
                 type="date"
                 value={form.date}
                 onChange={e => { setForm(p => ({ ...p, date: e.target.value })); setErrors(p => ({ ...p, date: '' })); }}
                 className={inputCls(errors.date)}
               />
-              {errors.date && <p className="text-xs text-red-500 mt-1">{errors.date}</p>}
+              {errors.date && <p className="text-xs text-error-500 mt-1">{errors.date}</p>}
             </div>
             <div>
-              <label className="text-xs font-semibold text-gray-600 mb-1 block">Lieu *</label>
+              <label className="text-xs font-semibold text-navy-600 mb-1 block">Lieu *</label>
               <input
                 value={form.lieu}
                 placeholder="Ex : Dakar, Sénégal"
                 onChange={e => { setForm(p => ({ ...p, lieu: e.target.value })); setErrors(p => ({ ...p, lieu: '' })); }}
                 className={inputCls(errors.lieu)}
               />
-              {errors.lieu && <p className="text-xs text-red-500 mt-1">{errors.lieu}</p>}
+              {errors.lieu && <p className="text-xs text-error-500 mt-1">{errors.lieu}</p>}
             </div>
             <div>
-              <label className="text-xs font-semibold text-gray-600 mb-1 block">Prix (FCFA) *</label>
+              <label className="text-xs font-semibold text-navy-600 mb-1 block">Prix (FCFA) *</label>
               <input
                 type="number"
                 value={form.prix}
@@ -193,10 +193,10 @@ export default function FormationsManager({ formations, setFormations }: Formati
                 onChange={e => { setForm(p => ({ ...p, prix: e.target.value })); setErrors(p => ({ ...p, prix: '' })); }}
                 className={inputCls(errors.prix)}
               />
-              {errors.prix && <p className="text-xs text-red-500 mt-1">{errors.prix}</p>}
+              {errors.prix && <p className="text-xs text-error-500 mt-1">{errors.prix}</p>}
             </div>
             <div>
-              <label className="text-xs font-semibold text-gray-600 mb-1 block">Places disponibles *</label>
+              <label className="text-xs font-semibold text-navy-600 mb-1 block">Places disponibles *</label>
               <input
                 type="number"
                 value={form.places_disponibles}
@@ -204,16 +204,16 @@ export default function FormationsManager({ formations, setFormations }: Formati
                 onChange={e => { setForm(p => ({ ...p, places_disponibles: e.target.value })); setErrors(p => ({ ...p, places_disponibles: '' })); }}
                 className={inputCls(errors.places_disponibles)}
               />
-              {errors.places_disponibles && <p className="text-xs text-red-500 mt-1">{errors.places_disponibles}</p>}
+              {errors.places_disponibles && <p className="text-xs text-error-500 mt-1">{errors.places_disponibles}</p>}
             </div>
             <div className="sm:col-span-2 flex gap-3">
               <button
                 type="submit"
                 disabled={loading}
-                className="bg-blue-600 hover:bg-blue-700 disabled:opacity-60 text-white px-6 py-2 rounded-lg text-sm font-semibold transition flex items-center gap-2"
+                className="bg-gradient-to-r from-gold-400 to-gold-500 hover:from-gold-300 hover:to-gold-400 disabled:opacity-60 text-navy-900 px-6 py-2 rounded-lg text-sm font-semibold transition-all duration-300 hover:shadow-glow flex items-center gap-2"
               >
                 {loading ? (
-                  <span className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                  <span className="w-4 h-4 border-2 border-navy-900 border-t-transparent rounded-full animate-spin" />
                 ) : editingItem ? (
                   '💾'
                 ) : (
@@ -224,7 +224,7 @@ export default function FormationsManager({ formations, setFormations }: Formati
               <button
                 type="button"
                 onClick={() => setShowForm(false)}
-                className="border border-gray-300 text-gray-600 px-4 py-2 rounded-lg text-sm font-medium hover:bg-gray-50 transition"
+                className="border-2 border-navy-600 text-navy-600 px-4 py-2 rounded-lg text-sm font-medium hover:bg-navy-50 transition-all duration-300"
               >
                 Annuler
               </button>
@@ -233,7 +233,7 @@ export default function FormationsManager({ formations, setFormations }: Formati
         </div>
       )}
 
-      <div className="bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden">
+      <div className="card-modern bg-white rounded-xl border border-gray-200 overflow-hidden">
         <div className="overflow-x-auto">
           <table className="w-full text-sm">
             <thead className="bg-gray-50 text-gray-500 text-xs uppercase">
@@ -247,8 +247,8 @@ export default function FormationsManager({ formations, setFormations }: Formati
             </thead>
             <tbody className="divide-y divide-gray-100">
               {formations.map(f => (
-                <tr key={f.id} className="hover:bg-gray-50">
-                  <td className="px-5 py-3 font-medium text-gray-800 max-w-xs">
+                <tr key={f.id} className="hover:bg-gray-50 transition-colors">
+                  <td className="px-5 py-3 font-medium text-navy-600 max-w-xs">
                     <p className="truncate">{f.title}</p>
                     {f.description && (
                       <p className="text-xs text-gray-400 truncate mt-0.5">{f.description}</p>
@@ -262,7 +262,7 @@ export default function FormationsManager({ formations, setFormations }: Formati
                     {f.prix ? `${Number(f.prix).toLocaleString('fr-FR')} FCFA` : '—'}
                   </td>
                   <td className="px-5 py-3">
-                    <span className="bg-blue-50 text-blue-700 text-xs font-semibold px-2 py-1 rounded-full">
+                    <span className="bg-navy-100 text-navy-700 text-xs font-semibold px-2 py-1 rounded-full">
                       {f.places_disponibles} places
                     </span>
                   </td>
@@ -270,13 +270,13 @@ export default function FormationsManager({ formations, setFormations }: Formati
                     <div className="flex items-center gap-3">
                       <button
                         onClick={() => openEdit(f)}
-                        className="text-blue-500 hover:text-blue-700 text-xs font-medium"
+                        className="text-navy-500 hover:text-navy-700 text-xs font-medium transition-colors"
                       >
                         Modifier
                       </button>
                       <button
                         onClick={() => handleDelete(f.id)}
-                        className="text-red-400 hover:text-red-600 text-xs font-medium"
+                        className="text-error-400 hover:text-error-600 text-xs font-medium transition-colors"
                       >
                         Supprimer
                       </button>
@@ -288,7 +288,7 @@ export default function FormationsManager({ formations, setFormations }: Formati
                 <tr>
                   <td colSpan={6} className="px-5 py-12 text-center text-gray-400">
                     Aucune formation —{' '}
-                    <button onClick={openCreate} className="text-blue-500 hover:underline">
+                    <button onClick={openCreate} className="text-navy-500 hover:underline transition-colors">
                       créer la première
                     </button>
                   </td>

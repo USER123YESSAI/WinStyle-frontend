@@ -30,10 +30,10 @@ export default function Sidebar({ tab, setTab, isSuperAdmin }: SidebarProps) {
   };
 
   return (
-    <aside className="w-64 bg-gray-900 text-white flex flex-col flex-shrink-0">
-      <div className="px-6 py-5 border-b border-gray-700">
+    <aside className="w-64 bg-navy-900 text-white flex flex-col flex-shrink-0">
+      <div className="px-6 py-5 border-b border-navy-700">
         <div className="flex items-center gap-3">
-          <div className="w-9 h-9 bg-[#C9A84C] rounded-lg flex items-center justify-center font-bold text-gray-900 text-sm">
+          <div className="w-9 h-9 bg-gradient-to-br from-gold-400 to-gold-500 rounded-lg flex items-center justify-center font-bold text-navy-900 text-sm shadow-glow">
             W
           </div>
           <span className="font-bold text-base">Win's Agency</span>
@@ -45,16 +45,16 @@ export default function Sidebar({ tab, setTab, isSuperAdmin }: SidebarProps) {
           <button
             key={t.key}
             onClick={() => setTab(t.key)}
-            className={`w-full flex items-center gap-3 px-4 py-2.5 rounded-lg text-sm font-medium transition-all ${
+            className={`w-full flex items-center gap-3 px-4 py-2.5 rounded-lg text-sm font-medium transition-all duration-300 ${
               tab === t.key
-                ? 'bg-blue-600 text-white'
-                : 'text-gray-400 hover:bg-gray-800 hover:text-white'
+                ? 'bg-gold-400 text-navy-900 shadow-glow'
+                : 'text-gray-400 hover:bg-navy-800 hover:text-white'
             }`}
           >
             <span>{t.icon}</span>
             {t.label}
             {(t.key === 'admins' || t.key === 'logs') && (
-              <span className="ml-auto text-xs bg-yellow-500 text-gray-900 px-1.5 py-0.5 rounded font-bold">
+              <span className="ml-auto text-xs bg-gold-400 text-navy-900 px-1.5 py-0.5 rounded font-bold">
                 SA
               </span>
             )}
@@ -62,9 +62,9 @@ export default function Sidebar({ tab, setTab, isSuperAdmin }: SidebarProps) {
         ))}
       </nav>
 
-      <div className="px-4 py-4 border-t border-gray-700">
+      <div className="px-4 py-4 border-t border-navy-700">
         <div className="flex items-center gap-3 mb-3">
-          <div className="w-8 h-8 bg-gray-600 rounded-full flex items-center justify-center text-xs font-bold">
+          <div className="w-8 h-8 bg-navy-600 rounded-full flex items-center justify-center text-xs font-bold">
             {isSuperAdmin ? '★' : 'A'}
           </div>
           <div className="text-xs">
@@ -76,7 +76,7 @@ export default function Sidebar({ tab, setTab, isSuperAdmin }: SidebarProps) {
         </div>
         <button
           onClick={logout}
-          className="w-full flex items-center gap-2 px-3 py-2 rounded-lg text-sm text-gray-400 hover:bg-gray-800 hover:text-white transition"
+          className="w-full flex items-center gap-2 px-3 py-2 rounded-lg text-sm text-gray-400 hover:bg-navy-800 hover:text-white transition-all duration-300"
         >
           <span>🚪</span> Déconnexion
         </button>

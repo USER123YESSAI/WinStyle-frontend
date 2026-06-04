@@ -183,12 +183,16 @@ export default function RealisationsPage() {
       <main className="min-h-screen bg-gray-50">
 
         {/* Hero */}
-        <section className="relative bg-[#0E2240] pt-36 pb-20 px-6 overflow-hidden">
+        <section className="relative bg-navy-600 pt-28 pb-16 px-6 overflow-hidden">
           <div className="absolute inset-0 opacity-[0.04]"
             style={{ backgroundImage: 'linear-gradient(#fff 1px, transparent 1px), linear-gradient(90deg, #fff 1px, transparent 1px)', backgroundSize: '60px 60px' }} />
-          <div className="relative max-w-4xl mx-auto text-center">
-            <p className="text-[#C9A84C] font-semibold text-sm uppercase tracking-widest mb-4">Ce que nous avons accompli</p>
-            <h1 className="text-5xl font-black text-white mb-4">Nos Réalisations</h1>
+          <div className="absolute inset-0 pointer-events-none">
+            <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-gold-400/10 rounded-full blur-3xl animate-float" />
+            <div className="absolute bottom-1/4 right-1/4 w-80 h-80 bg-navy-400/10 rounded-full blur-3xl animate-float delay-500" />
+          </div>
+          <div className="relative max-w-4xl mx-auto text-center animate-fade-in">
+            <p className="text-gold-400 font-semibold text-sm uppercase tracking-widest mb-3">Ce que nous avons accompli</p>
+            <h1 className="text-5xl font-black text-white mb-3">Nos Réalisations</h1>
             <p className="text-white/60 text-lg max-w-2xl mx-auto">
              Découvrez nos événements, collections et formations qui font de WinStyle une référence au Tchad et en Afrique centrale.
             </p>
@@ -196,16 +200,16 @@ export default function RealisationsPage() {
         </section>
 
         {/* Filtres */}
-        <section className="bg-white border-b border-gray-200 sticky top-0 z-20">
+        <section className="bg-white border-b border-gray-200 sticky top-0 z-20 glass">
           <div className="max-w-5xl mx-auto px-6">
-            <div className="flex overflow-x-auto py-4 gap-2">
+            <div className="flex overflow-x-auto py-3 gap-2">
               {CATEGORIES.map((cat) => (
                 <button
                   key={cat}
                   onClick={() => setFiltre(cat)}
-                  className={`px-5 py-2.5 rounded-full text-sm font-semibold whitespace-nowrap transition-all duration-200 ${
+                  className={`px-5 py-2 rounded-full text-sm font-semibold whitespace-nowrap transition-all duration-300 ${
                     filtre === cat
-                      ? 'bg-[#0E2240] text-white'
+                      ? 'bg-navy-600 text-white shadow-glow'
                       : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
                   }`}
                 >
@@ -217,31 +221,31 @@ export default function RealisationsPage() {
         </section>
 
         {/* Grille de cartes */}
-        <section className="py-16 px-6">
+        <section className="py-12 px-6">
             <div className="max-w-5xl mx-auto">
             {loading ? (
-              <div className="flex justify-center py-16">
+              <div className="flex justify-center py-12">
                 <div className="w-8 h-8 border-4 border-[#C9A84C] border-t-transparent rounded-full animate-spin" />
               </div>
             ) : error ? (
-              <div className="text-center py-16">
+              <div className="text-center py-12">
                 <p className="text-red-500">{error}</p>
               </div>
             ) : realisations.length === 0 ? (
-              <div className="text-center py-16">
+              <div className="text-center py-12">
                 <p className="text-gray-400 text-lg">Aucune réalisation pour le moment.</p>
                 <p className="text-gray-400 text-sm mt-2">Revenez bientôt !</p>
               </div>
             ) : (
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-                {filtresFiltrees.map((realisation) => {
+                {filtresFiltrees.map((realisation, i) => {
                   const currentIdx = currentImages[realisation.id] || 0;
                   const totalImages = realisation.images?.length || 0;
                   
                   return (
                     <div
                       key={realisation.id}
-                      className="group bg-white rounded-2xl overflow-hidden border border-gray-100 hover:shadow-xl hover:-translate-y-1 transition-all duration-300"
+                      className={`group card-modern bg-white rounded-2xl overflow-hidden border border-gray-100 hover:shadow-card-hover hover:-translate-y-1 transition-all duration-300 animate-slide-up delay-${i * 100}`}
                     >
                       {/* Image with navigation buttons - now clickable to open modal */}
                       <div className="relative h-48 bg-gray-100 overflow-hidden cursor-pointer" onClick={() => totalImages > 0 && openImageModal(realisation.id, currentIdx)}>
@@ -292,9 +296,9 @@ export default function RealisationsPage() {
                             className="w-full h-full object-cover cursor-default"
                           />
                         )}
-                        <div className="absolute inset-0 bg-gradient-to-t from-[#0E2240]/60 to-transparent" />
+                        <div className="absolute inset-0 bg-gradient-to-t from-navy-600/60 to-transparent" />
                         <div className="absolute top-3 right-3 flex items-center gap-2">
-                          <span className="bg-[#C9A84C] text-[#0E2240] text-xs font-bold px-3 py-1 rounded-full">
+                          <span className="bg-gold-400 text-navy-900 text-xs font-bold px-3 py-1 rounded-full">
                             {realisation.categorie}
                           </span>
                         </div>
@@ -302,8 +306,8 @@ export default function RealisationsPage() {
 
                       {/* Contenu */}
                       <div className="p-5">
-                        <p className="text-[#C9A84C] text-xs font-semibold mb-1">{realisation.date}</p>
-                        <h3 className="text-[#0E2240] font-bold text-lg mb-2 group-hover:text-[#C9A84C] transition-colors">
+                        <p className="text-gold-400 text-xs font-semibold mb-1">{realisation.date}</p>
+                        <h3 className="text-navy-600 font-bold text-lg mb-2 group-hover:text-gold-400 transition-colors">
                           {realisation.titre}
                         </h3>
                         <p className="text-gray-500 text-sm leading-relaxed">
@@ -317,7 +321,7 @@ export default function RealisationsPage() {
             )}
 
             {!loading && !error && filtresFiltrees.length === 0 && realisations.length > 0 && (
-              <div className="text-center py-16">
+              <div className="text-center py-12">
                 <p className="text-gray-400 text-lg">Aucune réalisation dans cette catégorie.</p>
               </div>
             )}
@@ -325,17 +329,17 @@ export default function RealisationsPage() {
         </section>
 
         {/* CTA */}
-        <section className="py-16 px-6 bg-[#0E2240]">
+        <section className="py-12 px-6 bg-navy-600">
           <div className="max-w-3xl mx-auto text-center">
             <h2 className="text-3xl font-black text-white mb-4">
               Prêt à travailler ensemble ?
             </h2>
-            <p className="text-white/60 mb-8 text-lg">
+            <p className="text-white/60 mb-6 text-lg">
               Faites confiance à WinStyle pour vos événements et projets.
             </p>
             <Link
               href="/contact"
-              className="inline-flex items-center gap-2 bg-[#C9A84C] hover:bg-[#e0b954] text-[#0E2240] font-bold px-8 py-4 rounded-xl transition-all duration-200 hover:shadow-lg hover:shadow-[#C9A84C]/30"
+              className="inline-flex items-center gap-2 bg-gradient-to-r from-gold-400 to-gold-500 hover:from-gold-300 hover:to-gold-400 text-navy-900 font-bold px-8 py-4 rounded-xl transition-all duration-300 hover:shadow-glow"
             >
               Faire appel à WinStyle
               <span>→</span>
@@ -348,7 +352,7 @@ export default function RealisationsPage() {
       {/* Image Gallery Modal */}
       {imageModal.open && currentRealisation && (
         <div 
-          className="fixed inset-0 z-50 bg-black/90 flex items-center justify-center p-4 md:p-8 animate-in fade-in zoom-in duration-200"
+          className="fixed inset-0 z-50 bg-black/90 backdrop-blur-sm flex items-center justify-center p-4 md:p-8 animate-fade-in"
           onClick={closeImageModal}
         >
           <div className="relative max-w-4xl max-h-[90vh] w-full h-full flex flex-col md:flex-row gap-6 items-center justify-center"
@@ -360,9 +364,9 @@ export default function RealisationsPage() {
                 <button
                   key={idx}
                   onClick={() => setImageModal(prev => ({ ...prev, currentIdx: idx }))}
-                  className={`w-full aspect-square rounded-lg overflow-hidden border-3 transition-all duration-200 hover:scale-105 hover:brightness-110 relative group ${
+                  className={`w-full aspect-square rounded-lg overflow-hidden border-3 transition-all duration-300 hover:scale-105 hover:brightness-110 relative group ${
                     idx === imageModal.currentIdx 
-                      ? 'border-[#C9A84C] shadow-2xl shadow-[#C9A84C]' 
+                      ? 'border-gold-400 shadow-2xl shadow-gold-400/50' 
                       : 'border-transparent hover:border-white/50 opacity-70 hover:opacity-100'
                   }`}
                 >
@@ -424,7 +428,7 @@ export default function RealisationsPage() {
             {/* Close Button */}
             <button
               onClick={closeImageModal}
-              className="absolute top-4 right-4 md:top-6 md:right-6 w-12 h-12 bg-black/50 hover:bg-black/70 backdrop-blur-sm text-white text-2xl font-bold rounded-full flex items-center justify-center transition-all duration-200 hover:scale-110 shadow-2xl"
+              className="absolute top-4 right-4 md:top-6 md:right-6 w-12 h-12 bg-black/50 hover:bg-black/70 backdrop-blur-sm text-white text-2xl font-bold rounded-full flex items-center justify-center transition-all duration-300 hover:scale-110 shadow-2xl"
               aria-label="Fermer"
             >
               ✕
