@@ -11,7 +11,7 @@ export type InscriptionFormData = {
   nom: string;
   email: string;
   telephone?: string;
-  formation_id: number;
+  formationId: number;
 };
 export type CandidatureFormData = {
   nom: string;
@@ -75,7 +75,7 @@ export const inscriptionSchema = Joi.object({
   nom,
   email: email,
   telephone,
-  formation_id: Joi.number().positive().required().messages({
+  formationId: Joi.number().positive().required().messages({
     'any.required': 'Sélectionnez une formation',
     'number.base':  'Sélectionnez une formation',
   }),

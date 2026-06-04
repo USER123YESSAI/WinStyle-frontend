@@ -30,7 +30,8 @@ function InscriptionModal({ formation, onClose }: { formation: Formation; onClos
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    const payload = { ...form, formation_id: formation.id };
+    // Backend attend `formationId` (camelCase) et non `formation_id`
+    const payload = { ...form, formationId: formation.id };
     const fieldErrors = validateForm(inscriptionSchema, payload);
     if (Object.keys(fieldErrors).length > 0) { setErrors(fieldErrors); return; }
 

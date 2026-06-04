@@ -26,13 +26,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <Header />
         <main className="flex-1">{children}</main>
 
-        {/*
-          Retire le footer uniquement sur les pages admin.
-          (dashboard, login, etc.)
-        */}
-        {/** Footer supprimé pour le dashboard/admin (pages /admin/*) **/}
-        {/* eslint-disable-next-line react/jsx-no-undef */}
-        {null /* Footer volontairement retiré ici */}
+        <Footer />
       </body>
     </html>
   );
