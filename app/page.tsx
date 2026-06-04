@@ -34,8 +34,6 @@ const SECTEURS = [
 
 const STATS = [
   { value: '3',      label: 'Secteurs complémentaires' },
-  { value: '10M',    label: 'FCFA CA annuel estimé' },
-  { value: '8-11',   label: 'Mois seuil rentabilité' },
   { value: 'Tchad',  label: 'N\'Djaména · Afrique centrale' },
 ];
 
@@ -48,19 +46,19 @@ const VALEURS = [
 
 const TEMOIGNAGES = [
   {
-    nom: 'Marie Kouassi',
+    nom: 'Marie Remadji',
     fonction: 'Directrice Événements',
     texte: 'Vos filles sont professionnelles, propres et naturelles mais surtout professionnelles. Je vous encourage vivement à continuer dans cette lancée.',
-    photo: '/images/team/team-1.jpg',
+    photo: '/images/services/nounous.jpg',
   },
   {
-    nom: 'Jean-Pierre Mbengue',
+    nom: 'Jean-Pierre Mbairasssem',
     fonction: 'Organisateur Conférences',
     texte: 'Bonjour boss! Merci pour le service, tes filles ont assuré. Service impeccable et ponctuel.',
     photo: '/images/team/team-2.jpg',
   },
   {
-    nom: 'Fatou Ndiaye',
+    nom: 'Dénémadji Vanessa',
     fonction: 'Responsable Communication',
     texte: "Coucou chérie! Super bien, j'ai aimé. Une équipe dynamique et toujours prête à rendre service.",
     photo: '/images/team/team-3.jpg',
@@ -119,10 +117,7 @@ export default function HomePage() {
                 Une entreprise innovante opérant dans l'agence de placement, la confection sur mesure
                 et la cosmétique naturelle — au service de l'excellence africaine.
               </p>
-              <p className="text-gold-400 text-sm font-semibold mb-8">
-                ✨ Organisateur officiel de RASMA 2025
-              </p>
-
+             
               <div className="flex flex-col sm:flex-row gap-4">
                 <Link href="/services"
                   className="group bg-gradient-to-r from-gold-400 to-gold-500 hover:from-gold-300 hover:to-gold-400 text-navy-900 font-bold px-8 py-4
@@ -227,7 +222,7 @@ export default function HomePage() {
       <section className="py-8 px-6 bg-white border-y border-gray-100">
         <div className="max-w-7xl mx-auto">
           <p className="text-center text-gold-400 font-semibold text-sm uppercase tracking-widest mb-6">
-            Ils nous ont fait confiance
+            NOS PARTENAIRES
           </p>
           <PartnerMarquee partenaires={PARTENAIRES} />
         </div>
