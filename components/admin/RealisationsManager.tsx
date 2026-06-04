@@ -124,20 +124,20 @@ export default function RealisationsManager({ realisations, setRealisations }: R
 
   return (
     <div className="space-y-6">
-      <div className="flex items-center justify-between">
+      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
         <h2 className="text-2xl font-bold text-navy-600">🏆 Réalisations ({realisations.length})</h2>
         <button
           onClick={openCreate}
-          className="flex items-center gap-2 bg-gradient-to-r from-gold-400 to-gold-500 hover:from-gold-300 hover:to-gold-400 text-navy-900 px-4 py-2 rounded-lg text-sm font-semibold transition-all duration-300 hover:shadow-glow"
+          className="w-full sm:w-auto flex items-center justify-center gap-2 bg-gradient-to-r from-gold-400 to-gold-500 hover:from-gold-300 hover:to-gold-400 text-navy-900 px-4 py-2 rounded-lg text-sm font-semibold transition-all duration-300 hover:shadow-glow"
         >
           ➕ Nouvelle realisation
         </button>
       </div>
 
       {showForm && (
-        <div className="card-modern bg-white rounded-xl border border-gray-200 p-6">
+        <div className="card-modern bg-white rounded-xl border border-gray-200 p-4 md:p-6">
           <div className="flex items-center justify-between mb-5">
-            <h3 className="font-bold text-navy-600">
+            <h3 className="font-bold text-navy-600 text-sm md:text-base">
               {editingItem ? '✏️ Modifier la realisation' : '➕ Créer une realisation'}
             </h3>
             <button onClick={() => setShowForm(false)} className="text-gray-400 hover:text-gray-600 text-xl transition-colors">
@@ -213,11 +213,11 @@ export default function RealisationsManager({ realisations, setRealisations }: R
               )}
               <p className="text-xs text-gray-400 mt-1">Vous pouvez sélectionner plusieurs images à la fois</p>
             </div>
-            <div className="sm:col-span-2 flex gap-3">
+            <div className="sm:col-span-2 flex flex-col sm:flex-row gap-3">
               <button
                 type="submit"
                 disabled={loading}
-                className="bg-gradient-to-r from-gold-400 to-gold-500 hover:from-gold-300 hover:to-gold-400 disabled:opacity-60 text-navy-900 px-6 py-2 rounded-lg text-sm font-semibold transition-all duration-300 hover:shadow-glow flex items-center gap-2"
+                className="flex-1 bg-gradient-to-r from-gold-400 to-gold-500 hover:from-gold-300 hover:to-gold-400 disabled:opacity-60 text-navy-900 px-6 py-2 rounded-lg text-sm font-semibold transition-all duration-300 hover:shadow-glow flex items-center justify-center gap-2"
               >
                 {loading ? (
                   <span className="w-4 h-4 border-2 border-navy-900 border-t-transparent rounded-full animate-spin" />
@@ -231,7 +231,7 @@ export default function RealisationsManager({ realisations, setRealisations }: R
               <button
                 type="button"
                 onClick={() => setShowForm(false)}
-                className="border-2 border-navy-600 text-navy-600 px-4 py-2 rounded-lg text-sm font-medium hover:bg-navy-50 transition-all duration-300"
+                className="flex-1 border-2 border-navy-600 text-navy-600 px-4 py-2 rounded-lg text-sm font-medium hover:bg-navy-50 transition-all duration-300"
               >
                 Annuler
               </button>
@@ -242,11 +242,11 @@ export default function RealisationsManager({ realisations, setRealisations }: R
 
       <div className="card-modern bg-white rounded-xl border border-gray-200 overflow-hidden">
         <div className="overflow-x-auto">
-          <table className="w-full text-sm">
+          <table className="w-full text-xs sm:text-sm">
             <thead className="bg-gray-50 text-gray-500 text-xs uppercase">
               <tr>
                 {['Titre', 'Date', 'Catégorie', 'Description', 'Actions'].map(h => (
-                  <th key={h} className="px-5 py-3 text-left font-semibold">
+                  <th key={h} className="px-3 md:px-5 py-3 text-left font-semibold">
                     {h}
                   </th>
                 ))}
@@ -255,20 +255,20 @@ export default function RealisationsManager({ realisations, setRealisations }: R
             <tbody className="divide-y divide-gray-100">
               {realisations.map(r => (
                 <tr key={r.id} className="hover:bg-gray-50 transition-colors">
-                  <td className="px-5 py-3 font-medium text-navy-600 max-w-xs">
-                    <p className="truncate">{r.titre}</p>
+                  <td className="px-3 md:px-5 py-3 font-medium text-navy-600 max-w-xs">
+                    <p className="truncate text-xs md:text-sm">{r.titre}</p>
                   </td>
-                  <td className="px-5 py-3 text-gray-500 whitespace-nowrap">{r.date}</td>
-                  <td className="px-5 py-3">
-                    <span className="bg-gold-400/20 text-navy-900 text-xs font-semibold px-2 py-1 rounded-full">
+                  <td className="px-3 md:px-5 py-3 text-gray-500 whitespace-nowrap text-xs md:text-sm">{r.date}</td>
+                  <td className="px-3 md:px-5 py-3">
+                    <span className="bg-gold-400/20 text-navy-900 text-xs font-semibold px-2 py-1 rounded-full whitespace-nowrap">
                       {r.categorie}
                     </span>
                   </td>
-                  <td className="px-5 py-3 text-gray-500 max-w-xs">
-                    <p className="truncate">{r.description}</p>
+                  <td className="px-3 md:px-5 py-3 text-gray-500 max-w-xs">
+                    <p className="truncate text-xs md:text-sm">{r.description}</p>
                   </td>
-                  <td className="px-5 py-3">
-                    <div className="flex items-center gap-3">
+                  <td className="px-3 md:px-5 py-3">
+                    <div className="flex flex-col md:flex-row items-start md:items-center gap-2 md:gap-3">
                       <button
                         onClick={() => openEdit(r)}
                         className="text-navy-500 hover:text-navy-700 text-xs font-medium transition-colors"
@@ -287,7 +287,7 @@ export default function RealisationsManager({ realisations, setRealisations }: R
               ))}
               {realisations.length === 0 && (
                 <tr>
-                  <td colSpan={5} className="px-5 py-12 text-center text-gray-400">
+                  <td colSpan={5} className="px-3 md:px-5 py-12 text-center text-gray-400 text-xs md:text-sm">
                     Aucune realisation —{' '}
                     <button onClick={openCreate} className="text-navy-500 hover:underline transition-colors">
                       créer la première
