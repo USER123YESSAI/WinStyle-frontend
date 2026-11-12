@@ -7,12 +7,15 @@ interface SidebarProps {
   isSuperAdmin: boolean;
 }
 
-type Tab = 'stats' | 'formations' | 'realisations' | 'inscriptions' | 'candidatures' | 'services' | 'contacts' | 'admins' | 'logs';
+type Tab = 'stats' | 'cms' | 'formations' | 'realisations' | 'partenaires' | 'temoignages' | 'inscriptions' | 'candidatures' | 'services' | 'contacts' | 'admins' | 'logs';
 
 const TABS: { key: Tab; label: string; icon: string; superOnly?: boolean }[] = [
   { key: 'stats', label: 'Tableau de bord', icon: '📊' },
+  { key: 'cms', label: 'Contenu du site', icon: '✨' },
   { key: 'formations', label: 'Formations', icon: '🎓' },
   { key: 'realisations', label: 'Réalisations', icon: '🏆' },
+  { key: 'partenaires', label: 'Partenaires', icon: '🤝' },
+  { key: 'temoignages', label: 'Témoignages', icon: '💬' },
   { key: 'inscriptions', label: 'Inscriptions', icon: '📝' },
   { key: 'candidatures', label: 'Candidatures', icon: '👤' },
   { key: 'services', label: 'Demandes', icon: '💼' },

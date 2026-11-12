@@ -2,6 +2,7 @@
 import { useEffect, useState } from 'react';
 import { Input, Button, Alert } from '@/components/ui/FormElements';
 import { inscriptionSchema, validateForm } from '@/lib/schemas';
+import { useCms } from '@/components/cms/CmsProvider';
 import api from '@/lib/api';
 
 interface Formation {
@@ -50,12 +51,17 @@ function InscriptionModal({ formation, onClose }: { formation: Formation; onClos
   };
 
   return (
-    <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4 animate-fade-in">
+    <div
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="inscription-modal-title"
+      className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4 animate-fade-in"
+    >
       <div className="card-modern bg-white rounded-2xl w-full max-w-md p-6 relative">
-        <button onClick={onClose}
+        <button onClick={onClose} type="button" aria-label="Fermer"
           className="absolute top-4 right-4 text-gray-400 hover:text-gray-700 text-xl font-bold transition-colors">✕</button>
 
-        <h2 className="text-xl font-bold text-navy-600 mb-1">S'inscrire à la formation</h2>
+        <h2 id="inscription-modal-title" className="text-xl font-bold text-navy-600 mb-1">S'inscrire à la formation</h2>
         <p className="text-sm text-gray-500 mb-5">{formation.title}</p>
 
         {status !== 'idle' && (
@@ -72,8 +78,8 @@ function InscriptionModal({ formation, onClose }: { formation: Formation; onClos
               value={form.email} onChange={set('email')} placeholder="exemple@email.com"
               error={errors.email ? { message: errors.email } as any : undefined} />
 
-            <Input label="Téléphone" type="tel"
-              value={form.telephone} onChange={set('telephone')} placeholder="+221 XX XXX XX XX"
+            <Input label="Téléphone" type="tel" required
+              value={form.telephone} onChange={set('telephone')} placeholder="+235 65 09 60 24"
               error={errors.telephone ? { message: errors.telephone } as any : undefined} />
 
             <Button loading={loading} className="w-full">Confirmer l'inscription</Button>
@@ -90,6 +96,8 @@ function InscriptionModal({ formation, onClose }: { formation: Formation; onClos
 
 // ─── Page formations ──────────────────────────────────────────────
 export default function FormationsPage() {
+  const { getSectionContent } = useCms();
+  const pageConfig = getSectionContent('formations_page');
   const [formations, setFormations] = useState<Formation[]>([]);
   const [loading, setLoading]       = useState(true);
   const [selected, setSelected]     = useState<Formation | null>(null);
@@ -108,8 +116,12 @@ export default function FormationsPage() {
   return (
     <main className="min-h-screen bg-gray-50 pt-24 pb-12 px-4">
       <div className="max-w-7xl mx-auto">
-        <h1 className="text-3xl font-bold text-navy-600 mb-2 animate-fade-in">Nos formations</h1>
-        <p className="text-gray-500 mb-8 animate-slide-up">Inscrivez-vous à nos formations professionnelles.</p>
+        <h1 className="text-3xl font-bold text-navy-600 mb-2 animate-fade-in">
+          {pageConfig?.page_title || 'Nos formations'}
+        </h1>
+        <p className="text-gray-500 mb-8 animate-slide-up">
+          {pageConfig?.page_subtitle || 'Inscrivez-vous à nos formations professionnelles.'}
+        </p>
 
         {loading && (
           <div className="flex justify-center py-16">
@@ -120,7 +132,9 @@ export default function FormationsPage() {
         {error && <Alert type="error" message={error} />}
 
         {!loading && formations.length === 0 && !error && (
-          <p className="text-center text-gray-400 py-16">Aucune formation disponible pour le moment.</p>
+          <p className="text-center text-gray-400 py-16">
+            {pageConfig?.empty_message || 'Aucune formation disponible pour le moment.'}
+          </p>
         )}
 
         {!loading && formations.length > 0 && (

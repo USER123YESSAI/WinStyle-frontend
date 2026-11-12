@@ -1,5 +1,5 @@
 'use client';
-import { InputHTMLAttributes, SelectHTMLAttributes, TextareaHTMLAttributes } from 'react';
+import { InputHTMLAttributes, SelectHTMLAttributes, TextareaHTMLAttributes, useId } from 'react';
 import clsx from 'clsx';
 
 type FieldError = { message?: string };
@@ -9,13 +9,18 @@ interface InputProps extends InputHTMLAttributes<HTMLInputElement> {
   label: string;
   error?: FieldError;
 }
-export function Input({ label, error, className, required, ...props }: InputProps) {
+export function Input({ label, error, className, required, id, ...props }: InputProps) {
+  const generatedId = useId();
+  const inputId = id || generatedId;
   return (
     <div className="flex flex-col gap-1">
-      <label className="text-sm font-medium text-navy-600">
+      <label htmlFor={inputId} className="text-sm font-medium text-navy-600">
         {label} {required && <span className="text-error-500">*</span>}
       </label>
       <input
+        id={inputId}
+        required={required}
+        aria-invalid={!!error}
         {...props}
         className={clsx(
           'w-full rounded-lg border px-4 py-2.5 text-sm outline-none transition-all duration-300',
@@ -24,7 +29,7 @@ export function Input({ label, error, className, required, ...props }: InputProp
           className
         )}
       />
-      {error && <p className="text-xs text-error-500">{error.message}</p>}
+      {error && <p className="text-xs text-error-500" role="alert">{error.message}</p>}
     </div>
   );
 }
@@ -36,13 +41,18 @@ interface SelectProps extends SelectHTMLAttributes<HTMLSelectElement> {
   options: { value: string; label: string }[];
   placeholder?: string;
 }
-export function Select({ label, error, options, placeholder, className, required, ...props }: SelectProps) {
+export function Select({ label, error, options, placeholder, className, required, id, ...props }: SelectProps) {
+  const generatedId = useId();
+  const selectId = id || generatedId;
   return (
     <div className="flex flex-col gap-1">
-      <label className="text-sm font-medium text-navy-600">
+      <label htmlFor={selectId} className="text-sm font-medium text-navy-600">
         {label} {required && <span className="text-error-500">*</span>}
       </label>
       <select
+        id={selectId}
+        required={required}
+        aria-invalid={!!error}
         defaultValue=""
         {...props}
         className={clsx(
@@ -57,7 +67,7 @@ export function Select({ label, error, options, placeholder, className, required
           <option key={o.value} value={o.value}>{o.label}</option>
         ))}
       </select>
-      {error && <p className="text-xs text-error-500">{error.message}</p>}
+      {error && <p className="text-xs text-error-500" role="alert">{error.message}</p>}
     </div>
   );
 }
@@ -67,13 +77,18 @@ interface TextareaProps extends TextareaHTMLAttributes<HTMLTextAreaElement> {
   label: string;
   error?: FieldError;
 }
-export function Textarea({ label, error, className, required, ...props }: TextareaProps) {
+export function Textarea({ label, error, className, required, id, ...props }: TextareaProps) {
+  const generatedId = useId();
+  const textareaId = id || generatedId;
   return (
     <div className="flex flex-col gap-1">
-      <label className="text-sm font-medium text-navy-600">
+      <label htmlFor={textareaId} className="text-sm font-medium text-navy-600">
         {label} {required && <span className="text-error-500">*</span>}
       </label>
       <textarea
+        id={textareaId}
+        required={required}
+        aria-invalid={!!error}
         {...props}
         rows={props.rows || 4}
         className={clsx(
@@ -83,7 +98,7 @@ export function Textarea({ label, error, className, required, ...props }: Textar
           className
         )}
       />
-      {error && <p className="text-xs text-error-500">{error.message}</p>}
+      {error && <p className="text-xs text-error-500" role="alert">{error.message}</p>}
     </div>
   );
 }
@@ -98,12 +113,14 @@ interface FileInputProps {
   onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
 }
 export function FileInput({ label, error, accept = '.pdf', register, name, onChange }: FileInputProps) {
+  const fileId = useId();
   return (
     <div className="flex flex-col gap-1">
-      <label className="text-sm font-medium text-navy-600">
+      <label htmlFor={fileId} className="text-sm font-medium text-navy-600">
         {label} <span className="text-error-500">*</span>
       </label>
       <input
+        id={fileId}
         type="file"
         accept={accept}
         onChange={onChange}
@@ -117,7 +134,7 @@ export function FileInput({ label, error, accept = '.pdf', register, name, onCha
         )}
       />
       <p className="text-xs text-gray-400">PDF uniquement · 5 Mo maximum</p>
-      {error && <p className="text-xs text-error-500">{error.message}</p>}
+      {error && <p className="text-xs text-error-500" role="alert">{error.message}</p>}
     </div>
   );
 }

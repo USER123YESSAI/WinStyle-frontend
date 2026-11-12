@@ -55,8 +55,10 @@ const email = Joi.string().email({ tlds: { allow: false } }).required().messages
   'string.email': "L'adresse e-mail est invalide",
   'any.required': "L'email est obligatoire",
 });
-const telephone = Joi.string().pattern(/^[+]?[0-9\s\-().]{7,20}$/).optional().allow('').messages({
-  'string.pattern.base': 'Numéro de téléphone invalide',
+const telephone = Joi.string().pattern(/^[+]?[0-9\s\-().]{8,20}$/).required().messages({
+  'string.empty': 'Le numéro de téléphone est obligatoire',
+  'string.pattern.base': 'Numéro de téléphone invalide (min. 8 chiffres)',
+  'any.required': 'Le numéro de téléphone est obligatoire',
 });
 
 // ─────────────────────────────────────────────────────────────────
@@ -118,16 +120,35 @@ export const contactSchema = Joi.object({
 }).unknown(true);
 
 export const formationSchema = Joi.object({
-  title: Joi.string().min(3).max(255).required().messages({
+  title: Joi.string().min(3).max(100).required().messages({
     'string.empty': 'Le titre est obligatoire',
     'string.min':   'Minimum 3 caractères',
     'any.required': 'Le titre est obligatoire',
   }),
-  description:        Joi.string().max(5000).optional().allow(''),
-  date:               Joi.string().optional().allow(''),
-  lieu:               Joi.string().max(255).optional().allow(''),
-  prix:               Joi.number().min(0).optional(),
-  places_disponibles: Joi.number().integer().min(1).optional(),
+  description: Joi.string().min(10).max(5000).required().messages({
+    'string.empty': 'La description est obligatoire',
+    'string.min':   'La description doit contenir au moins 10 caractères',
+    'any.required': 'La description est obligatoire',
+  }),
+  date: Joi.string().required().messages({
+    'string.empty': 'La date est obligatoire',
+    'any.required': 'La date est obligatoire',
+  }),
+  lieu: Joi.string().min(2).max(255).required().messages({
+    'string.empty': 'Le lieu est obligatoire',
+    'string.min':   'Le lieu doit contenir au moins 2 caractères',
+    'any.required': 'Le lieu est obligatoire',
+  }),
+  prix: Joi.number().positive().required().messages({
+    'number.base':     'Le prix est obligatoire',
+    'number.positive': 'Le prix doit être supérieur à 0',
+    'any.required':    'Le prix est obligatoire',
+  }),
+  places_disponibles: Joi.number().integer().min(1).required().messages({
+    'number.base': 'Le nombre de places est obligatoire',
+    'number.min':  'Au moins 1 place disponible requise',
+    'any.required': 'Le nombre de places est obligatoire',
+  }),
 }).unknown(true);
 
 // ─────────────────────────────────────────────────────────────────

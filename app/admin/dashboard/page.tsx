@@ -3,20 +3,22 @@ import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import api from '@/lib/api';
 import RealisationTab from './_components/RealisationTab';
+import FormationsTab from './_components/FormationsTab';
+import PartenairesManager, { PartenaireItem } from '@/components/admin/PartenairesManager';
+import TemoignagesManager, { TemoignageItem } from '@/components/admin/TemoignagesManager';
+import CmsStudioManager from '@/components/admin/CmsStudioManager';
 
 
-interface Stats { formations: number; inscriptions: number; candidatures: number; realisations: number; services: number; contacts: number; }
+interface Stats { formations: number; inscriptions: number; candidatures: number; realisations: number; partenaires: number; temoignages: number; services: number; contacts: number; }
 interface Formation { id: number; title: string; description: string; date: string; lieu: string; prix: number; places_disponibles: number; }
 interface Candidature { id: number; nom: string; email: string; poste: string; statut: string; createdAt: string; cv_url?: string; }
 interface Inscription { id: number; nom: string; email: string; createdAt: string; Formation?: { title: string; date: string }; }
 interface Realisation { id: number; title: string; description: string; image_url: string; createdAt: string; }
 interface AdminUser { id: number; nom: string; email: string; createdAt: string; }
 interface Log { id: number; adminNom: string; adminEmail: string; action: string; cible?: string; ip?: string; createdAt: string; }
-type Tab = 'stats' | 'formations' | 'inscriptions' | 'candidatures' | 'realisations' | 'services' | 'contacts' | 'admins' | 'logs';
+type Tab = 'stats' | 'cms' | 'formations' | 'inscriptions' | 'candidatures' | 'realisations' | 'partenaires' | 'temoignages' | 'services' | 'contacts' | 'admins' | 'logs';
 
-const EMPTY_ADMIN      = { nom: '', email: '', password: '' };
-const EMPTY_FORMATION  = { title: '', description: '', date: '', lieu: '', prix: '', places_disponibles: '' };
-const EMPTY_REALISATION = { title: '', description: '', image_url: '' };
+const EMPTY_ADMIN = { nom: '', email: '', password: '' };
 
 function ActionBadge({ action }: { action: string }) {
   const a = action.toLowerCase();
@@ -33,6 +35,8 @@ export default function AdminDashboard() {
   const [stats, setStats]           = useState<Stats | null>(null);
   const [formations, setFormations] = useState<Formation[]>([]);
   const [realisations, setRealisations] = useState<Realisation[]>([]);
+  const [partenaires, setPartenaires] = useState<PartenaireItem[]>([]);
+  const [temoignages, setTemoignages] = useState<TemoignageItem[]>([]);
   const [inscriptions, setInscriptions] = useState<Inscription[]>([]);
   const [candidatures, setCandidatures] = useState<Candidature[]>([]);
   const [services, setServices]     = useState<any[]>([]);
@@ -50,47 +54,61 @@ export default function AdminDashboard() {
   const [adminFormLoading, setAdminFormLoading] = useState(false);
   const [adminFormMsg, setAdminFormMsg] = useState<{ type: 'success' | 'error'; text: string } | null>(null);
 
-  // ── Formation form ──
-  const [formationForm, setFormationForm] = useState(EMPTY_FORMATION);
-  const [formationFormErrors, setFormationFormErrors] = useState<Record<string, string>>({});
-  const [formationFormLoading, setFormationFormLoading] = useState(false);
-  const [formationFormMsg, setFormationFormMsg] = useState<{ type: 'success' | 'error'; text: string } | null>(null);
-  const [editingFormation, setEditingFormation] = useState<Formation | null>(null);
-  const [showFormationForm, setShowFormationForm] = useState(false);
-
-  // ── Réalisation form ──
-  const [realisationForm, setRealisationForm] = useState(EMPTY_REALISATION);
-  const [realisationFormErrors, setRealisationFormErrors] = useState<Record<string, string>>({});
-  const [realisationFormLoading, setRealisationFormLoading] = useState(false);
-  const [realisationFormMsg, setRealisationFormMsg] = useState<{ type: 'success' | 'error'; text: string } | null>(null);
-  const [editingRealisation, setEditingRealisation] = useState<Realisation | null>(null);
-  const [showRealisationForm, setShowRealisationForm] = useState(false);
-
   const logout = () => { localStorage.removeItem('wins_token'); router.push('/admin/login'); };
-
-  const retourVersLogin = () => {
-    router.push('/admin/login');
-  };
 
   useEffect(() => {
     const token = localStorage.getItem('wins_token');
     if (!token) { router.push('/admin/login'); return; }
-    try {
-      const payload = JSON.parse(atob(token.split('.')[1]));
-      if (payload.role === 'superadmin') setIsSuperAdmin(true);
-    } catch {}
-    Promise.all([
+
+    api.get('/auth/me')
+      .then((meRes) => {
+        if (meRes.data?.user?.role === 'superadmin') setIsSuperAdmin(true);
+      })
+      .catch(() => {
+        localStorage.removeItem('wins_token');
+        router.push('/admin/login');
+      });
+
+    Promise.allSettled([
       api.get('/formations'), api.get('/inscriptions'), api.get('/candidatures'),
-      api.get('/realisations'), api.get('/services'), api.get('/contact'),
-    ]).then(([f, i, c, r, s, co]) => {
-      const parse = (res: any) => Array.isArray(res.data) ? res.data : Array.isArray(res.data?.data) ? res.data.data : [];
+      api.get('/realisations'), api.get('/partenaires/admin'), api.get('/temoignages/admin'),
+      api.get('/services'), api.get('/contact'),
+    ]).then(([f, i, c, r, p, t, s, co]) => {
+      const parse = (res: PromiseSettledResult<any>) => {
+        if (res.status !== 'fulfilled') return [];
+        const d = res.value?.data;
+        return Array.isArray(d) ? d : Array.isArray(d?.data) ? d.data : [];
+      };
       const fData = parse(f); const iData = parse(i); const cData = parse(c);
-      const rData = parse(r); const sData = parse(s); const coData = parse(co);
-      setStats({ formations: fData.length, inscriptions: iData.length, candidatures: cData.length, realisations: rData.length, services: sData.length, contacts: coData.length });
+      const rData = parse(r); const pData = parse(p); const tData = parse(t);
+      const sData = parse(s); const coData = parse(co);
+      setStats({
+        formations: fData.length,
+        inscriptions: iData.length,
+        candidatures: cData.length,
+        realisations: rData.length,
+        partenaires: pData.length,
+        temoignages: tData.length,
+        services: sData.length,
+        contacts: coData.length,
+      });
       setFormations(fData); setInscriptions(iData); setCandidatures(cData);
-      setRealisations(rData); setServices(sData); setContacts(coData);
-    }).catch(() => router.push('/admin/login')).finally(() => setLoading(false));
-  }, []);
+      setRealisations(rData); setPartenaires(pData); setTemoignages(tData);
+      setServices(sData); setContacts(coData);
+    }).finally(() => setLoading(false));
+  }, [router]);
+
+  // Synchronise les compteurs dynamiques
+  useEffect(() => {
+    setStats(prev => prev ? {
+      ...prev,
+      formations: formations.length,
+      realisations: realisations.length,
+      partenaires: partenaires.length,
+      temoignages: temoignages.length,
+      candidatures: candidatures.length,
+    } : prev);
+  }, [formations.length, realisations.length, partenaires.length, temoignages.length, candidatures.length]);
 
   // Fermer la sidebar on mobile quand on change de tab
   const handleTabChange = (newTab: Tab) => {
@@ -102,46 +120,6 @@ export default function AdminDashboard() {
     if (tab === 'admins' && isSuperAdmin) api.get('/auth/admins').then(r => setAdmins(r.data)).catch(() => {});
     if (tab === 'logs'   && isSuperAdmin) api.get('/auth/logs').then(r => setLogs(r.data)).catch(() => {});
   }, [tab, isSuperAdmin]);
-
-  // ── Formation handlers ──
-  const openCreateFormation = () => { setEditingFormation(null); setFormationForm(EMPTY_FORMATION); setFormationFormErrors({}); setFormationFormMsg(null); setShowFormationForm(true); };
-  const openEditFormation = (f: Formation) => {
-    setEditingFormation(f);
-    setFormationForm({ title: f.title, description: f.description || '', date: f.date ? f.date.slice(0, 10) : '', lieu: f.lieu || '', prix: String(f.prix || ''), places_disponibles: String(f.places_disponibles || '') });
-    setFormationFormErrors({}); setFormationFormMsg(null); setShowFormationForm(true);
-  };
-  const handleFormationSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    const errors: Record<string, string> = {};
-    if (!formationForm.title.trim())       errors.title = 'Le titre est obligatoire';
-    if (!formationForm.date)               errors.date  = 'La date est obligatoire';
-    if (!formationForm.lieu.trim())        errors.lieu  = 'Le lieu est obligatoire';
-    if (!formationForm.prix)               errors.prix  = 'Le prix est obligatoire';
-    if (!formationForm.places_disponibles) errors.places_disponibles = 'Les places sont obligatoires';
-    if (Object.keys(errors).length > 0) { setFormationFormErrors(errors); return; }
-    setFormationFormLoading(true); setFormationFormMsg(null);
-    try {
-      const payload = { ...formationForm, prix: parseInt(formationForm.prix), places_disponibles: parseInt(formationForm.places_disponibles) };
-      if (editingFormation) { await api.put(`/formations/${editingFormation.id}`, payload); setFormationFormMsg({ type: 'success', text: 'Formation modifiée !' }); }
-      else { await api.post('/formations', payload); setFormationFormMsg({ type: 'success', text: 'Formation créée !' }); }
-      const res = await api.get('/formations');
-      const data = Array.isArray(res.data) ? res.data : res.data?.data ?? [];
-      setFormations(data); setStats(prev => prev ? { ...prev, formations: data.length } : prev);
-      setFormationForm(EMPTY_FORMATION); setEditingFormation(null);
-      setTimeout(() => { setShowFormationForm(false); setFormationFormMsg(null); }, 1500);
-    } catch (err: any) {
-      setFormationFormMsg({ type: 'error', text: err.response?.data?.message || 'Erreur lors de la sauvegarde' });
-    } finally { setFormationFormLoading(false); }
-  };
-  const deleteFormation = async (id: number) => {
-    if (!confirm('Supprimer cette formation ?')) return;
-    await api.delete(`/formations/${id}`);
-    const updated = formations.filter(f => f.id !== id);
-    setFormations(updated); setStats(prev => prev ? { ...prev, formations: updated.length } : prev);
-  };
-
-  // ── Réalisation CRUD is handled by <RealisationsManager /> ──
-
 
   // ── Candidature handlers ──
   const updateStatut = async (id: number, statut: string) => {
@@ -178,22 +156,28 @@ export default function AdminDashboard() {
   };
 
   const TABS: { key: Tab; label: string; icon: string; superOnly?: boolean }[] = [
-    { key: 'stats',        label: 'Tableau de bord', icon: '📊' },
-    { key: 'formations',   label: 'Formations',      icon: '🎓' },
-    { key: 'realisations', label: 'Réalisations',    icon: '🏆' },
-    { key: 'inscriptions', label: 'Inscriptions',    icon: '📝' },
-    { key: 'candidatures', label: 'Candidatures',    icon: '👤' },
-    { key: 'services',     label: 'Demandes',        icon: '💼' },
-    { key: 'contacts',     label: 'Messages',        icon: '✉️' },
-    { key: 'admins',       label: 'Admins',          icon: '🔑', superOnly: true },
-    { key: 'logs',         label: 'Logs activité',   icon: '📋', superOnly: true },
+    { key: 'stats',        label: 'Tableau de bord',   icon: '📊' },
+    { key: 'cms',          label: 'Contenu du site',   icon: '✨' },
+    { key: 'formations',   label: 'Formations',        icon: '🎓' },
+    { key: 'realisations', label: 'Réalisations',      icon: '🏆' },
+    { key: 'partenaires',  label: 'Partenaires',       icon: '🤝' },
+    { key: 'temoignages',  label: 'Témoignages',       icon: '💬' },
+    { key: 'inscriptions', label: 'Inscriptions',      icon: '📝' },
+    { key: 'candidatures', label: 'Candidatures',      icon: '👤' },
+    { key: 'services',     label: 'Demandes',          icon: '💼' },
+    { key: 'contacts',     label: 'Messages',          icon: '✉️' },
+    { key: 'admins',       label: 'Admins',            icon: '🔑', superOnly: true },
+    { key: 'logs',         label: 'Logs activité',     icon: '📋', superOnly: true },
   ];
 
   const statCards = [
+    { label: 'Contenu CMS',  value: 12,                  icon: '✨', bg: 'bg-gradient-to-br from-navy-800 to-navy-600', tab: 'cms' as Tab },
     { label: 'Formations',   value: stats?.formations,   icon: '🎓', bg: 'bg-blue-600',   tab: 'formations'   as Tab },
     { label: 'Inscriptions', value: stats?.inscriptions, icon: '📝', bg: 'bg-green-600',  tab: 'inscriptions' as Tab },
     { label: 'Candidatures', value: stats?.candidatures, icon: '👤', bg: 'bg-cyan-500',   tab: 'candidatures' as Tab },
     { label: 'Réalisations', value: stats?.realisations, icon: '🏆', bg: 'bg-purple-600', tab: 'realisations' as Tab },
+    { label: 'Partenaires',  value: stats?.partenaires,  icon: '🤝', bg: 'bg-indigo-600', tab: 'partenaires'  as Tab },
+    { label: 'Témoignages',  value: stats?.temoignages,  icon: '💬', bg: 'bg-amber-600',  tab: 'temoignages'  as Tab },
     { label: 'Demandes',     value: stats?.services,     icon: '💼', bg: 'bg-yellow-500', tab: 'services'     as Tab },
     { label: 'Messages',     value: stats?.contacts,     icon: '✉️', bg: 'bg-green-700',  tab: 'contacts'     as Tab },
     { label: 'Acceptées',  value: candidatures.filter(c => c.statut === 'acceptée').length,   icon: '✅', bg: 'bg-gray-700', tab: undefined },
@@ -308,116 +292,20 @@ export default function AdminDashboard() {
             </>
           )}
 
-          {/* ── FORMATIONS ── */}
+          {/* ── CMS (Gestion 100 % dynamique du site) ── */}
+          {tab === 'cms' && (
+            <div className="space-y-6">
+              <CmsStudioManager />
+            </div>
+          )}
+
+          {/* ── FORMATIONS (utilise FormationsManager) ── */}
           {tab === 'formations' && (
             <div className="space-y-6">
-              <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
-                <h2 className="text-2xl font-bold text-navy-600">🎓 Formations ({formations.length})</h2>
-                <button onClick={openCreateFormation} className="w-full sm:w-auto flex items-center justify-center gap-2 bg-gradient-to-r from-gold-400 to-gold-500 hover:from-gold-300 hover:to-gold-400 text-navy-900 px-4 py-2 rounded-lg text-sm font-semibold transition-all duration-300 hover:shadow-glow">
-                  ➕ Nouvelle formation
-                </button>
-              </div>
-              {showFormationForm && (
-                <div className="card-modern bg-white rounded-xl border border-gray-200 p-4 md:p-6">
-                  <div className="flex items-center justify-between mb-5">
-                    <h3 className="font-bold text-navy-600">{editingFormation ? '✏️ Modifier la formation' : '➕ Créer une formation'}</h3>
-                    <button onClick={() => setShowFormationForm(false)} className="text-gray-400 hover:text-gray-600 text-xl transition-colors">✕</button>
-                  </div>
-                  {formationFormMsg && (
-                    <div className={`mb-4 px-4 py-3 rounded-lg text-sm font-medium ${formationFormMsg.type === 'success' ? 'bg-success-50 text-success-700 border border-success-200' : 'bg-error-50 text-error-700 border border-error-200'}`}>
-                      {formationFormMsg.text}
-                    </div>
-                  )}
-                  <form onSubmit={handleFormationSubmit} className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                    <div className="sm:col-span-2">
-                      <label className="text-xs font-semibold text-gray-600 mb-1 block">Titre *</label>
-                      <input value={formationForm.title} placeholder="Ex : Formation Hôtesse d'accueil"
-                        onChange={e => { setFormationForm(p => ({ ...p, title: e.target.value })); setFormationFormErrors(p => ({ ...p, title: '' })); }}
-                        className={`w-full border rounded-lg px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-gold-400 transition-all ${formationFormErrors.title ? 'border-error-500 bg-error-50' : 'border-gray-300 focus:border-gold-400'}`} />
-                      {formationFormErrors.title && <p className="text-xs text-red-500 mt-1">{formationFormErrors.title}</p>}
-                    </div>
-                    <div className="sm:col-span-2">
-                      <label className="text-xs font-semibold text-gray-600 mb-1 block">Description</label>
-                      <textarea value={formationForm.description} rows={3} placeholder="Décrivez la formation..."
-                        onChange={e => setFormationForm(p => ({ ...p, description: e.target.value }))}
-                        className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-blue-500 resize-none" />
-                    </div>
-                    <div>
-                      <label className="text-xs font-semibold text-gray-600 mb-1 block">Date *</label>
-                      <input type="date" value={formationForm.date}
-                        onChange={e => { setFormationForm(p => ({ ...p, date: e.target.value })); setFormationFormErrors(p => ({ ...p, date: '' })); }}
-                        className={`w-full border rounded-lg px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-gold-400 transition-all ${formationFormErrors.date ? 'border-error-500 bg-error-50' : 'border-gray-300 focus:border-gold-400'}`} />
-                      {formationFormErrors.date && <p className="text-xs text-red-500 mt-1">{formationFormErrors.date}</p>}
-                    </div>
-                    <div>
-                      <label className="text-xs font-semibold text-gray-600 mb-1 block">Lieu *</label>
-                      <input value={formationForm.lieu} placeholder="Ex : N'Djaména, Tchad"
-                        onChange={e => { setFormationForm(p => ({ ...p, lieu: e.target.value })); setFormationFormErrors(p => ({ ...p, lieu: '' })); }}
-                        className={`w-full border rounded-lg px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-gold-400 transition-all ${formationFormErrors.lieu ? 'border-error-500 bg-error-50' : 'border-gray-300 focus:border-gold-400'}`} />
-                      {formationFormErrors.lieu && <p className="text-xs text-red-500 mt-1">{formationFormErrors.lieu}</p>}
-                    </div>
-                    <div>
-                      <label className="text-xs font-semibold text-gray-600 mb-1 block">Prix (FCFA) *</label>
-                      <input type="number" value={formationForm.prix} placeholder="Ex : 50000"
-                        onChange={e => { setFormationForm(p => ({ ...p, prix: e.target.value })); setFormationFormErrors(p => ({ ...p, prix: '' })); }}
-                        className={`w-full border rounded-lg px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-gold-400 transition-all ${formationFormErrors.prix ? 'border-error-500 bg-error-50' : 'border-gray-300 focus:border-gold-400'}`} />
-                      {formationFormErrors.prix && <p className="text-xs text-red-500 mt-1">{formationFormErrors.prix}</p>}
-                    </div>
-                    <div>
-                      <label className="text-xs font-semibold text-gray-600 mb-1 block">Places disponibles *</label>
-                      <input type="number" value={formationForm.places_disponibles} placeholder="Ex : 20"
-                        onChange={e => { setFormationForm(p => ({ ...p, places_disponibles: e.target.value })); setFormationFormErrors(p => ({ ...p, places_disponibles: '' })); }}
-                        className={`w-full border rounded-lg px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-gold-400 transition-all ${formationFormErrors.places_disponibles ? 'border-error-500 bg-error-50' : 'border-gray-300 focus:border-gold-400'}`} />
-                      {formationFormErrors.places_disponibles && <p className="text-xs text-red-500 mt-1">{formationFormErrors.places_disponibles}</p>}
-                    </div>
-                    <div className="sm:col-span-2 flex flex-col sm:flex-row gap-3">
-                      <button type="submit" disabled={formationFormLoading}
-                        className="flex-1 bg-gradient-to-r from-gold-400 to-gold-500 hover:from-gold-300 hover:to-gold-400 disabled:opacity-60 text-navy-900 px-6 py-2 rounded-lg text-sm font-semibold transition-all duration-300 hover:shadow-glow flex items-center justify-center gap-2">
-                        {formationFormLoading ? <span className="w-4 h-4 border-2 border-navy-900 border-t-transparent rounded-full animate-spin" /> : editingFormation ? '💾' : '➕'}
-                        {editingFormation ? 'Enregistrer les modifications' : 'Créer la formation'}
-                      </button>
-                      <button type="button" onClick={() => setShowFormationForm(false)}
-                        className="flex-1 border border-gray-300 text-gray-600 px-4 py-2 rounded-lg text-sm font-medium hover:bg-gray-50 transition-all duration-300">
-                        Annuler
-                      </button>
-                    </div>
-                  </form>
-                </div>
-              )}
-              <div className="card-modern bg-white rounded-xl border border-gray-200 overflow-hidden">
-                <div className="overflow-x-auto">
-                  <table className="w-full text-xs sm:text-sm">
-                    <thead className="bg-gray-50 text-gray-500 text-xs uppercase">
-                      <tr>{['Titre','Date','Lieu','Prix','Places','Actions'].map(h => <th key={h} className="px-3 md:px-5 py-3 text-left font-semibold">{h}</th>)}</tr>
-                    </thead>
-                    <tbody className="divide-y divide-gray-100">
-                      {formations.map(f => (
-                        <tr key={f.id} className="hover:bg-gray-50 transition-colors">
-                          <td className="px-3 md:px-5 py-3 font-medium text-navy-600 max-w-xs">
-                            <p className="truncate text-xs md:text-sm">{f.title}</p>
-                            {f.description && <p className="text-xs text-gray-400 truncate mt-0.5">{f.description}</p>}
-                          </td>
-                          <td className="px-3 md:px-5 py-3 text-gray-500 whitespace-nowrap text-xs md:text-sm">{f.date ? new Date(f.date).toLocaleDateString('fr-FR') : '—'}</td>
-                          <td className="px-3 md:px-5 py-3 text-gray-500 text-xs md:text-sm">{f.lieu || '—'}</td>
-                          <td className="px-3 md:px-5 py-3 text-gray-700 whitespace-nowrap text-xs md:text-sm">{f.prix ? `${Number(f.prix).toLocaleString('fr-FR')} FCFA` : '—'}</td>
-                          <td className="px-3 md:px-5 py-3"><span className="bg-navy-50 text-navy-700 text-xs font-semibold px-2 py-1 rounded-full whitespace-nowrap">{f.places_disponibles}</span></td>
-                          <td className="px-3 md:px-5 py-3">
-                            <div className="flex flex-col md:flex-row items-start md:items-center gap-2 md:gap-3">
-                              <button onClick={() => openEditFormation(f)} className="text-navy-500 hover:text-navy-700 text-xs font-medium transition-colors">Modifier</button>
-                              <button onClick={() => deleteFormation(f.id)} className="text-error-400 hover:text-error-600 text-xs font-medium transition-colors">Supprimer</button>
-                            </div>
-                          </td>
-                        </tr>
-                      ))}
-                      {formations.length === 0 && (
-                        <tr><td colSpan={6} className="px-3 md:px-5 py-12 text-center text-gray-400 text-xs md:text-sm">
-                          Aucune formation — <button onClick={openCreateFormation} className="text-gold-500 hover:underline transition-colors">créer la première</button>
-                        </td></tr>
-                      )}
-                    </tbody>
-                  </table>
-                </div>
-              </div>
+              <FormationsTab
+                formations={formations as any}
+                setFormations={setFormations as any}
+              />
             </div>
           )}
 
@@ -427,6 +315,26 @@ export default function AdminDashboard() {
               <RealisationTab
                 realisations={realisations as any}
                 setRealisations={setRealisations as any}
+              />
+            </div>
+          )}
+
+          {/* ── PARTENAIRES ── */}
+          {tab === 'partenaires' && (
+            <div className="space-y-6">
+              <PartenairesManager
+                partenaires={partenaires}
+                setPartenaires={setPartenaires}
+              />
+            </div>
+          )}
+
+          {/* ── TÉMOIGNAGES ── */}
+          {tab === 'temoignages' && (
+            <div className="space-y-6">
+              <TemoignagesManager
+                temoignages={temoignages}
+                setTemoignages={setTemoignages}
               />
             </div>
           )}

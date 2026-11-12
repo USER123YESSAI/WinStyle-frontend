@@ -1,6 +1,7 @@
 'use client';
 import { useState, useEffect, useCallback } from 'react';
 import Link from 'next/link';
+import { useCms } from '@/components/cms/CmsProvider';
 import api from '@/lib/api';
 
 type Categorie = 'Tous' | 'Agence' | 'Mode' | 'RASMA' | 'Formation';
@@ -66,6 +67,13 @@ const getImageUrl = (imagePath: string | undefined | null): string => {
 };
 
 export default function RealisationsPage() {
+  const { getSectionContent } = useCms();
+  const realPageConfig = getSectionContent('realisations_page');
+  const dynamicCategories: Categorie[] =
+    Array.isArray(realPageConfig?.categories) && realPageConfig.categories.length > 0
+      ? realPageConfig.categories
+      : CATEGORIES;
+
   const [filtre, setFiltre] = useState<Categorie>('Tous');
   const [realisations, setRealisations] = useState<Realisation[]>([]);
   const [loading, setLoading] = useState(true);
@@ -191,10 +199,15 @@ export default function RealisationsPage() {
             <div className="absolute bottom-1/4 right-1/4 w-80 h-80 bg-navy-400/10 rounded-full blur-3xl animate-float delay-500" />
           </div>
           <div className="relative max-w-4xl mx-auto text-center animate-fade-in">
-            <p className="text-gold-400 font-semibold text-sm uppercase tracking-widest mb-3">Ce que nous avons accompli</p>
-            <h1 className="text-5xl font-black text-white mb-3">Nos Réalisations</h1>
+            <p className="text-gold-400 font-semibold text-sm uppercase tracking-widest mb-3">
+              {realPageConfig?.hero_subtitle || 'Ce que nous avons accompli'}
+            </p>
+            <h1 className="text-5xl font-black text-white mb-3">
+              {realPageConfig?.hero_title || 'Nos Réalisations'}
+            </h1>
             <p className="text-white/60 text-lg max-w-2xl mx-auto">
-             Découvrez nos événements, collections et formations qui font de WinStyle une référence au Tchad et en Afrique centrale.
+              {realPageConfig?.hero_description ||
+                'Découvrez nos événements, collections et formations qui font de WinStyle une référence au Tchad et en Afrique centrale.'}
             </p>
           </div>
         </section>
@@ -203,7 +216,7 @@ export default function RealisationsPage() {
         <section className="bg-white border-b border-gray-200 sticky top-0 z-20 glass">
           <div className="max-w-5xl mx-auto px-6">
             <div className="flex overflow-x-auto py-3 gap-2">
-              {CATEGORIES.map((cat) => (
+              {dynamicCategories.map((cat) => (
                 <button
                   key={cat}
                   onClick={() => setFiltre(cat)}
@@ -245,7 +258,8 @@ export default function RealisationsPage() {
                   return (
                     <div
                       key={realisation.id}
-                      className={`group card-modern bg-white rounded-2xl overflow-hidden border border-gray-100 hover:shadow-card-hover hover:-translate-y-1 transition-all duration-300 animate-slide-up delay-${i * 100}`}
+                      style={{ animationDelay: `${i * 100}ms` }}
+                      className="group card-modern bg-white rounded-2xl overflow-hidden border border-gray-100 hover:shadow-card-hover hover:-translate-y-1 transition-all duration-300 animate-slide-up"
                     >
                       {/* Image with navigation buttons - now clickable to open modal */}
                       <div className="relative h-48 bg-gray-100 overflow-hidden cursor-pointer" onClick={() => totalImages > 0 && openImageModal(realisation.id, currentIdx)}>
@@ -332,16 +346,17 @@ export default function RealisationsPage() {
         <section className="py-12 px-6 bg-navy-600">
           <div className="max-w-3xl mx-auto text-center">
             <h2 className="text-3xl font-black text-white mb-4">
-              Prêt à travailler ensemble ?
+              {realPageConfig?.cta_title || 'Prêt à travailler ensemble ?'}
             </h2>
             <p className="text-white/60 mb-6 text-lg">
-              Faites confiance à WinStyle pour vos événements et projets.
+              {realPageConfig?.cta_description ||
+                'Faites confiance à WinStyle pour vos événements et projets.'}
             </p>
             <Link
-              href="/contact"
+              href={realPageConfig?.cta_btn_href || '/contact'}
               className="inline-flex items-center gap-2 bg-gradient-to-r from-gold-400 to-gold-500 hover:from-gold-300 hover:to-gold-400 text-navy-900 font-bold px-8 py-4 rounded-xl transition-all duration-300 hover:shadow-glow"
             >
-              Faire appel à WinStyle
+              {realPageConfig?.cta_btn_label || 'Faire appel à WinStyle'}
               <span>→</span>
             </Link>
           </div>

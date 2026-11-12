@@ -54,11 +54,12 @@ export default function FormationsManager({ formations, setFormations }: Formati
     e.preventDefault();
     const newErrors: Record<string, string> = {};
     
-    if (!form.title.trim()) newErrors.title = 'Le titre est obligatoire';
+    if (!form.title.trim() || form.title.trim().length < 3) newErrors.title = 'Le titre est obligatoire (min. 3 caractères)';
+    if (!form.description.trim() || form.description.trim().length < 10) newErrors.description = 'La description est obligatoire (min. 10 caractères)';
     if (!form.date) newErrors.date = 'La date est obligatoire';
     if (!form.lieu.trim()) newErrors.lieu = 'Le lieu est obligatoire';
-    if (!form.prix) newErrors.prix = 'Le prix est obligatoire';
-    if (!form.places_disponibles) newErrors.places_disponibles = 'Les places sont obligatoires';
+    if (!form.prix || Number(form.prix) <= 0) newErrors.prix = 'Le prix doit être supérieur à 0';
+    if (!form.places_disponibles || Number(form.places_disponibles) < 1) newErrors.places_disponibles = 'Au moins 1 place est obligatoire';
     
     if (Object.keys(newErrors).length > 0) {
       setErrors(newErrors);
@@ -155,14 +156,15 @@ export default function FormationsManager({ formations, setFormations }: Formati
               {errors.title && <p className="text-xs text-error-500 mt-1">{errors.title}</p>}
             </div>
             <div className="sm:col-span-2">
-              <label className="text-xs font-semibold text-navy-600 mb-1 block">Description</label>
+              <label className="text-xs font-semibold text-navy-600 mb-1 block">Description *</label>
               <textarea
                 value={form.description}
                 rows={3}
-                placeholder="Décrivez la formation..."
-                onChange={e => setForm(p => ({ ...p, description: e.target.value }))}
-                className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-gold-400 resize-none transition-all duration-300 hover:border-gray-400"
+                placeholder="Décrivez la formation (min. 10 caractères)..."
+                onChange={e => { setForm(p => ({ ...p, description: e.target.value })); setErrors(p => ({ ...p, description: '' })); }}
+                className={`${inputCls(errors.description)} resize-none`}
               />
+              {errors.description && <p className="text-xs text-error-500 mt-1">{errors.description}</p>}
             </div>
             <div>
               <label className="text-xs font-semibold text-navy-600 mb-1 block">Date *</label>
@@ -178,7 +180,7 @@ export default function FormationsManager({ formations, setFormations }: Formati
               <label className="text-xs font-semibold text-navy-600 mb-1 block">Lieu *</label>
               <input
                 value={form.lieu}
-                placeholder="Ex : Dakar, Sénégal"
+                placeholder="Ex : N'Djaména, Tchad"
                 onChange={e => { setForm(p => ({ ...p, lieu: e.target.value })); setErrors(p => ({ ...p, lieu: '' })); }}
                 className={inputCls(errors.lieu)}
               />
