@@ -144,30 +144,34 @@ export default function GaleriePage() {
       {/* Lightbox */}
       {currentItem && lightboxIdx !== null && (
         <div
-          className="fixed inset-0 z-[100] bg-black/90 backdrop-blur-sm flex items-center justify-center p-4 md:p-8"
+          style={{ zIndex: 9999 }}
+          className="fixed inset-0 bg-black/90 backdrop-blur-sm flex items-center justify-center p-4 md:p-8"
           onClick={() => setLightboxIdx(null)}
         >
-          {/* Bouton fermer toujours visible en haut à droite (comme dans Réalisations) */}
-          <button
-            type="button"
-            onClick={(e) => {
-              e.stopPropagation();
-              setLightboxIdx(null);
-            }}
-            aria-label="Fermer"
-            className="fixed top-4 right-4 md:top-6 md:right-6 z-[110] w-12 h-12 bg-black/60 hover:bg-black/80 backdrop-blur-sm text-white rounded-full flex items-center justify-center transition-all duration-300 hover:scale-110 shadow-2xl border border-white/20"
-          >
-            <X className="w-6 h-6" />
-          </button>
-
           <div
-            className="relative max-w-4xl w-full flex flex-col items-center"
+            className="relative max-w-4xl w-full max-h-[92vh] flex flex-col items-center"
             onClick={(e) => e.stopPropagation()}
           >
+            {/* Barre supérieure avec compteur et bouton Fermer toujours visible */}
+            <div className="w-full flex items-center justify-between mb-3">
+              <span className="text-white/70 text-xs font-semibold bg-white/10 px-3 py-1.5 rounded-full">
+                {lightboxIdx + 1} / {filtered.length}
+              </span>
+              <button
+                type="button"
+                onClick={() => setLightboxIdx(null)}
+                aria-label="Fermer"
+                className="inline-flex items-center gap-2 bg-white/20 hover:bg-gold-400 hover:text-navy-900 text-white border border-white/30 px-4 py-2 rounded-full text-sm font-bold transition-all shadow-lg"
+              >
+                <X className="w-4 h-4" />
+                <span>Fermer</span>
+              </button>
+            </div>
+
             <img
               src={resolveCmsMediaUrl(currentItem.image)}
               alt={currentItem.titre}
-              className="max-h-[68vh] w-auto object-contain rounded-2xl shadow-2xl"
+              className="max-h-[65vh] w-auto object-contain rounded-2xl shadow-2xl"
             />
             <div className="mt-4 text-center text-white max-w-xl">
               <span className="text-gold-400 text-xs font-bold uppercase tracking-widest">
