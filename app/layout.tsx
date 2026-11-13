@@ -79,11 +79,9 @@ export const metadata: Metadata = {
       "Agence de placement événementiel, confection sur mesure et cosmétique naturelle à N'Djaména, Tchad.",
     images: ['/images/services/hotesses-stewards.jpg'],
   },
-  ...(process.env.NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION && {
-    verification: {
-      google: process.env.NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION,
-    },
-  }),
+  verification: {
+    google: process.env.NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION || '3c4rwlF8Ve_zPpNy-l4rkl0YhbUNrLP3z6SR_4DUmfc',
+  },
 };
 
 const jsonLd = {
