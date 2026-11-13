@@ -145,16 +145,16 @@ export default function GaleriePage() {
       {currentItem && lightboxIdx !== null && (
         <div
           style={{ zIndex: 9999 }}
-          className="fixed inset-0 bg-black/90 backdrop-blur-sm flex items-center justify-center p-4 md:p-8"
+          className="fixed inset-0 bg-black/90 backdrop-blur-sm flex items-center justify-center p-4 md:p-6 overflow-y-auto"
           onClick={() => setLightboxIdx(null)}
         >
           <div
-            className="relative max-w-4xl w-full max-h-[92vh] flex flex-col items-center"
+            className="relative max-w-4xl w-full my-auto flex flex-col items-center"
             onClick={(e) => e.stopPropagation()}
           >
             {/* Barre supérieure avec compteur et bouton Fermer toujours visible */}
-            <div className="w-full flex items-center justify-between mb-3">
-              <span className="text-white/70 text-xs font-semibold bg-white/10 px-3 py-1.5 rounded-full">
+            <div className="w-full flex items-center justify-between mb-3 shrink-0">
+              <span className="text-white/80 text-xs font-semibold bg-white/10 px-3 py-1.5 rounded-full">
                 {lightboxIdx + 1} / {filtered.length}
               </span>
               <button
@@ -171,36 +171,33 @@ export default function GaleriePage() {
             <img
               src={resolveCmsMediaUrl(currentItem.image)}
               alt={currentItem.titre}
-              className="max-h-[65vh] w-auto object-contain rounded-2xl shadow-2xl"
+              className="max-h-[54vh] md:max-h-[58vh] w-auto object-contain rounded-2xl shadow-2xl"
             />
-            <div className="mt-4 text-center text-white max-w-xl">
+            <div className="mt-3 text-center text-white max-w-xl shrink-0">
               <span className="text-gold-400 text-xs font-bold uppercase tracking-widest">
                 {currentItem.categorie}
               </span>
-              <h3 className="text-xl font-bold mt-1">{currentItem.titre}</h3>
+              <h3 className="text-lg md:text-xl font-bold mt-1">{currentItem.titre}</h3>
               {currentItem.legende && (
-                <p className="text-sm text-white/70 mt-1">{currentItem.legende}</p>
+                <p className="text-xs md:text-sm text-white/70 mt-1">{currentItem.legende}</p>
               )}
             </div>
             {filtered.length > 1 && (
-              <div className="flex items-center gap-4 mt-4">
+              <div className="flex items-center gap-4 mt-3 shrink-0">
                 <button
                   type="button"
                   onClick={() =>
                     setLightboxIdx(lightboxIdx === 0 ? filtered.length - 1 : lightboxIdx - 1)
                   }
-                  className="px-4 py-2 rounded-xl bg-white/15 hover:bg-gold-400 hover:text-navy-900 text-white text-sm font-bold transition inline-flex items-center gap-1.5"
+                  className="px-4 py-2 rounded-xl bg-white/15 hover:bg-gold-400 hover:text-navy-900 text-white border border-white/20 text-sm font-bold transition inline-flex items-center gap-1.5"
                 >
                   <ArrowLeft className="w-4 h-4" />
                   <span>Précédente</span>
                 </button>
-                <span className="text-white/60 text-xs">
-                  {lightboxIdx + 1} / {filtered.length}
-                </span>
                 <button
                   type="button"
                   onClick={() => setLightboxIdx((lightboxIdx + 1) % filtered.length)}
-                  className="px-4 py-2 rounded-xl bg-white/15 hover:bg-gold-400 hover:text-navy-900 text-white text-sm font-bold transition inline-flex items-center gap-1.5"
+                  className="px-4 py-2 rounded-xl bg-white/15 hover:bg-gold-400 hover:text-navy-900 text-white border border-white/20 text-sm font-bold transition inline-flex items-center gap-1.5"
                 >
                   <span>Suivante</span>
                   <ArrowRight className="w-4 h-4" />
