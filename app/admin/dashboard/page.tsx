@@ -467,7 +467,7 @@ export default function AdminDashboard() {
                         </td>
                         <td className="px-3 md:px-5 py-3 text-xs md:text-sm">
                           {c.cv_url
-                            ? <a href={`${process.env.NEXT_PUBLIC_API_URL?.replace('/api', '')}${c.cv_url}`} target="_blank" rel="noopener noreferrer" className="text-navy-500 hover:text-navy-700 font-medium transition-colors">Voir CV</a>
+                            ? <a href={c.cv_url.startsWith('http') ? c.cv_url : `${(process.env.NEXT_PUBLIC_API_URL || 'https://winstyle-backend.onrender.com/api').replace(/\/api\/?$/, '')}${c.cv_url}`} target="_blank" rel="noopener noreferrer" className="text-navy-500 hover:text-navy-700 font-medium transition-colors">Voir CV</a>
                             : <span className="text-gray-300">—</span>}
                         </td>
                         <td className="px-3 md:px-5 py-3"><button onClick={() => deleteCandidature(c.id)} className="text-error-400 hover:text-error-600 text-xs font-medium transition-colors">Supprimer</button></td>
