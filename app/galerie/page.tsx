@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { X, ArrowLeft, ArrowRight } from 'lucide-react';
 import { useCms, resolveCmsMediaUrl } from '@/components/cms/CmsProvider';
 
@@ -35,6 +35,23 @@ export default function GaleriePage() {
       : allItems.filter((item: any) => item.categorie === selectedCategory);
 
   const currentItem = lightboxIdx !== null ? filtered[lightboxIdx] : null;
+
+  useEffect(() => {
+    if (lightboxIdx === null) return;
+    const handleKey = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') setLightboxIdx(null);
+      if (e.key === 'ArrowRight' && filtered.length > 1) {
+        setLightboxIdx((prev) => (prev === null ? 0 : (prev + 1) % filtered.length));
+      }
+      if (e.key === 'ArrowLeft' && filtered.length > 1) {
+        setLightboxIdx((prev) =>
+          prev === null ? 0 : prev === 0 ? filtered.length - 1 : prev - 1
+        );
+      }
+    };
+    window.addEventListener('keydown', handleKey);
+    return () => window.removeEventListener('keydown', handleKey);
+  }, [lightboxIdx, filtered.length]);
 
   return (
     <main className="min-h-screen bg-gray-50">
@@ -127,25 +144,30 @@ export default function GaleriePage() {
       {/* Lightbox */}
       {currentItem && lightboxIdx !== null && (
         <div
-          className="fixed inset-0 z-50 bg-black/90 backdrop-blur-sm flex items-center justify-center p-4"
+          className="fixed inset-0 z-[100] bg-black/90 backdrop-blur-sm flex items-center justify-center p-4 md:p-8"
           onClick={() => setLightboxIdx(null)}
         >
+          {/* Bouton fermer toujours visible en haut à droite (comme dans Réalisations) */}
+          <button
+            type="button"
+            onClick={(e) => {
+              e.stopPropagation();
+              setLightboxIdx(null);
+            }}
+            aria-label="Fermer"
+            className="fixed top-4 right-4 md:top-6 md:right-6 z-[110] w-12 h-12 bg-black/60 hover:bg-black/80 backdrop-blur-sm text-white rounded-full flex items-center justify-center transition-all duration-300 hover:scale-110 shadow-2xl border border-white/20"
+          >
+            <X className="w-6 h-6" />
+          </button>
+
           <div
             className="relative max-w-4xl w-full flex flex-col items-center"
             onClick={(e) => e.stopPropagation()}
           >
-            <button
-              type="button"
-              onClick={() => setLightboxIdx(null)}
-              className="absolute -top-12 right-0 text-white hover:text-gold-400 text-sm font-bold inline-flex items-center gap-1.5 transition"
-            >
-              <X className="w-5 h-5" />
-              <span>Fermer</span>
-            </button>
             <img
               src={resolveCmsMediaUrl(currentItem.image)}
               alt={currentItem.titre}
-              className="max-h-[75vh] w-auto object-contain rounded-2xl shadow-2xl"
+              className="max-h-[68vh] w-auto object-contain rounded-2xl shadow-2xl"
             />
             <div className="mt-4 text-center text-white max-w-xl">
               <span className="text-gold-400 text-xs font-bold uppercase tracking-widest">
