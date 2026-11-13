@@ -10,14 +10,6 @@ export default function GaleriePage() {
   const [selectedCategory, setSelectedCategory] = useState('Tous');
   const [lightboxIdx, setLightboxIdx] = useState<number | null>(null);
 
-  if (!isSectionActive('galerie')) {
-    return (
-      <main className="min-h-screen bg-gray-50 pt-32 pb-20 px-6 text-center">
-        <p className="text-gray-400">Cette section est momentanément désactivée.</p>
-      </main>
-    );
-  }
-
   const allItems = Array.isArray(galerie?.items)
     ? [...galerie.items]
         .filter((item: any) => item.actif !== false)
@@ -52,6 +44,14 @@ export default function GaleriePage() {
     window.addEventListener('keydown', handleKey);
     return () => window.removeEventListener('keydown', handleKey);
   }, [lightboxIdx, filtered.length]);
+
+  if (!isSectionActive('galerie')) {
+    return (
+      <main className="min-h-screen bg-gray-50 pt-32 pb-20 px-6 text-center">
+        <p className="text-gray-400">Cette section est momentanément désactivée.</p>
+      </main>
+    );
+  }
 
   return (
     <main className="min-h-screen bg-gray-50">
