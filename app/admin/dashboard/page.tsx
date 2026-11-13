@@ -28,8 +28,6 @@ import {
   Pencil,
   ShieldCheck,
   User,
-  ArrowRight,
-  ExternalLink,
   LucideIcon,
 } from 'lucide-react';
 import api from '@/lib/api';
@@ -225,10 +223,20 @@ export default function AdminDashboard() {
     { key: 'logs',         label: 'Logs activité',     icon: Activity, superOnly: true },
   ];
 
-  const pendingCandidatures = candidatures.filter(c => c.statut === 'en attente').length;
-  const acceptedCandidatures = candidatures.filter(c => c.statut === 'acceptée').length;
-  const rejectedCandidatures = candidatures.filter(c => c.statut === 'refusée').length;
-  const totalCandidatures = candidatures.length || 1;
+  const statCards: { label: string; value: number | undefined; icon: LucideIcon; bg: string; tab?: Tab }[] = [
+    { label: 'Contenu CMS',  value: 12,                  icon: Sparkles,           bg: 'bg-gradient-to-br from-navy-800 to-navy-600', tab: 'cms' as Tab },
+    { label: 'Formations',   value: stats?.formations,   icon: GraduationCap,      bg: 'bg-blue-600',   tab: 'formations'   as Tab },
+    { label: 'Inscriptions', value: stats?.inscriptions, icon: ClipboardList,      bg: 'bg-green-600',  tab: 'inscriptions' as Tab },
+    { label: 'Candidatures', value: stats?.candidatures, icon: UserCheck,          bg: 'bg-cyan-500',   tab: 'candidatures' as Tab },
+    { label: 'Réalisations', value: stats?.realisations, icon: Trophy,             bg: 'bg-purple-600', tab: 'realisations' as Tab },
+    { label: 'Partenaires',  value: stats?.partenaires,  icon: Handshake,          bg: 'bg-indigo-600', tab: 'partenaires'  as Tab },
+    { label: 'Témoignages',  value: stats?.temoignages,  icon: MessageSquareQuote, bg: 'bg-amber-600',  tab: 'temoignages'  as Tab },
+    { label: 'Demandes',     value: stats?.services,     icon: Briefcase,          bg: 'bg-yellow-500', tab: 'services'     as Tab },
+    { label: 'Messages',     value: stats?.contacts,     icon: Mail,               bg: 'bg-green-700',  tab: 'contacts'     as Tab },
+    { label: 'Acceptées',    value: candidatures.filter(c => c.statut === 'acceptée').length,   icon: CheckCircle2, bg: 'bg-gray-700', tab: undefined },
+    { label: 'En attente',   value: candidatures.filter(c => c.statut === 'en attente').length, icon: Clock,        bg: 'bg-gray-900', tab: undefined },
+    { label: 'Refusées',     value: candidatures.filter(c => c.statut === 'refusée').length,    icon: XCircle,      bg: 'bg-red-600',  tab: undefined },
+  ];
 
   const filteredLogs = logs.filter(l =>
     !logFilter ||
@@ -328,228 +336,31 @@ export default function AdminDashboard() {
         <div className="flex-1 overflow-y-auto">
           <div className="px-4 md:px-8 py-6 md:py-8">
 
-          {/* ── VUE D'ENSEMBLE (SANS CARTES COLORÉES) ── */}
+          {/* ── STATS ── */}
           {tab === 'stats' && (
-            <div className="space-y-6 max-w-7xl mx-auto">
-              {/* En-tête épuré */}
-              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-                <div>
-                  <h2 className="text-2xl font-bold text-navy-900 tracking-tight">Vue d'ensemble</h2>
-                  <p className="text-sm text-gray-500 mt-0.5">
-                    Suivi de l'activité et gestion des contenus de Win's Agency.
-                  </p>
-                </div>
-                <div className="flex items-center gap-2.5">
-                  <button
-                    onClick={() => handleTabChange('cms')}
-                    className="inline-flex items-center gap-2 bg-navy-900 hover:bg-navy-800 text-white text-xs sm:text-sm font-medium px-4 py-2 rounded-lg transition"
-                  >
-                    <Sparkles className="w-4 h-4 text-gold-400" />
-                    <span>Éditer le site</span>
-                  </button>
-                  <a
-                    href="/"
-                    target="_blank"
-                    rel="noreferrer"
-                    className="inline-flex items-center gap-1.5 bg-white hover:bg-gray-50 text-gray-700 border border-gray-200 text-xs sm:text-sm font-medium px-3.5 py-2 rounded-lg transition"
-                  >
-                    <span>Voir le site</span>
-                    <ExternalLink className="w-3.5 h-3.5 text-gray-400" />
-                  </a>
-                </div>
+            <>
+              <h2 className="text-2xl font-bold text-navy-600 mb-6 flex items-center gap-2.5">
+                <LayoutDashboard className="w-6 h-6 text-gold-500" />
+                <span>Tableau de bord</span>
+              </h2>
+              <div className="grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3 md:gap-5">
+                {statCards.map(s => {
+                  const StatIcon = s.icon;
+                  return (
+                    <button key={s.label} onClick={() => s.tab && handleTabChange(s.tab)}
+                      className={`${s.bg} text-white rounded-xl p-4 md:p-5 text-left shadow-card hover:shadow-card-hover hover:-translate-y-1 transition-all duration-300 flex flex-col items-start justify-between h-full`}>
+                      <div className="w-full">
+                        <p className="text-xs md:text-sm font-medium opacity-90 mb-1 line-clamp-1">{s.label}</p>
+                        <p className="text-2xl md:text-4xl font-bold">{s.value ?? 0}</p>
+                      </div>
+                      <div className="w-10 h-10 rounded-lg bg-white/15 flex items-center justify-center mt-3">
+                        <StatIcon className="w-5 h-5 text-white" />
+                      </div>
+                    </button>
+                  );
+                })}
               </div>
-
-              {/* Bandeau d'indicateurs unifié */}
-              <div className="bg-white rounded-2xl border border-gray-200/80 shadow-sm overflow-hidden">
-                <div className="grid grid-cols-2 lg:grid-cols-4 divide-y lg:divide-y-0 lg:divide-x divide-gray-100">
-                  {[
-                    {
-                      label: 'Inscriptions',
-                      value: stats?.inscriptions ?? 0,
-                      sub: `${stats?.formations ?? 0} formation(s) active(s)`,
-                      icon: ClipboardList,
-                      target: 'inscriptions' as Tab,
-                    },
-                    {
-                      label: 'Candidatures',
-                      value: stats?.candidatures ?? 0,
-                      sub: pendingCandidatures > 0 ? `${pendingCandidatures} en attente` : 'Tout est traité',
-                      icon: UserCheck,
-                      target: 'candidatures' as Tab,
-                    },
-                    {
-                      label: 'Demandes de service',
-                      value: stats?.services ?? 0,
-                      sub: 'Devis & réservations',
-                      icon: Briefcase,
-                      target: 'services' as Tab,
-                    },
-                    {
-                      label: 'Messages reçus',
-                      value: stats?.contacts ?? 0,
-                      sub: 'Formulaire de contact',
-                      icon: Mail,
-                      target: 'contacts' as Tab,
-                    },
-                  ].map((item) => {
-                    const Icon = item.icon;
-                    return (
-                      <button
-                        key={item.label}
-                        onClick={() => handleTabChange(item.target)}
-                        className="p-5 sm:p-6 text-left hover:bg-gray-50/70 transition-colors group"
-                      >
-                        <div className="flex items-center justify-between mb-3">
-                          <span className="text-xs font-medium uppercase tracking-wider text-gray-400">
-                            {item.label}
-                          </span>
-                          <Icon className="w-4 h-4 text-gray-400 group-hover:text-navy-700 transition-colors" />
-                        </div>
-                        <p className="text-3xl font-bold text-navy-900 tracking-tight">{item.value}</p>
-                        <p className="text-xs text-gray-500 mt-1">{item.sub}</p>
-                      </button>
-                    );
-                  })}
-                </div>
-              </div>
-
-              {/* Grille principale 2 colonnes */}
-              <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-                {/* Colonne gauche : Activité récente + Suivi candidatures */}
-                <div className="lg:col-span-2 space-y-6">
-                  {/* Dernières inscriptions & candidatures */}
-                  <div className="bg-white rounded-2xl border border-gray-200/80 shadow-sm overflow-hidden">
-                    <div className="px-6 py-4 border-b border-gray-100 flex items-center justify-between">
-                      <h3 className="text-sm font-semibold text-navy-900">Dernières inscriptions aux formations</h3>
-                      <button
-                        onClick={() => handleTabChange('inscriptions')}
-                        className="text-xs font-medium text-navy-600 hover:text-gold-600 inline-flex items-center gap-1 transition"
-                      >
-                        <span>Tout voir</span>
-                        <ArrowRight className="w-3.5 h-3.5" />
-                      </button>
-                    </div>
-                    {inscriptions.length === 0 ? (
-                      <div className="px-6 py-8 text-center text-sm text-gray-400">
-                        Aucune inscription enregistrée pour le moment.
-                      </div>
-                    ) : (
-                      <div className="divide-y divide-gray-100">
-                        {inscriptions.slice(0, 5).map((ins) => (
-                          <div key={ins.id} className="px-6 py-3.5 flex items-center justify-between gap-4 hover:bg-gray-50/60 transition">
-                            <div className="min-w-0">
-                              <p className="text-sm font-medium text-navy-900 truncate">{ins.nom}</p>
-                              <p className="text-xs text-gray-500 truncate">{ins.email}</p>
-                            </div>
-                            <div className="text-right shrink-0">
-                              <span className="inline-block text-xs font-medium text-navy-700 bg-navy-50 px-2.5 py-1 rounded-md">
-                                {ins.Formation?.title || 'Formation'}
-                              </span>
-                              <p className="text-[11px] text-gray-400 mt-1">
-                                {new Date(ins.createdAt).toLocaleDateString('fr-FR')}
-                              </p>
-                            </div>
-                          </div>
-                        ))}
-                      </div>
-                    )}
-                  </div>
-
-                  {/* Répartition des candidatures */}
-                  <div className="bg-white rounded-2xl border border-gray-200/80 shadow-sm p-6">
-                    <div className="flex items-center justify-between mb-4">
-                      <div>
-                        <h3 className="text-sm font-semibold text-navy-900">Suivi des candidatures</h3>
-                        <p className="text-xs text-gray-500 mt-0.5">
-                          {candidatures.length} candidature(s) reçue(s) au total
-                        </p>
-                      </div>
-                      <button
-                        onClick={() => handleTabChange('candidatures')}
-                        className="text-xs font-medium text-navy-600 hover:text-gold-600 inline-flex items-center gap-1 transition"
-                      >
-                        <span>Gérer</span>
-                        <ArrowRight className="w-3.5 h-3.5" />
-                      </button>
-                    </div>
-
-                    <div className="w-full h-2 bg-gray-100 rounded-full overflow-hidden flex mb-4">
-                      <div
-                        className="bg-emerald-500 h-full transition-all"
-                        style={{ width: `${(acceptedCandidatures / totalCandidatures) * 100}%` }}
-                      />
-                      <div
-                        className="bg-amber-400 h-full transition-all"
-                        style={{ width: `${(pendingCandidatures / totalCandidatures) * 100}%` }}
-                      />
-                      <div
-                        className="bg-rose-400 h-full transition-all"
-                        style={{ width: `${(rejectedCandidatures / totalCandidatures) * 100}%` }}
-                      />
-                    </div>
-
-                    <div className="grid grid-cols-3 gap-4 text-sm">
-                      <div className="flex items-center gap-2">
-                        <span className="w-2.5 h-2.5 rounded-full bg-emerald-500 shrink-0" />
-                        <span className="text-gray-600 text-xs">Acceptées</span>
-                        <span className="font-semibold text-navy-900 ml-auto">{acceptedCandidatures}</span>
-                      </div>
-                      <div className="flex items-center gap-2">
-                        <span className="w-2.5 h-2.5 rounded-full bg-amber-400 shrink-0" />
-                        <span className="text-gray-600 text-xs">En attente</span>
-                        <span className="font-semibold text-navy-900 ml-auto">{pendingCandidatures}</span>
-                      </div>
-                      <div className="flex items-center gap-2">
-                        <span className="w-2.5 h-2.5 rounded-full bg-rose-400 shrink-0" />
-                        <span className="text-gray-600 text-xs">Refusées</span>
-                        <span className="font-semibold text-navy-900 ml-auto">{rejectedCandidatures}</span>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-
-                {/* Colonne droite : Contenus du site (liste sobre) */}
-                <div className="bg-white rounded-2xl border border-gray-200/80 shadow-sm overflow-hidden h-fit">
-                  <div className="px-6 py-4 border-b border-gray-100">
-                    <h3 className="text-sm font-semibold text-navy-900">Contenus du site</h3>
-                    <p className="text-xs text-gray-500 mt-0.5">Accès rapide aux modules</p>
-                  </div>
-                  <div className="divide-y divide-gray-100">
-                    {[
-                      { label: 'Sections CMS', count: 12, icon: Sparkles, target: 'cms' as Tab },
-                      { label: 'Formations', count: stats?.formations ?? 0, icon: GraduationCap, target: 'formations' as Tab },
-                      { label: 'Réalisations', count: stats?.realisations ?? 0, icon: Trophy, target: 'realisations' as Tab },
-                      { label: 'Partenaires', count: stats?.partenaires ?? 0, icon: Handshake, target: 'partenaires' as Tab },
-                      { label: 'Témoignages', count: stats?.temoignages ?? 0, icon: MessageSquareQuote, target: 'temoignages' as Tab },
-                    ].map((mod) => {
-                      const ModIcon = mod.icon;
-                      return (
-                        <button
-                          key={mod.label}
-                          onClick={() => handleTabChange(mod.target)}
-                          className="w-full px-6 py-3.5 flex items-center justify-between hover:bg-gray-50/70 transition-colors group text-left"
-                        >
-                          <div className="flex items-center gap-3">
-                            <div className="w-8 h-8 rounded-lg bg-gray-50 border border-gray-200/70 flex items-center justify-center text-navy-700 group-hover:border-gold-400 group-hover:bg-gold-50/50 transition">
-                              <ModIcon className="w-4 h-4" />
-                            </div>
-                            <span className="text-sm font-medium text-gray-700 group-hover:text-navy-900">
-                              {mod.label}
-                            </span>
-                          </div>
-                          <div className="flex items-center gap-2">
-                            <span className="text-xs font-semibold text-gray-500 bg-gray-100 px-2 py-0.5 rounded-full">
-                              {mod.count}
-                            </span>
-                            <ArrowRight className="w-3.5 h-3.5 text-gray-300 group-hover:text-navy-700 transition" />
-                          </div>
-                        </button>
-                      );
-                    })}
-                  </div>
-                </div>
-              </div>
-            </div>
+            </>
           )}
 
           {/* ── CMS (Gestion 100 % dynamique du site) ── */}
