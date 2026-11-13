@@ -1,5 +1,6 @@
 'use client';
 import { useEffect, useState } from 'react';
+import { X } from 'lucide-react';
 import { Input, Button, Alert } from '@/components/ui/FormElements';
 import { inscriptionSchema, validateForm } from '@/lib/schemas';
 import { useCms } from '@/components/cms/CmsProvider';
@@ -59,7 +60,9 @@ function InscriptionModal({ formation, onClose }: { formation: Formation; onClos
     >
       <div className="card-modern bg-white rounded-2xl w-full max-w-md p-6 relative">
         <button onClick={onClose} type="button" aria-label="Fermer"
-          className="absolute top-4 right-4 text-gray-400 hover:text-gray-700 text-xl font-bold transition-colors">✕</button>
+          className="absolute top-4 right-4 text-gray-400 hover:text-gray-700 p-1 rounded-lg hover:bg-gray-100 transition-colors">
+          <X className="w-5 h-5" />
+        </button>
 
         <h2 id="inscription-modal-title" className="text-xl font-bold text-navy-600 mb-1">S'inscrire à la formation</h2>
         <p className="text-sm text-gray-500 mb-5">{formation.title}</p>

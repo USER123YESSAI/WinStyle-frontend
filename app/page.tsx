@@ -3,8 +3,10 @@
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
+import { Trophy, ArrowRight } from 'lucide-react';
 import PartnerMarquee, { PartenaireItem } from '@/components/ui/PartnerMarquee';
 import FaqSection from '@/components/ui/FaqSection';
+import DynamicIcon, { stripLeadingEmoji } from '@/components/ui/DynamicIcon';
 import { useCms, resolveCmsMediaUrl } from '@/components/cms/CmsProvider';
 import api from '@/lib/api';
 
@@ -179,7 +181,7 @@ export default function HomePage() {
                                  hover:-translate-y-0.5 flex items-center justify-center gap-2"
                     >
                       {hero.primary_btn_label}
-                      <span className="group-hover:translate-x-1 transition-transform">→</span>
+                      <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
                     </Link>
                   )}
                   {hero.secondary_btn_label && (
@@ -223,16 +225,20 @@ export default function HomePage() {
         <section className="py-6 px-6 bg-gradient-to-r from-gold-400 to-gold-500">
           <div className="max-w-4xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4">
             <div>
-              <p className="text-navy-900 font-black text-2xl mb-1">{banner.title}</p>
+              <p className="text-navy-900 font-black text-2xl mb-1 flex items-center gap-2.5">
+                <Trophy className="w-6 h-6 text-navy-900 shrink-0" />
+                <span>{stripLeadingEmoji(banner.title)}</span>
+              </p>
               <p className="text-navy-900/80 font-medium">{banner.description}</p>
             </div>
             {banner.btn_label && (
               <Link
                 href={banner.btn_href || '/about'}
                 className="flex-shrink-0 bg-navy-900 hover:bg-navy-700 text-white font-bold px-6 py-3
-                           rounded-xl transition-all duration-300 whitespace-nowrap hover:shadow-lg"
+                           rounded-xl transition-all duration-300 whitespace-nowrap hover:shadow-lg inline-flex items-center gap-2"
               >
-                {banner.btn_label}
+                <span>{banner.btn_label.replace(/\s*→\s*$/, '')}</span>
+                <ArrowRight className="w-4 h-4" />
               </Link>
             )}
           </div>
@@ -286,7 +292,7 @@ export default function HomePage() {
                       href={sec.lien || '/services'}
                       className="inline-flex items-center gap-2 text-navy-700 hover:text-gold-500 font-bold text-sm transition-colors"
                     >
-                      Découvrir ce pôle <span>→</span>
+                      Découvrir ce pôle <ArrowRight className="w-4 h-4" />
                     </Link>
                   </div>
                 </div>
@@ -317,7 +323,9 @@ export default function HomePage() {
                   key={v.id || idx}
                   className="card-modern bg-white rounded-2xl p-6 border border-gray-100 hover:shadow-card-hover hover:-translate-y-1 transition-all duration-300"
                 >
-                  <div className="text-3xl mb-3">{v.icon}</div>
+                  <div className="w-12 h-12 rounded-xl bg-gold-400/15 border border-gold-400/25 flex items-center justify-center mb-4">
+                    <DynamicIcon name={v.icon} className="w-6 h-6 text-gold-500" />
+                  </div>
                   <h3 className="font-bold text-navy-700 text-lg mb-2">{v.title}</h3>
                   <p className="text-gray-500 text-sm leading-relaxed">{v.desc}</p>
                 </div>

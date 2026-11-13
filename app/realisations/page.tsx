@@ -1,6 +1,7 @@
 'use client';
 import { useState, useEffect, useCallback } from 'react';
 import Link from 'next/link';
+import { ChevronLeft, ChevronRight, ArrowRight, X } from 'lucide-react';
 import { useCms } from '@/components/cms/CmsProvider';
 import api from '@/lib/api';
 
@@ -284,7 +285,7 @@ export default function RealisationsPage() {
                                   className="absolute left-3 top-1/2 -translate-y-1/2 w-10 h-10 bg-white/90 hover:bg-white shadow-lg text-gray-800 rounded-full flex items-center justify-center opacity-100 hover:scale-110 transition-all duration-200 z-10"
                                   aria-label="Image précédente"
                                 >
-                                  ←
+                                  <ChevronLeft className="w-5 h-5" />
                                 </button>
                                 
                                 <button
@@ -293,7 +294,7 @@ export default function RealisationsPage() {
                                   className="absolute right-3 top-1/2 -translate-y-1/2 w-10 h-10 bg-white/90 hover:bg-white shadow-lg text-gray-800 rounded-full flex items-center justify-center opacity-100 hover:scale-110 transition-all duration-200 z-10"
                                   aria-label="Image suivante"
                                 >
-                                  →
+                                  <ChevronRight className="w-5 h-5" />
                                 </button>
                                 
                                 {/* Counter always shown */}
@@ -356,8 +357,8 @@ export default function RealisationsPage() {
               href={realPageConfig?.cta_btn_href || '/contact'}
               className="inline-flex items-center gap-2 bg-gradient-to-r from-gold-400 to-gold-500 hover:from-gold-300 hover:to-gold-400 text-navy-900 font-bold px-8 py-4 rounded-xl transition-all duration-300 hover:shadow-glow"
             >
-              {realPageConfig?.cta_btn_label || 'Faire appel à WinStyle'}
-              <span>→</span>
+              <span>{realPageConfig?.cta_btn_label || 'Faire appel à WinStyle'}</span>
+              <ArrowRight className="w-4 h-4" />
             </Link>
           </div>
         </section>
@@ -425,17 +426,17 @@ export default function RealisationsPage() {
               <>
                 <button
                   onClick={prevModalImage}
-                  className="absolute left-4 md:left-8 top-1/2 -translate-y-1/2 w-14 h-14 bg-white/20 hover:bg-white/40 backdrop-blur-sm text-white text-2xl font-bold rounded-full flex items-center justify-center transition-all duration-200 hover:scale-110 shadow-2xl"
+                  className="absolute left-4 md:left-8 top-1/2 -translate-y-1/2 w-14 h-14 bg-white/20 hover:bg-white/40 backdrop-blur-sm text-white rounded-full flex items-center justify-center transition-all duration-200 hover:scale-110 shadow-2xl"
                   aria-label="Image précédente"
                 >
-                  ←
+                  <ChevronLeft className="w-7 h-7" />
                 </button>
                 <button
                   onClick={nextModalImage}
-                  className="absolute right-4 md:right-8 top-1/2 -translate-y-1/2 w-14 h-14 bg-white/20 hover:bg-white/40 backdrop-blur-sm text-white text-2xl font-bold rounded-full flex items-center justify-center transition-all duration-200 hover:scale-110 shadow-2xl"
+                  className="absolute right-4 md:right-8 top-1/2 -translate-y-1/2 w-14 h-14 bg-white/20 hover:bg-white/40 backdrop-blur-sm text-white rounded-full flex items-center justify-center transition-all duration-200 hover:scale-110 shadow-2xl"
                   aria-label="Image suivante"
                 >
-                  →
+                  <ChevronRight className="w-7 h-7" />
                 </button>
               </>
             )}
@@ -443,10 +444,10 @@ export default function RealisationsPage() {
             {/* Close Button */}
             <button
               onClick={closeImageModal}
-              className="absolute top-4 right-4 md:top-6 md:right-6 w-12 h-12 bg-black/50 hover:bg-black/70 backdrop-blur-sm text-white text-2xl font-bold rounded-full flex items-center justify-center transition-all duration-300 hover:scale-110 shadow-2xl"
+              className="absolute top-4 right-4 md:top-6 md:right-6 w-12 h-12 bg-black/50 hover:bg-black/70 backdrop-blur-sm text-white rounded-full flex items-center justify-center transition-all duration-300 hover:scale-110 shadow-2xl"
               aria-label="Fermer"
             >
-              ✕
+              <X className="w-6 h-6" />
             </button>
           </div>
         </div>

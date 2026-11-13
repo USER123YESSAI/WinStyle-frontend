@@ -1,6 +1,7 @@
 'use client';
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
+import { ArrowLeft } from 'lucide-react';
 import { Input, Button, Alert } from '@/components/ui/FormElements';
 import { loginSchema, validateForm, LoginFormData } from '@/lib/schemas';
 import api from '@/lib/api';
@@ -64,7 +65,8 @@ export default function AdminLoginPage() {
           onClick={() => router.push('/')}
           className="w-full flex items-center justify-center gap-2 border border-gray-300 text-gray-700 hover:bg-gray-50 px-4 py-2 rounded-lg text-sm font-semibold transition"
         >
-          ↩︎ Retour accueil
+          <ArrowLeft className="w-4 h-4" />
+          <span>Retour accueil</span>
         </button>
       </div>
         </form>

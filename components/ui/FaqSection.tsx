@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import { ChevronDown } from 'lucide-react';
 import { useCms } from '@/components/cms/CmsProvider';
 
 export default function FaqSection({ maxItems }: { maxItems?: number }) {
@@ -60,13 +61,13 @@ export default function FaqSection({ maxItems }: { maxItems?: number }) {
                     </h3>
                   </div>
                   <span
-                    className={`w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0 text-sm font-bold transition-transform duration-300 ${
+                    className={`w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0 transition-transform duration-300 ${
                       isOpen
                         ? 'bg-gold-400 text-navy-900 rotate-180'
                         : 'bg-gray-100 text-navy-600'
                     }`}
                   >
-                    ↓
+                    <ChevronDown className="w-4 h-4" />
                   </span>
                 </button>
                 {isOpen && (

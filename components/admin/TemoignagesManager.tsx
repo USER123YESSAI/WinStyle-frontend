@@ -1,5 +1,17 @@
 'use client';
 import { useState } from 'react';
+import {
+  MessageSquareQuote,
+  Plus,
+  Pencil,
+  Save,
+  X,
+  ChevronUp,
+  ChevronDown,
+  Eye,
+  EyeOff,
+  Star,
+} from 'lucide-react';
 import api from '@/lib/api';
 import { resolveMediaUrl } from './PartenairesManager';
 
@@ -218,7 +230,10 @@ export default function TemoignagesManager({ temoignages, setTemoignages }: Temo
       {/* En-tête */}
       <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
         <div>
-          <h2 className="text-2xl font-bold text-navy-600">💬 Témoignages clients ({temoignages.length})</h2>
+          <h2 className="text-2xl font-bold text-navy-600 flex items-center gap-2.5">
+            <MessageSquareQuote className="w-6 h-6 text-gold-500" />
+            <span>Témoignages clients ({temoignages.length})</span>
+          </h2>
           <p className="text-xs text-gray-500 mt-1">
             Ajoutez, modifiez, réorganisez ou masquez les avis clients affichés sur la page d&apos;accueil.
           </p>
@@ -227,7 +242,8 @@ export default function TemoignagesManager({ temoignages, setTemoignages }: Temo
           onClick={openCreate}
           className="w-full sm:w-auto flex items-center justify-center gap-2 bg-gradient-to-r from-gold-400 to-gold-500 hover:from-gold-300 hover:to-gold-400 text-navy-900 px-4 py-2.5 rounded-lg text-sm font-semibold transition-all duration-300 hover:shadow-glow"
         >
-          ➕ Nouveau témoignage
+          <Plus className="w-4 h-4" />
+          <span>Nouveau témoignage</span>
         </button>
       </div>
 
@@ -255,15 +271,26 @@ export default function TemoignagesManager({ temoignages, setTemoignages }: Temo
       {showForm && (
         <div className="card-modern bg-white rounded-xl border border-gray-200 p-4 md:p-6">
           <div className="flex items-center justify-between mb-5">
-            <h3 className="font-bold text-navy-600 text-base">
-              {editingItem ? `✏️ Modifier le témoignage de ${editingItem.nom}` : '➕ Ajouter un témoignage client'}
+            <h3 className="font-bold text-navy-600 text-base flex items-center gap-2">
+              {editingItem ? (
+                <>
+                  <Pencil className="w-4 h-4 text-gold-500" />
+                  <span>Modifier le témoignage de {editingItem.nom}</span>
+                </>
+              ) : (
+                <>
+                  <Plus className="w-4 h-4 text-gold-500" />
+                  <span>Ajouter un témoignage client</span>
+                </>
+              )}
             </h3>
             <button
               type="button"
               onClick={() => setShowForm(false)}
-              className="text-gray-400 hover:text-gray-600 text-xl transition-colors"
+              aria-label="Fermer"
+              className="text-gray-400 hover:text-gray-600 p-1 rounded-lg hover:bg-gray-100 transition-colors"
             >
-              ✕
+              <X className="w-5 h-5" />
             </button>
           </div>
 
@@ -327,7 +354,7 @@ export default function TemoignagesManager({ temoignages, setTemoignages }: Temo
                 >
                   {[5, 4, 3, 2, 1].map((n) => (
                     <option key={n} value={n}>
-                      {'★'.repeat(n)}{'☆'.repeat(5 - n)} ({n}/5)
+                      {n} {n > 1 ? 'étoiles' : 'étoile'} ({n}/5)
                     </option>
                   ))}
                 </select>
@@ -429,11 +456,11 @@ export default function TemoignagesManager({ temoignages, setTemoignages }: Temo
                 {loading ? (
                   <span className="w-4 h-4 border-2 border-navy-900 border-t-transparent rounded-full animate-spin" />
                 ) : editingItem ? (
-                  '💾'
+                  <Save className="w-4 h-4" />
                 ) : (
-                  '➕'
+                  <Plus className="w-4 h-4" />
                 )}
-                {editingItem ? 'Enregistrer les modifications' : 'Ajouter le témoignage'}
+                <span>{editingItem ? 'Enregistrer les modifications' : 'Ajouter le témoignage'}</span>
               </button>
               <button
                 type="button"
@@ -475,18 +502,18 @@ export default function TemoignagesManager({ temoignages, setTemoignages }: Temo
                               disabled={reordering || idx === 0}
                               onClick={() => handleMove(idx, 'up')}
                               title="Monter"
-                              className="px-1.5 py-0.5 text-[10px] rounded bg-gray-100 hover:bg-gold-400 hover:text-navy-900 disabled:opacity-30 transition"
+                              className="p-0.5 rounded bg-gray-100 hover:bg-gold-400 hover:text-navy-900 disabled:opacity-30 transition flex items-center justify-center"
                             >
-                              ▲
+                              <ChevronUp className="w-3.5 h-3.5" />
                             </button>
                             <button
                               type="button"
                               disabled={reordering || idx === filteredTemoignages.length - 1}
                               onClick={() => handleMove(idx, 'down')}
                               title="Descendre"
-                              className="px-1.5 py-0.5 text-[10px] rounded bg-gray-100 hover:bg-gold-400 hover:text-navy-900 disabled:opacity-30 transition"
+                              className="p-0.5 rounded bg-gray-100 hover:bg-gold-400 hover:text-navy-900 disabled:opacity-30 transition flex items-center justify-center"
                             >
-                              ▼
+                              <ChevronDown className="w-3.5 h-3.5" />
                             </button>
                           </div>
                         )}
@@ -519,7 +546,18 @@ export default function TemoignagesManager({ temoignages, setTemoignages }: Temo
                         </div>
                         <div>
                           <p className="font-semibold text-navy-600">{t.nom}</p>
-                          <p className="text-gold-500 text-xs">{'★'.repeat(t.note || 5)}</p>
+                          <div className="flex items-center gap-0.5 mt-0.5">
+                            {[...Array(5)].map((_, sIdx) => (
+                              <Star
+                                key={sIdx}
+                                className={`w-3 h-3 ${
+                                  sIdx < (t.note || 5)
+                                    ? 'text-gold-400 fill-gold-400'
+                                    : 'text-gray-200'
+                                }`}
+                              />
+                            ))}
+                          </div>
                         </div>
                       </div>
                     </td>
@@ -539,13 +577,23 @@ export default function TemoignagesManager({ temoignages, setTemoignages }: Temo
                       <button
                         type="button"
                         onClick={() => handleToggleActif(t)}
-                        className={`px-2.5 py-1 rounded-full text-xs font-semibold transition-all ${
+                        className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-semibold transition-all ${
                           t.actif
                             ? 'bg-success-100 text-success-700 hover:bg-success-200'
                             : 'bg-gray-200 text-gray-600 hover:bg-gray-300'
                         }`}
                       >
-                        {t.actif ? '✅ Visible' : '👁️‍🗨️ Masqué'}
+                        {t.actif ? (
+                          <>
+                            <Eye className="w-3.5 h-3.5" />
+                            <span>Visible</span>
+                          </>
+                        ) : (
+                          <>
+                            <EyeOff className="w-3.5 h-3.5" />
+                            <span>Masqué</span>
+                          </>
+                        )}
                       </button>
                     </td>
 

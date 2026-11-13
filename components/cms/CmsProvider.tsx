@@ -2,6 +2,7 @@
 
 import React, { createContext, useContext, useEffect, useState, useCallback } from 'react';
 import { usePathname } from 'next/navigation';
+import { Eye } from 'lucide-react';
 import api from '@/lib/api';
 
 export function resolveCmsMediaUrl(url?: string | null): string {
@@ -189,10 +190,10 @@ export const DEFAULT_CMS_DATA: Record<string, { actif: boolean; statut?: string;
       },
       banner: {
         actif: true,
-        title: '🏆 RASMA 2025',
+        title: 'RASMA 2025',
         description:
           "WinStyle est fier d'avoir organisé le Rassemblement Annuel — un événement majeur de N'Djaména, Tchad.",
-        btn_label: 'En savoir plus →',
+        btn_label: 'En savoir plus',
         btn_href: '/about',
       },
       secteurs_section: {
@@ -241,28 +242,28 @@ export const DEFAULT_CMS_DATA: Record<string, { actif: boolean; statut?: string;
         items: [
           {
             id: 'val-1',
-            icon: '🎯',
+            icon: 'target',
             title: 'Excellence',
             desc: 'Chaque prestation est préparée avec rigueur selon des critères exigeants de savoir-être et de professionnalisme.',
             actif: true,
           },
           {
             id: 'val-2',
-            icon: '💡',
+            icon: 'lightbulb',
             title: 'Innovation',
             desc: 'Trois secteurs complémentaires qui se renforcent mutuellement pour une offre unique sur le marché africain.',
             actif: true,
           },
           {
             id: 'val-3',
-            icon: '🤝',
+            icon: 'handshake',
             title: 'Engagement social',
             desc: "L'autonomisation des femmes est au cœur de notre vision. Nous créons des opportunités économiques durables.",
             actif: true,
           },
           {
             id: 'val-4',
-            icon: '⚡',
+            icon: 'zap',
             title: 'Réactivité',
             desc: 'Disponibles 7j/7, nous répondons à vos besoins rapidement et nous adaptons à chaque contexte.',
             actif: true,
@@ -292,7 +293,7 @@ export const DEFAULT_CMS_DATA: Record<string, { actif: boolean; statut?: string;
     content: {
       hero: {
         actif: true,
-        badge: '🏆 WinStyle présente',
+        badge: 'WinStyle présente',
         title_prefix: 'Ra',
         title_highlight: 'SMA',
         subtitle: 'Retour aux Sources de la Mode Africaine',
@@ -300,11 +301,11 @@ export const DEFAULT_CMS_DATA: Record<string, { actif: boolean; statut?: string;
         mission_title: 'Mission Principale',
         mission_text:
           "RaSMA est un concept dédié à la valorisation et à la célébration de l'élégance africaine. Son objectif est de reconnecter les générations actuelles avec l'héritage vestimentaire du continent.",
-        focus_label: '📅 Focus historique :',
+        focus_label: 'Focus historique :',
         focus_value: 'Années 60 → Années 2000',
         primary_btn_label: 'Nous rejoindre',
         primary_btn_href: '/contact',
-        secondary_btn_label: 'Découvrir WinStyle ↓',
+        secondary_btn_label: 'Découvrir WinStyle',
         secondary_btn_href: '#winstyle',
       },
       separator: {
@@ -335,10 +336,10 @@ export const DEFAULT_CMS_DATA: Record<string, { actif: boolean; statut?: string;
         subtitle: 'Ce qui nous guide',
         title: 'Nos valeurs',
         items: [
-          { icon: '🎯', titre: 'Professionnalisme', desc: 'Chaque prestation est préparée avec rigueur selon des critères exigeants.', actif: true },
-          { icon: '✨', titre: 'Excellence', desc: 'Nous ne faisons pas dans la moyenne. Chaque membre est sélectionné et évalué.', actif: true },
-          { icon: '🤝', titre: 'Engagement', desc: "Nous nous engageons sur la qualité, la ponctualité et l'autonomisation des femmes.", actif: true },
-          { icon: '💡', titre: 'Adaptabilité', desc: 'Chaque client est unique. Nous personnalisons chaque mission selon vos besoins.', actif: true },
+          { icon: 'target', titre: 'Professionnalisme', desc: 'Chaque prestation est préparée avec rigueur selon des critères exigeants.', actif: true },
+          { icon: 'sparkles', titre: 'Excellence', desc: 'Nous ne faisons pas dans la moyenne. Chaque membre est sélectionné et évalué.', actif: true },
+          { icon: 'handshake', titre: 'Engagement', desc: "Nous nous engageons sur la qualité, la ponctualité et l'autonomisation des femmes.", actif: true },
+          { icon: 'lightbulb', titre: 'Adaptabilité', desc: 'Chaque client est unique. Nous personnalisons chaque mission selon vos besoins.', actif: true },
         ],
       },
       timeline: {
@@ -369,7 +370,7 @@ export const DEFAULT_CMS_DATA: Record<string, { actif: boolean; statut?: string;
             "Entrepreneure tchadienne passionnée, Winnie a fondé WinStyle avec la conviction que l'Afrique centrale mérite une marque de prestige qui valorise le talent local. Spécialisée dans l'événementiel, la mode et la cosmétique naturelle.",
           bio_2:
             "Son engagement pour l'autonomisation des femmes est le moteur principal de WinStyle.",
-          contacts: ['📞 +235 65 09 60 24', '📞 +237 698 617 237', '✉️ winstylewins@gmail.com', "📍 N'Djaména, Tchad"],
+          contacts: ['+235 65 09 60 24', '+237 698 617 237', 'winstylewins@gmail.com', "N'Djaména, Tchad"],
         },
         membres: [
           {
@@ -427,7 +428,7 @@ export const DEFAULT_CMS_DATA: Record<string, { actif: boolean; statut?: string;
         {
           id: 'srv-sec-1',
           num: '01',
-          icon: '👔',
+          icon: 'briefcase',
           titre: 'Consultance en Ressources Humaines',
           img: '/images/services/hotesses-stewards.jpg',
           couleur: 'bg-blue-900',
@@ -444,7 +445,7 @@ export const DEFAULT_CMS_DATA: Record<string, { actif: boolean; statut?: string;
         {
           id: 'srv-sec-2',
           num: '02',
-          icon: '✂️',
+          icon: 'scissors',
           titre: 'Confection sur Mesure',
           img: '/images/services/confection.jpg',
           couleur: 'bg-amber-900',
@@ -461,7 +462,7 @@ export const DEFAULT_CMS_DATA: Record<string, { actif: boolean; statut?: string;
         {
           id: 'srv-sec-3',
           num: '03',
-          icon: '🌿',
+          icon: 'leaf',
           titre: 'Cosmétique Naturelle',
           img: '/images/services/cosmetique.jpg',
           couleur: 'bg-green-900',
@@ -817,7 +818,10 @@ export function CmsProvider({ children }: { children: React.ReactNode }) {
         <div className="fixed bottom-4 right-4 z-[9999] bg-navy-900/95 text-white border-2 border-gold-400 rounded-2xl px-4 py-3 shadow-2xl flex items-center gap-3 backdrop-blur-md">
           <span className="w-2.5 h-2.5 rounded-full bg-gold-400 animate-ping" />
           <div className="text-xs">
-            <p className="font-bold text-gold-400">👁️ Mode Prévisualisation CMS (Brouillon)</p>
+            <p className="font-bold text-gold-400 flex items-center gap-1.5">
+              <Eye className="w-4 h-4 text-gold-400 shrink-0" />
+              Mode Prévisualisation CMS (Brouillon)
+            </p>
             <p className="text-white/70">Vous visualisez les modifications avant leur publication.</p>
           </div>
           <button

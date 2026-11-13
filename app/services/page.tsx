@@ -1,9 +1,11 @@
 'use client';
 
 import { useState } from 'react';
+import { ArrowRight } from 'lucide-react';
 import { Input, Select, Textarea, Button, Alert } from '@/components/ui/FormElements';
 import { serviceRequestSchema, validateForm, ServiceRequestFormData } from '@/lib/schemas';
 import { useCms, resolveCmsMediaUrl } from '@/components/cms/CmsProvider';
+import DynamicIcon from '@/components/ui/DynamicIcon';
 import FaqSection from '@/components/ui/FaqSection';
 import api from '@/lib/api';
 
@@ -122,13 +124,19 @@ export default function ServicesPage() {
                 <button
                   key={s.id || s.num || i}
                   onClick={() => setActiveTab(i)}
-                  className={`flex items-center gap-2 px-5 py-3 text-sm font-semibold whitespace-nowrap border-b-2 transition-all ${
+                  className={`flex items-center gap-2.5 px-5 py-3.5 text-sm font-semibold whitespace-nowrap border-b-2 transition-all ${
                     activeTab === i
                       ? 'border-gold-400 text-navy-600'
                       : 'border-transparent text-gray-400 hover:text-gray-600'
                   }`}
                 >
-                  <span>{s.icon}</span> {s.titre}
+                  <DynamicIcon
+                    name={s.icon}
+                    className={`w-4 h-4 shrink-0 ${
+                      activeTab === i ? 'text-gold-500' : 'text-gray-400'
+                    }`}
+                  />
+                  <span>{s.titre}</span>
                 </button>
               ))}
             </div>
@@ -199,7 +207,8 @@ export default function ServicesPage() {
                       }
                       className="inline-flex items-center gap-2 bg-gradient-to-r from-gold-400 to-gold-500 hover:from-gold-300 hover:to-gold-400 text-navy-900 font-semibold px-6 py-3 rounded-xl text-sm transition-all duration-300 hover:shadow-glow"
                     >
-                      Demander ce service →
+                      <span>Demander ce service</span>
+                      <ArrowRight className="w-4 h-4" />
                     </a>
                   </div>
                 </div>

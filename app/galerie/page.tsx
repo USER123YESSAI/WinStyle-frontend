@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import { X, ArrowLeft, ArrowRight } from 'lucide-react';
 import { useCms, resolveCmsMediaUrl } from '@/components/cms/CmsProvider';
 
 export default function GaleriePage() {
@@ -136,9 +137,10 @@ export default function GaleriePage() {
             <button
               type="button"
               onClick={() => setLightboxIdx(null)}
-              className="absolute -top-12 right-0 text-white hover:text-gold-400 text-2xl font-bold"
+              className="absolute -top-12 right-0 text-white hover:text-gold-400 text-sm font-bold inline-flex items-center gap-1.5 transition"
             >
-              ✕ Fermer
+              <X className="w-5 h-5" />
+              <span>Fermer</span>
             </button>
             <img
               src={resolveCmsMediaUrl(currentItem.image)}
@@ -161,9 +163,10 @@ export default function GaleriePage() {
                   onClick={() =>
                     setLightboxIdx(lightboxIdx === 0 ? filtered.length - 1 : lightboxIdx - 1)
                   }
-                  className="px-4 py-2 rounded-xl bg-white/15 hover:bg-gold-400 hover:text-navy-900 text-white text-sm font-bold transition"
+                  className="px-4 py-2 rounded-xl bg-white/15 hover:bg-gold-400 hover:text-navy-900 text-white text-sm font-bold transition inline-flex items-center gap-1.5"
                 >
-                  ← Précédente
+                  <ArrowLeft className="w-4 h-4" />
+                  <span>Précédente</span>
                 </button>
                 <span className="text-white/60 text-xs">
                   {lightboxIdx + 1} / {filtered.length}
@@ -171,9 +174,10 @@ export default function GaleriePage() {
                 <button
                   type="button"
                   onClick={() => setLightboxIdx((lightboxIdx + 1) % filtered.length)}
-                  className="px-4 py-2 rounded-xl bg-white/15 hover:bg-gold-400 hover:text-navy-900 text-white text-sm font-bold transition"
+                  className="px-4 py-2 rounded-xl bg-white/15 hover:bg-gold-400 hover:text-navy-900 text-white text-sm font-bold transition inline-flex items-center gap-1.5"
                 >
-                  Suivante →
+                  <span>Suivante</span>
+                  <ArrowRight className="w-4 h-4" />
                 </button>
               </div>
             )}

@@ -1,8 +1,43 @@
 'use client';
 
 import React, { useEffect, useState } from 'react';
+import {
+  Home,
+  Building2,
+  Briefcase,
+  Newspaper,
+  Image as ImageIcon,
+  HelpCircle,
+  MapPin,
+  Compass,
+  Anchor,
+  Search,
+  Sparkles,
+  Upload,
+  CheckCircle2,
+  XCircle,
+  Clock,
+  Eye,
+  Rocket,
+  Save,
+  Target,
+  Trash2,
+  Trophy,
+  ChevronUp,
+  ChevronDown,
+  Sliders,
+  MessageSquareQuote,
+  Handshake,
+  Calendar,
+  Users,
+  Globe,
+  UserCheck,
+  GraduationCap,
+  LucideIcon,
+} from 'lucide-react';
 import api from '@/lib/api';
 import { DEFAULT_CMS_DATA, resolveCmsMediaUrl } from '@/components/cms/CmsProvider';
+import DynamicIcon, { AVAILABLE_ICON_OPTIONS } from '@/components/ui/DynamicIcon';
 
 interface CmsSectionRow {
   id?: number;
@@ -20,84 +55,84 @@ interface CmsSectionRow {
 const SECTION_META: {
   key: string;
   label: string;
-  icon: string;
+  icon: LucideIcon;
   previewPath: string;
   desc: string;
 }[] = [
   {
     key: 'home_page',
     label: "Page d'accueil",
-    icon: '🏠',
+    icon: Home,
     previewPath: '/',
     desc: 'Hero, bannière événement, secteurs, valeurs et titres des sections.',
   },
   {
     key: 'about_page',
     label: 'À propos & Équipe',
-    icon: '🏛️',
+    icon: Building2,
     previewPath: '/about',
     desc: 'Présentation, RASMA, mission, chiffres clés, valeurs, histoire (timeline) et équipe.',
   },
   {
     key: 'services_catalogue',
     label: 'Catalogue Services',
-    icon: '🛎️',
+    icon: Briefcase,
     previewPath: '/services',
     desc: 'Secteurs, prestations détaillées, tarifs, images et options du formulaire.',
   },
   {
     key: 'blog',
     label: 'Blog & Actualités',
-    icon: '📰',
+    icon: Newspaper,
     previewPath: '/blog',
     desc: 'Créer, modifier, publier ou mettre en brouillon des articles et actualités.',
   },
   {
     key: 'galerie',
     label: 'Galerie Photos',
-    icon: '🖼️',
+    icon: ImageIcon,
     previewPath: '/galerie',
     desc: 'Ajouter, remplacer, organiser et catégoriser les photos de la galerie.',
   },
   {
     key: 'faq',
     label: 'FAQ (Questions / Réponses)',
-    icon: '❓',
+    icon: HelpCircle,
     previewPath: '/contact',
     desc: 'Gérer et ordonner les questions et réponses fréquentes.',
   },
   {
     key: 'contact_info',
     label: 'Coordonnées & Réseaux',
-    icon: '📍',
+    icon: MapPin,
     previewPath: '/contact',
     desc: 'Téléphones, e-mails, adresse, horaires, réseaux sociaux et postes de candidature.',
   },
   {
     key: 'navigation',
     label: 'Navigation (Menu)',
-    icon: '🧭',
+    icon: Compass,
     previewPath: '/',
     desc: 'Logo, liens du menu principal, ordre d’affichage et bouton d’action.',
   },
   {
     key: 'footer',
     label: 'Pied de page (Footer)',
-    icon: '⚓',
+    icon: Anchor,
     previewPath: '/',
     desc: 'Présentation marque, colonnes de liens, copyright et slogan.',
   },
   {
     key: 'seo',
     label: 'Référencement SEO',
-    icon: '🔍',
+    icon: Search,
     previewPath: '/',
     desc: 'Titres, descriptions, mots-clés et aperçu Google pour chaque page du site.',
   },
   {
     key: 'realisations_page',
     label: 'En-tête Réalisations & Formations',
-    icon: '✨',
+    icon: Sparkles,
     previewPath: '/realisations',
     desc: 'Titres, sous-titres, filtres et appels à l’action des pages Réalisations et Formations.',
   },
@@ -122,16 +157,20 @@ function ImageField({
     try {
       const fd = new FormData();
       fd.append('image', file);
-      const res = await api.post('/cms/upload', fd, {
-        headers: { 'Content-Type': 'multipart/form-data' },
-      });
+      const res = await api.post('/cms/upload', fd);
       if (res.data?.url) {
         onChange(res.data.url);
       }
     } catch (err: any) {
-      alert(err.response?.data?.message || "Erreur lors du téléversement de l'image");
+      const msg =
+        err.response?.data?.message ||
+        (err.code === 'ECONNABORTED'
+          ? 'Le serveur met du temps à répondre (réveil Render). Veuillez réessayer.'
+          : "Erreur lors du téléversement de l'image");
+      alert(msg);
     } finally {
       setUploading(false);
+      e.target.value = '';
     }
   };
 
@@ -155,8 +194,9 @@ function ImageField({
           placeholder="/images/... ou URL"
           className="flex-1 w-full border border-gray-300 rounded-lg px-3 py-1.5 text-xs outline-none focus:ring-2 focus:ring-gold-400"
         />
-        <label className="cursor-pointer bg-navy-600 hover:bg-navy-700 text-white text-xs font-semibold px-3 py-2 rounded-lg transition whitespace-nowrap">
-          {uploading ? 'Envoi...' : '📤 Téléverser'}
+        <label className="cursor-pointer bg-navy-600 hover:bg-navy-700 text-white text-xs font-semibold px-3 py-2 rounded-lg transition whitespace-nowrap inline-flex items-center gap-1.5">
+          <Upload className="w-3.5 h-3.5" />
+          <span>{uploading ? 'Envoi...' : 'Téléverser'}</span>
           <input
             type="file"
             accept="image/*"
@@ -304,22 +344,23 @@ export default function CmsStudioManager({ initialSectionKey }: { initialSection
     setSaving(true);
     setFeedback(null);
     try {
-      const sec = sections[activeKey];
+      const sec = sections[activeKey] || currentSection;
+      const meta = SECTION_META.find((m) => m.key === activeKey);
       const res = await api.put(`/cms/${activeKey}`, {
-        title: sec.title,
-        actif: sec.actif,
-        ordre: sec.ordre,
-        content: sec.content,
+        title: sec.title || meta?.label || activeKey,
+        actif: sec.actif ?? true,
+        ordre: sec.ordre ?? 1,
+        content: sec.content || {},
         publish,
       });
 
       // Si on est sur realisations_page, sauvegarder aussi formations_page
       if (activeKey === 'realisations_page' && sections['formations_page']) {
         await api.put('/cms/formations_page', {
-          title: sections['formations_page'].title,
-          actif: sections['formations_page'].actif,
-          ordre: sections['formations_page'].ordre,
-          content: sections['formations_page'].content,
+          title: sections['formations_page'].title || 'Page Formations',
+          actif: sections['formations_page'].actif ?? true,
+          ordre: sections['formations_page'].ordre ?? 9,
+          content: sections['formations_page'].content || {},
           publish,
         });
       }
@@ -327,7 +368,7 @@ export default function CmsStudioManager({ initialSectionKey }: { initialSection
       setSections((prev) => ({
         ...prev,
         [activeKey]: {
-          ...prev[activeKey],
+          ...(prev[activeKey] || currentSection),
           statut: publish ? 'publie' : 'brouillon',
         },
       }));
@@ -340,7 +381,11 @@ export default function CmsStudioManager({ initialSectionKey }: { initialSection
     } catch (err: any) {
       setFeedback({
         type: 'error',
-        text: err.response?.data?.message || 'Erreur lors de la sauvegarde.',
+        text:
+          err.response?.data?.message ||
+          (err.code === 'ECONNABORTED'
+            ? 'Le serveur met du temps à répondre (réveil Render). Veuillez réessayer dans quelques secondes.'
+            : 'Erreur lors de la sauvegarde.'),
       });
     } finally {
       setSaving(false);
@@ -389,8 +434,9 @@ export default function CmsStudioManager({ initialSectionKey }: { initialSection
       <div className="bg-gradient-to-r from-navy-800 to-navy-900 text-white rounded-2xl p-6 shadow-md">
         <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
           <div>
-            <span className="inline-block bg-gold-400/20 text-gold-400 border border-gold-400/40 text-xs font-bold px-3 py-1 rounded-full mb-2">
-              ✨ CMS Intégré — Gestion 100 % Dynamique
+            <span className="inline-flex items-center gap-1.5 bg-gold-400/20 text-gold-400 border border-gold-400/40 text-xs font-bold px-3 py-1 rounded-full mb-2">
+              <Sparkles className="w-3.5 h-3.5" />
+              <span>CMS Intégré — Gestion 100 % Dynamique</span>
             </span>
             <h2 className="text-2xl font-black">Gestionnaire de Contenu du Site (CMS)</h2>
             <p className="text-white/70 text-sm mt-1">
@@ -402,29 +448,41 @@ export default function CmsStudioManager({ initialSectionKey }: { initialSection
             <button
               type="button"
               onClick={handleToggleSection}
-              className={`px-4 py-2.5 rounded-xl text-xs font-bold transition ${
+              className={`inline-flex items-center gap-1.5 px-4 py-2.5 rounded-xl text-xs font-bold transition ${
                 currentSection.actif
                   ? 'bg-green-500/20 text-green-300 border border-green-400/40 hover:bg-green-500/30'
                   : 'bg-red-500/20 text-red-300 border border-red-400/40 hover:bg-red-500/30'
               }`}
             >
-              {currentSection.actif ? '🟢 Section Active' : '🔴 Section Désactivée'}
+              {currentSection.actif ? (
+                <>
+                  <CheckCircle2 className="w-3.5 h-3.5" />
+                  <span>Section Active</span>
+                </>
+              ) : (
+                <>
+                  <XCircle className="w-3.5 h-3.5" />
+                  <span>Section Désactivée</span>
+                </>
+              )}
             </button>
             <button
               type="button"
               onClick={handlePreview}
               disabled={saving}
-              className="bg-white/10 hover:bg-white/20 text-white border border-white/20 px-4 py-2.5 rounded-xl text-xs font-bold transition"
+              className="inline-flex items-center gap-1.5 bg-white/10 hover:bg-white/20 text-white border border-white/20 px-4 py-2.5 rounded-xl text-xs font-bold transition"
             >
-              👁️ Brouillon & Prévisualiser
+              <Eye className="w-3.5 h-3.5" />
+              <span>Brouillon & Prévisualiser</span>
             </button>
             <button
               type="button"
               onClick={() => handleSave(true)}
               disabled={saving}
-              className="bg-gradient-to-r from-gold-400 to-gold-500 hover:from-gold-300 hover:to-gold-400 text-navy-900 px-5 py-2.5 rounded-xl text-xs font-black shadow-glow transition"
+              className="inline-flex items-center gap-1.5 bg-gradient-to-r from-gold-400 to-gold-500 hover:from-gold-300 hover:to-gold-400 text-navy-900 px-5 py-2.5 rounded-xl text-xs font-black shadow-glow transition"
             >
-              {saving ? 'Enregistrement...' : '🚀 Publier sur le site'}
+              <Rocket className="w-3.5 h-3.5" />
+              <span>{saving ? 'Enregistrement...' : 'Publier sur le site'}</span>
             </button>
           </div>
         </div>
@@ -435,6 +493,7 @@ export default function CmsStudioManager({ initialSectionKey }: { initialSection
         {SECTION_META.map((m) => {
           const sec = sections[m.key];
           const isSelected = activeKey === m.key;
+          const MetaIcon = m.icon;
           return (
             <button
               key={m.key}
@@ -449,7 +508,7 @@ export default function CmsStudioManager({ initialSectionKey }: { initialSection
                   : 'bg-white text-gray-600 border-gray-200 hover:bg-gray-50'
               }`}
             >
-              <span>{m.icon}</span>
+              <MetaIcon className="w-4 h-4 shrink-0" />
               <span>{m.label}</span>
               {sec?.statut === 'brouillon' && (
                 <span className="w-2 h-2 rounded-full bg-amber-400" title="Brouillon non publié" />
@@ -480,10 +539,15 @@ export default function CmsStudioManager({ initialSectionKey }: { initialSection
       <div className="bg-white rounded-2xl border border-gray-200 p-5 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
           <h3 className="font-bold text-navy-700 text-lg flex items-center gap-2">
-            <span>{activeMeta.icon}</span> {activeMeta.label}
+            {(() => {
+              const ActiveIcon = activeMeta.icon;
+              return <ActiveIcon className="w-5 h-5 text-gold-500 shrink-0" />;
+            })()}
+            <span>{activeMeta.label}</span>
             {currentSection.statut === 'brouillon' && (
-              <span className="text-xs bg-amber-100 text-amber-800 px-2.5 py-0.5 rounded-full font-semibold">
-                🟠 Brouillon en attente de publication
+              <span className="inline-flex items-center gap-1 text-xs bg-amber-100 text-amber-800 px-2.5 py-0.5 rounded-full font-semibold">
+                <Clock className="w-3 h-3" />
+                <span>Brouillon en attente de publication</span>
               </span>
             )}
           </h3>
@@ -494,17 +558,19 @@ export default function CmsStudioManager({ initialSectionKey }: { initialSection
             type="button"
             onClick={() => handleSave(false)}
             disabled={saving}
-            className="px-3.5 py-2 rounded-lg border border-gray-300 hover:bg-gray-50 text-xs font-semibold text-gray-700 transition"
+            className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-lg border border-gray-300 hover:bg-gray-50 text-xs font-semibold text-gray-700 transition"
           >
-            💾 Enregistrer brouillon
+            <Save className="w-3.5 h-3.5" />
+            <span>Enregistrer brouillon</span>
           </button>
           <button
             type="button"
             onClick={() => handleSave(true)}
             disabled={saving}
-            className="px-4 py-2 rounded-lg bg-navy-600 hover:bg-navy-700 text-white text-xs font-bold transition"
+            className="inline-flex items-center gap-1.5 px-4 py-2 rounded-lg bg-navy-600 hover:bg-navy-700 text-white text-xs font-bold transition"
           >
-            🚀 Publier les modifications
+            <Rocket className="w-3.5 h-3.5" />
+            <span>Publier les modifications</span>
           </button>
         </div>
       </div>
@@ -517,7 +583,10 @@ export default function CmsStudioManager({ initialSectionKey }: { initialSection
           {/* Hero */}
           <div className="bg-white rounded-2xl border border-gray-200 p-6 space-y-4">
             <div className="flex items-center justify-between border-b pb-3">
-              <h4 className="font-bold text-navy-700">🎯 Section Hero (Bannière principale)</h4>
+              <h4 className="font-bold text-navy-700 flex items-center gap-2">
+                <Target className="w-4 h-4 text-gold-500" />
+                <span>Section Hero (Bannière principale)</span>
+              </h4>
               <label className="flex items-center gap-2 text-xs font-semibold cursor-pointer">
                 <input
                   type="checkbox"
@@ -728,9 +797,10 @@ export default function CmsStudioManager({ initialSectionKey }: { initialSection
                           return d;
                         })
                       }
-                      className="text-red-500 text-xs px-2"
+                      aria-label="Supprimer"
+                      className="text-red-500 hover:text-red-700 p-1.5 rounded-lg hover:bg-red-50 transition"
                     >
-                      🗑️
+                      <Trash2 className="w-4 h-4" />
                     </button>
                   </div>
                 ))}
@@ -741,7 +811,10 @@ export default function CmsStudioManager({ initialSectionKey }: { initialSection
           {/* Bannière Événement */}
           <div className="bg-white rounded-2xl border border-gray-200 p-6 space-y-4">
             <div className="flex items-center justify-between border-b pb-3">
-              <h4 className="font-bold text-navy-700">🏆 Bannière Événement / Annonce (ex: RASMA)</h4>
+              <h4 className="font-bold text-navy-700 flex items-center gap-2">
+                <Trophy className="w-4 h-4 text-gold-500" />
+                <span>Bannière Événement / Annonce (ex: RASMA)</span>
+              </h4>
               <label className="flex items-center gap-2 text-xs font-semibold cursor-pointer">
                 <input
                   type="checkbox"
@@ -819,7 +892,10 @@ export default function CmsStudioManager({ initialSectionKey }: { initialSection
           {/* Section Secteurs sur l'accueil */}
           <div className="bg-white rounded-2xl border border-gray-200 p-6 space-y-4">
             <div className="flex items-center justify-between border-b pb-3">
-              <h4 className="font-bold text-navy-700">✨ Section « Nos Secteurs » sur l&apos;accueil</h4>
+              <h4 className="font-bold text-navy-700 flex items-center gap-2">
+                <Sparkles className="w-4 h-4 text-gold-500" />
+                <span>Section « Nos Secteurs » sur l&apos;accueil</span>
+              </h4>
               <label className="flex items-center gap-2 text-xs font-semibold cursor-pointer">
                 <input
                   type="checkbox"
@@ -880,9 +956,10 @@ export default function CmsStudioManager({ initialSectionKey }: { initialSection
                             return d;
                           })
                         }
-                        className="px-2 py-1 text-xs bg-white border rounded"
+                        title="Monter"
+                        className="p-1.5 text-xs bg-white border rounded hover:bg-gray-100"
                       >
-                        ↑
+                        <ChevronUp className="w-3.5 h-3.5" />
                       </button>
                       <button
                         type="button"
@@ -892,9 +969,10 @@ export default function CmsStudioManager({ initialSectionKey }: { initialSection
                             return d;
                           })
                         }
-                        className="px-2 py-1 text-xs bg-white border rounded"
+                        title="Descendre"
+                        className="p-1.5 text-xs bg-white border rounded hover:bg-gray-100"
                       >
-                        ↓
+                        <ChevronDown className="w-3.5 h-3.5" />
                       </button>
                       <label className="text-xs flex items-center gap-1">
                         <input
@@ -977,13 +1055,17 @@ export default function CmsStudioManager({ initialSectionKey }: { initialSection
 
           {/* Visibilité et titres des sections Témoignages, Partenaires et FAQ sur l'accueil */}
           <div className="bg-white rounded-2xl border border-gray-200 p-6 space-y-4">
-            <h4 className="font-bold text-navy-700 border-b pb-3">
-              🎛️ Affichage des sections Témoignages, Partenaires & FAQ sur l&apos;accueil
+            <h4 className="font-bold text-navy-700 border-b pb-3 flex items-center gap-2">
+              <Sliders className="w-4 h-4 text-gold-500" />
+              <span>Affichage des sections Témoignages, Partenaires & FAQ sur l&apos;accueil</span>
             </h4>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
               <div className="p-4 rounded-xl bg-gray-50 border space-y-2">
                 <label className="flex items-center justify-between font-bold text-xs text-navy-700">
-                  <span>💬 Section Témoignages</span>
+                  <span className="flex items-center gap-1.5">
+                    <MessageSquareQuote className="w-3.5 h-3.5 text-gold-500" />
+                    <span>Section Témoignages</span>
+                  </span>
                   <input
                     type="checkbox"
                     checked={c.temoignages_section?.actif !== false}
@@ -1026,7 +1108,10 @@ export default function CmsStudioManager({ initialSectionKey }: { initialSection
 
               <div className="p-4 rounded-xl bg-gray-50 border space-y-2">
                 <label className="flex items-center justify-between font-bold text-xs text-navy-700">
-                  <span>🤝 Section Partenaires</span>
+                  <span className="flex items-center gap-1.5">
+                    <Handshake className="w-3.5 h-3.5 text-gold-500" />
+                    <span>Section Partenaires</span>
+                  </span>
                   <input
                     type="checkbox"
                     checked={c.partenaires_section?.actif !== false}
@@ -1057,7 +1142,10 @@ export default function CmsStudioManager({ initialSectionKey }: { initialSection
 
               <div className="p-4 rounded-xl bg-gray-50 border space-y-2">
                 <label className="flex items-center justify-between font-bold text-xs text-navy-700">
-                  <span>❓ Aperçu FAQ sur l&apos;accueil</span>
+                  <span className="flex items-center gap-1.5">
+                    <HelpCircle className="w-3.5 h-3.5 text-gold-500" />
+                    <span>Aperçu FAQ sur l&apos;accueil</span>
+                  </span>
                   <input
                     type="checkbox"
                     checked={c.faq_preview_section?.actif !== false}
@@ -1090,7 +1178,10 @@ export default function CmsStudioManager({ initialSectionKey }: { initialSection
           {/* Hero RASMA */}
           <div className="bg-white rounded-2xl border border-gray-200 p-6 space-y-4">
             <div className="flex items-center justify-between border-b pb-3">
-              <h4 className="font-bold text-navy-700">🏆 Bannière Hero (RASMA / Présentation)</h4>
+              <h4 className="font-bold text-navy-700 flex items-center gap-2">
+                <Trophy className="w-4 h-4 text-gold-500" />
+                <span>Bannière Hero (RASMA / Présentation)</span>
+              </h4>
               <label className="flex items-center gap-2 text-xs font-semibold">
                 <input
                   type="checkbox"
@@ -1192,7 +1283,10 @@ export default function CmsStudioManager({ initialSectionKey }: { initialSection
           {/* Notre Mission & Chiffres clés */}
           <div className="bg-white rounded-2xl border border-gray-200 p-6 space-y-4">
             <div className="flex items-center justify-between border-b pb-3">
-              <h4 className="font-bold text-navy-700">🎯 Présentation, Mission & Chiffres clés</h4>
+              <h4 className="font-bold text-navy-700 flex items-center gap-2">
+                <Target className="w-4 h-4 text-gold-500" />
+                <span>Présentation, Mission & Chiffres clés</span>
+              </h4>
               <label className="flex items-center gap-2 text-xs font-semibold">
                 <input
                   type="checkbox"
@@ -1261,7 +1355,10 @@ export default function CmsStudioManager({ initialSectionKey }: { initialSection
           {/* Parcours / Timeline */}
           <div className="bg-white rounded-2xl border border-gray-200 p-6 space-y-4">
             <div className="flex items-center justify-between border-b pb-3">
-              <h4 className="font-bold text-navy-700">📅 Histoire & Parcours (« WinStyle en dates »)</h4>
+              <h4 className="font-bold text-navy-700 flex items-center gap-2">
+                <Calendar className="w-4 h-4 text-gold-500" />
+                <span>Histoire & Parcours (« WinStyle en dates »)</span>
+              </h4>
               <button
                 type="button"
                 onClick={() =>
@@ -1332,9 +1429,10 @@ export default function CmsStudioManager({ initialSectionKey }: { initialSection
                           return d;
                         })
                       }
-                      className="px-2 py-1 text-xs bg-white border rounded"
+                      title="Monter"
+                      className="p-1.5 text-xs bg-white border rounded hover:bg-gray-100"
                     >
-                      ↑
+                      <ChevronUp className="w-3.5 h-3.5" />
                     </button>
                     <button
                       type="button"
@@ -1344,9 +1442,10 @@ export default function CmsStudioManager({ initialSectionKey }: { initialSection
                           return d;
                         })
                       }
-                      className="px-2 py-1 text-xs bg-white border rounded"
+                      title="Descendre"
+                      className="p-1.5 text-xs bg-white border rounded hover:bg-gray-100"
                     >
-                      ↓
+                      <ChevronDown className="w-3.5 h-3.5" />
                     </button>
                     <button
                       type="button"
@@ -1356,9 +1455,10 @@ export default function CmsStudioManager({ initialSectionKey }: { initialSection
                           return d;
                         })
                       }
-                      className="text-red-500 text-xs px-2"
+                      aria-label="Supprimer"
+                      className="text-red-500 hover:text-red-700 p-1.5 rounded-lg hover:bg-red-50 transition"
                     >
-                      🗑️
+                      <Trash2 className="w-4 h-4" />
                     </button>
                   </div>
                 </div>
@@ -1369,7 +1469,10 @@ export default function CmsStudioManager({ initialSectionKey }: { initialSection
           {/* Équipe */}
           <div className="bg-white rounded-2xl border border-gray-200 p-6 space-y-4">
             <div className="flex items-center justify-between border-b pb-3">
-              <h4 className="font-bold text-navy-700">👥 Direction & Équipe</h4>
+              <h4 className="font-bold text-navy-700 flex items-center gap-2">
+                <Users className="w-4 h-4 text-gold-500" />
+                <span>Direction & Équipe</span>
+              </h4>
               <button
                 type="button"
                 onClick={() =>
@@ -1464,9 +1567,10 @@ export default function CmsStudioManager({ initialSectionKey }: { initialSection
                             return d;
                           })
                         }
-                        className="px-2 py-1 text-xs bg-white border rounded"
+                        title="Monter"
+                        className="p-1.5 text-xs bg-white border rounded hover:bg-gray-100"
                       >
-                        ↑
+                        <ChevronUp className="w-3.5 h-3.5" />
                       </button>
                       <button
                         type="button"
@@ -1476,9 +1580,10 @@ export default function CmsStudioManager({ initialSectionKey }: { initialSection
                             return d;
                           })
                         }
-                        className="px-2 py-1 text-xs bg-white border rounded"
+                        title="Descendre"
+                        className="p-1.5 text-xs bg-white border rounded hover:bg-gray-100"
                       >
-                        ↓
+                        <ChevronDown className="w-3.5 h-3.5" />
                       </button>
                       <button
                         type="button"
@@ -1605,7 +1710,10 @@ export default function CmsStudioManager({ initialSectionKey }: { initialSection
           {/* Liste des secteurs et prestations */}
           <div className="bg-white rounded-2xl border border-gray-200 p-6 space-y-5">
             <div className="flex items-center justify-between border-b pb-3">
-              <h4 className="font-bold text-navy-700">🛎️ Pôles / Secteurs & Prestations détaillées</h4>
+              <h4 className="font-bold text-navy-700 flex items-center gap-2">
+                <Briefcase className="w-4 h-4 text-gold-500" />
+                <span>Pôles / Secteurs & Prestations détaillées</span>
+              </h4>
               <button
                 type="button"
                 onClick={() =>
@@ -1616,7 +1724,7 @@ export default function CmsStudioManager({ initialSectionKey }: { initialSection
                       {
                         id: `srv-sec-${Date.now()}`,
                         num: String(nextIdx).padStart(2, '0'),
-                        icon: '✨',
+                        icon: 'sparkles',
                         titre: 'Nouveau Secteur',
                         img: '/images/services/hotesses-stewards.jpg',
                         couleur: 'bg-blue-900',
@@ -1640,8 +1748,9 @@ export default function CmsStudioManager({ initialSectionKey }: { initialSection
             {(c.secteurs || []).map((sec: any, sIdx: number) => (
               <div key={sec.id || sIdx} className="p-5 rounded-2xl bg-gray-50 border border-gray-200 space-y-4">
                 <div className="flex flex-wrap items-center justify-between gap-2 border-b pb-3">
-                  <span className="font-black text-navy-700 text-sm">
-                    {sec.icon} {sec.num} — {sec.titre}
+                  <span className="font-black text-navy-700 text-sm flex items-center gap-2">
+                    <DynamicIcon name={sec.icon} className="w-4 h-4 text-gold-500" />
+                    <span>{sec.num} — {sec.titre}</span>
                   </span>
                   <div className="flex items-center gap-2">
                     <button
@@ -1652,9 +1761,10 @@ export default function CmsStudioManager({ initialSectionKey }: { initialSection
                           return d;
                         })
                       }
-                      className="px-2.5 py-1 text-xs bg-white border rounded"
+                      title="Monter"
+                      className="p-1.5 text-xs bg-white border rounded hover:bg-gray-100"
                     >
-                      ↑
+                      <ChevronUp className="w-3.5 h-3.5" />
                     </button>
                     <button
                       type="button"
@@ -1664,9 +1774,10 @@ export default function CmsStudioManager({ initialSectionKey }: { initialSection
                           return d;
                         })
                       }
-                      className="px-2.5 py-1 text-xs bg-white border rounded"
+                      title="Descendre"
+                      className="p-1.5 text-xs bg-white border rounded hover:bg-gray-100"
                     >
-                      ↓
+                      <ChevronDown className="w-3.5 h-3.5" />
                     </button>
                     <label className="text-xs font-semibold flex items-center gap-1">
                       <input
@@ -1709,18 +1820,22 @@ export default function CmsStudioManager({ initialSectionKey }: { initialSection
                     }
                     className="border rounded-lg px-3 py-1.5 text-xs"
                   />
-                  <input
-                    type="text"
-                    value={sec.icon || ''}
-                    placeholder="Icône (👔)"
+                  <select
+                    value={sec.icon || 'briefcase'}
                     onChange={(e) =>
                       updateContent((d) => {
                         d.secteurs[sIdx].icon = e.target.value;
                         return d;
                       })
                     }
-                    className="border rounded-lg px-3 py-1.5 text-xs"
-                  />
+                    className="border rounded-lg px-3 py-1.5 text-xs bg-white"
+                  >
+                    {AVAILABLE_ICON_OPTIONS.map((opt) => (
+                      <option key={opt.value} value={opt.value}>
+                        {opt.label}
+                      </option>
+                    ))}
+                  </select>
                   <input
                     type="text"
                     value={sec.titre || ''}
@@ -1828,9 +1943,10 @@ export default function CmsStudioManager({ initialSectionKey }: { initialSection
                             return d;
                           })
                         }
-                        className="text-red-500 text-xs px-1.5"
+                        aria-label="Supprimer"
+                        className="text-red-500 hover:text-red-700 p-1.5 rounded-lg hover:bg-red-50 transition"
                       >
-                        🗑️
+                        <Trash2 className="w-4 h-4" />
                       </button>
                     </div>
                   ))}
@@ -1848,7 +1964,10 @@ export default function CmsStudioManager({ initialSectionKey }: { initialSection
         <div className="space-y-6">
           <div className="bg-white rounded-2xl border border-gray-200 p-6 space-y-4">
             <div className="flex items-center justify-between border-b pb-3">
-              <h4 className="font-bold text-navy-700">📰 Articles du Blog ({(c.articles || []).length})</h4>
+              <h4 className="font-bold text-navy-700 flex items-center gap-2">
+                <Newspaper className="w-4 h-4 text-gold-500" />
+                <span>Articles du Blog ({(c.articles || []).length})</span>
+              </h4>
               <button
                 type="button"
                 onClick={() =>
@@ -1882,8 +2001,19 @@ export default function CmsStudioManager({ initialSectionKey }: { initialSection
               {(c.articles || []).map((art: any, idx: number) => (
                 <div key={art.id || idx} className="p-5 rounded-2xl bg-gray-50 border border-gray-200 space-y-3">
                   <div className="flex flex-wrap items-center justify-between gap-2">
-                    <span className="font-bold text-navy-700 text-sm">
-                      {art.publie !== false ? '🟢 Publié' : '🟠 Brouillon'} — {art.titre}
+                    <span className="font-bold text-navy-700 text-sm flex items-center gap-2">
+                      {art.publie !== false ? (
+                        <span className="inline-flex items-center gap-1 text-xs bg-green-100 text-green-700 px-2 py-0.5 rounded-full">
+                          <CheckCircle2 className="w-3 h-3" />
+                          <span>Publié</span>
+                        </span>
+                      ) : (
+                        <span className="inline-flex items-center gap-1 text-xs bg-amber-100 text-amber-800 px-2 py-0.5 rounded-full">
+                          <Clock className="w-3 h-3" />
+                          <span>Brouillon</span>
+                        </span>
+                      )}
+                      <span>— {art.titre}</span>
                     </span>
                     <div className="flex items-center gap-2">
                       <button
@@ -1894,9 +2024,10 @@ export default function CmsStudioManager({ initialSectionKey }: { initialSection
                             return d;
                           })
                         }
-                        className="px-2 py-1 text-xs bg-white border rounded"
+                        title="Monter"
+                        className="p-1.5 text-xs bg-white border rounded hover:bg-gray-100"
                       >
-                        ↑
+                        <ChevronUp className="w-3.5 h-3.5" />
                       </button>
                       <button
                         type="button"
@@ -1906,9 +2037,10 @@ export default function CmsStudioManager({ initialSectionKey }: { initialSection
                             return d;
                           })
                         }
-                        className="px-2 py-1 text-xs bg-white border rounded"
+                        title="Descendre"
+                        className="p-1.5 text-xs bg-white border rounded hover:bg-gray-100"
                       >
-                        ↓
+                        <ChevronDown className="w-3.5 h-3.5" />
                       </button>
                       <label className="text-xs font-semibold flex items-center gap-1">
                         <input
@@ -2057,7 +2189,10 @@ export default function CmsStudioManager({ initialSectionKey }: { initialSection
         <div className="space-y-6">
           <div className="bg-white rounded-2xl border border-gray-200 p-6 space-y-4">
             <div className="flex items-center justify-between border-b pb-3">
-              <h4 className="font-bold text-navy-700">🖼️ Photos de la Galerie ({(c.items || []).length})</h4>
+              <h4 className="font-bold text-navy-700 flex items-center gap-2">
+                <ImageIcon className="w-4 h-4 text-gold-500" />
+                <span>Photos de la Galerie ({(c.items || []).length})</span>
+              </h4>
               <button
                 type="button"
                 onClick={() =>
@@ -2097,9 +2232,10 @@ export default function CmsStudioManager({ initialSectionKey }: { initialSection
                             return d;
                           })
                         }
-                        className="px-2 py-0.5 text-xs bg-white border rounded"
+                        title="Monter"
+                        className="p-1 text-xs bg-white border rounded hover:bg-gray-100"
                       >
-                        ↑
+                        <ChevronUp className="w-3.5 h-3.5" />
                       </button>
                       <button
                         type="button"
@@ -2109,9 +2245,10 @@ export default function CmsStudioManager({ initialSectionKey }: { initialSection
                             return d;
                           })
                         }
-                        className="px-2 py-0.5 text-xs bg-white border rounded"
+                        title="Descendre"
+                        className="p-1 text-xs bg-white border rounded hover:bg-gray-100"
                       >
-                        ↓
+                        <ChevronDown className="w-3.5 h-3.5" />
                       </button>
                       <label className="text-xs flex items-center gap-1">
                         <input
@@ -2134,9 +2271,10 @@ export default function CmsStudioManager({ initialSectionKey }: { initialSection
                             return d;
                           })
                         }
-                        className="text-xs text-red-500 font-semibold ml-1"
+                        aria-label="Supprimer"
+                        className="text-red-500 hover:text-red-700 p-1 rounded hover:bg-red-50 transition ml-1"
                       >
-                        🗑️
+                        <Trash2 className="w-4 h-4" />
                       </button>
                     </div>
                   </div>
@@ -2202,7 +2340,10 @@ export default function CmsStudioManager({ initialSectionKey }: { initialSection
         <div className="space-y-6">
           <div className="bg-white rounded-2xl border border-gray-200 p-6 space-y-4">
             <div className="flex items-center justify-between border-b pb-3">
-              <h4 className="font-bold text-navy-700">❓ Questions & Réponses ({(c.items || []).length})</h4>
+              <h4 className="font-bold text-navy-700 flex items-center gap-2">
+                <HelpCircle className="w-4 h-4 text-gold-500" />
+                <span>Questions & Réponses ({(c.items || []).length})</span>
+              </h4>
               <button
                 type="button"
                 onClick={() =>
@@ -2241,9 +2382,10 @@ export default function CmsStudioManager({ initialSectionKey }: { initialSection
                             return d;
                           })
                         }
-                        className="px-2 py-0.5 text-xs bg-white border rounded"
+                        title="Monter"
+                        className="p-1 text-xs bg-white border rounded hover:bg-gray-100"
                       >
-                        ↑
+                        <ChevronUp className="w-3.5 h-3.5" />
                       </button>
                       <button
                         type="button"
@@ -2253,9 +2395,10 @@ export default function CmsStudioManager({ initialSectionKey }: { initialSection
                             return d;
                           })
                         }
-                        className="px-2 py-0.5 text-xs bg-white border rounded"
+                        title="Descendre"
+                        className="p-1 text-xs bg-white border rounded hover:bg-gray-100"
                       >
-                        ↓
+                        <ChevronDown className="w-3.5 h-3.5" />
                       </button>
                       <label className="text-xs flex items-center gap-1">
                         <input
@@ -2335,7 +2478,10 @@ export default function CmsStudioManager({ initialSectionKey }: { initialSection
       {activeKey === 'contact_info' && (
         <div className="space-y-6">
           <div className="bg-white rounded-2xl border border-gray-200 p-6 space-y-4">
-            <h4 className="font-bold text-navy-700 border-b pb-3">📍 Coordonnées de Contact</h4>
+            <h4 className="font-bold text-navy-700 border-b pb-3 flex items-center gap-2">
+              <MapPin className="w-4 h-4 text-gold-500" />
+              <span>Coordonnées de Contact</span>
+            </h4>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div>
                 <label className="text-xs font-semibold text-gray-600 block mb-1">E-mail principal</label>
@@ -2425,7 +2571,10 @@ export default function CmsStudioManager({ initialSectionKey }: { initialSection
           </div>
 
           <div className="bg-white rounded-2xl border border-gray-200 p-6 space-y-4">
-            <h4 className="font-bold text-navy-700 border-b pb-3">🌐 Réseaux Sociaux</h4>
+            <h4 className="font-bold text-navy-700 border-b pb-3 flex items-center gap-2">
+              <Globe className="w-4 h-4 text-gold-500" />
+              <span>Réseaux Sociaux</span>
+            </h4>
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
               {['facebook', 'instagram', 'linkedin', 'tiktok', 'youtube'].map((net) => (
                 <div key={net}>
@@ -2451,7 +2600,10 @@ export default function CmsStudioManager({ initialSectionKey }: { initialSection
 
           <div className="bg-white rounded-2xl border border-gray-200 p-6 space-y-4">
             <div className="flex items-center justify-between border-b pb-3">
-              <h4 className="font-bold text-navy-700">👤 Postes ouverts sur la page Candidature</h4>
+              <h4 className="font-bold text-navy-700 flex items-center gap-2">
+                <UserCheck className="w-4 h-4 text-gold-500" />
+                <span>Postes ouverts sur la page Candidature</span>
+              </h4>
               <button
                 type="button"
                 onClick={() =>
@@ -2504,9 +2656,10 @@ export default function CmsStudioManager({ initialSectionKey }: { initialSection
                         return d;
                       })
                     }
-                    className="text-red-500 text-xs px-2"
+                    aria-label="Supprimer"
+                    className="text-red-500 hover:text-red-700 p-1.5 rounded hover:bg-red-50 transition"
                   >
-                    🗑️
+                    <Trash2 className="w-4 h-4" />
                   </button>
                 </div>
               ))}
@@ -2581,7 +2734,10 @@ export default function CmsStudioManager({ initialSectionKey }: { initialSection
 
           <div className="bg-white rounded-2xl border border-gray-200 p-6 space-y-4">
             <div className="flex items-center justify-between border-b pb-3">
-              <h4 className="font-bold text-navy-700">🧭 Liens du Menu Principal</h4>
+              <h4 className="font-bold text-navy-700 flex items-center gap-2">
+                <Compass className="w-4 h-4 text-gold-500" />
+                <span>Liens du Menu Principal</span>
+              </h4>
               <button
                 type="button"
                 onClick={() =>
@@ -2634,9 +2790,10 @@ export default function CmsStudioManager({ initialSectionKey }: { initialSection
                         return d;
                       })
                     }
-                    className="px-2 py-1 text-xs bg-white border rounded"
+                    title="Monter"
+                    className="p-1.5 text-xs bg-white border rounded hover:bg-gray-100"
                   >
-                    ↑
+                    <ChevronUp className="w-3.5 h-3.5" />
                   </button>
                   <button
                     type="button"
@@ -2646,9 +2803,10 @@ export default function CmsStudioManager({ initialSectionKey }: { initialSection
                         return d;
                       })
                     }
-                    className="px-2 py-1 text-xs bg-white border rounded"
+                    title="Descendre"
+                    className="p-1.5 text-xs bg-white border rounded hover:bg-gray-100"
                   >
-                    ↓
+                    <ChevronDown className="w-3.5 h-3.5" />
                   </button>
                   <label className="text-xs flex items-center gap-1">
                     <input
@@ -2671,9 +2829,10 @@ export default function CmsStudioManager({ initialSectionKey }: { initialSection
                         return d;
                       })
                     }
-                    className="text-red-500 text-xs px-2"
+                    aria-label="Supprimer"
+                    className="text-red-500 hover:text-red-700 p-1.5 rounded hover:bg-red-50 transition"
                   >
-                    🗑️
+                    <Trash2 className="w-4 h-4" />
                   </button>
                 </div>
               ))}
@@ -2687,7 +2846,10 @@ export default function CmsStudioManager({ initialSectionKey }: { initialSection
       ══════════════════════════════════════════════════════════════════════ */}
       {activeKey === 'footer' && (
         <div className="bg-white rounded-2xl border border-gray-200 p-6 space-y-4">
-          <h4 className="font-bold text-navy-700 border-b pb-3">⚓ Textes & Liens du Pied de Page</h4>
+          <h4 className="font-bold text-navy-700 border-b pb-3 flex items-center gap-2">
+            <Anchor className="w-4 h-4 text-gold-500" />
+            <span>Textes & Liens du Pied de Page</span>
+          </h4>
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
             <div>
               <label className="text-xs font-semibold text-gray-600 block mb-1">Lettre du badge</label>
@@ -2799,7 +2961,10 @@ export default function CmsStudioManager({ initialSectionKey }: { initialSection
       {activeKey === 'seo' && (
         <div className="bg-white rounded-2xl border border-gray-200 p-6 space-y-5">
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b pb-3">
-            <h4 className="font-bold text-navy-700">🔍 Métadonnées SEO par Page</h4>
+            <h4 className="font-bold text-navy-700 flex items-center gap-2">
+              <Search className="w-4 h-4 text-gold-500" />
+              <span>Métadonnées SEO par Page</span>
+            </h4>
             <select
               value={selectedSeoPage}
               onChange={(e) => setSelectedSeoPage(e.target.value)}
@@ -2909,7 +3074,10 @@ export default function CmsStudioManager({ initialSectionKey }: { initialSection
       {activeKey === 'realisations_page' && (
         <div className="space-y-6">
           <div className="bg-white rounded-2xl border border-gray-200 p-6 space-y-4">
-            <h4 className="font-bold text-navy-700 border-b pb-3">🏆 Textes de la page Réalisations</h4>
+            <h4 className="font-bold text-navy-700 border-b pb-3 flex items-center gap-2">
+              <Trophy className="w-4 h-4 text-gold-500" />
+              <span>Textes de la page Réalisations</span>
+            </h4>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div>
                 <label className="text-xs font-semibold text-gray-600 block mb-1">Surtitre Hero</label>
@@ -2987,7 +3155,10 @@ export default function CmsStudioManager({ initialSectionKey }: { initialSection
           </div>
 
           <div className="bg-white rounded-2xl border border-gray-200 p-6 space-y-4">
-            <h4 className="font-bold text-navy-700 border-b pb-3">🎓 Textes de la page Formations</h4>
+            <h4 className="font-bold text-navy-700 border-b pb-3 flex items-center gap-2">
+              <GraduationCap className="w-4 h-4 text-gold-500" />
+              <span>Textes de la page Formations</span>
+            </h4>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div>
                 <label className="text-xs font-semibold text-gray-600 block mb-1">Titre de la page</label>

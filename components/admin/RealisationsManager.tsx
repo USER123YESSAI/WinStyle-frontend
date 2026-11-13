@@ -1,5 +1,6 @@
 'use client';
 import { useState } from 'react';
+import { Trophy, Plus, Pencil, Save, X } from 'lucide-react';
 import api from '@/lib/api';
 
 interface Realisation {
@@ -125,23 +126,37 @@ export default function RealisationsManager({ realisations, setRealisations }: R
   return (
     <div className="space-y-6">
       <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
-        <h2 className="text-2xl font-bold text-navy-600">🏆 Réalisations ({realisations.length})</h2>
+        <h2 className="text-2xl font-bold text-navy-600 flex items-center gap-2.5">
+          <Trophy className="w-6 h-6 text-gold-500" />
+          <span>Réalisations ({realisations.length})</span>
+        </h2>
         <button
           onClick={openCreate}
           className="w-full sm:w-auto flex items-center justify-center gap-2 bg-gradient-to-r from-gold-400 to-gold-500 hover:from-gold-300 hover:to-gold-400 text-navy-900 px-4 py-2 rounded-lg text-sm font-semibold transition-all duration-300 hover:shadow-glow"
         >
-          ➕ Nouvelle realisation
+          <Plus className="w-4 h-4" />
+          <span>Nouvelle réalisation</span>
         </button>
       </div>
 
       {showForm && (
         <div className="card-modern bg-white rounded-xl border border-gray-200 p-4 md:p-6">
           <div className="flex items-center justify-between mb-5">
-            <h3 className="font-bold text-navy-600 text-sm md:text-base">
-              {editingItem ? '✏️ Modifier la realisation' : '➕ Créer une realisation'}
+            <h3 className="font-bold text-navy-600 text-sm md:text-base flex items-center gap-2">
+              {editingItem ? (
+                <>
+                  <Pencil className="w-4 h-4 text-gold-500" />
+                  <span>Modifier la réalisation</span>
+                </>
+              ) : (
+                <>
+                  <Plus className="w-4 h-4 text-gold-500" />
+                  <span>Créer une réalisation</span>
+                </>
+              )}
             </h3>
-            <button onClick={() => setShowForm(false)} className="text-gray-400 hover:text-gray-600 text-xl transition-colors">
-              ✕
+            <button onClick={() => setShowForm(false)} aria-label="Fermer" className="text-gray-400 hover:text-gray-600 p-1 rounded-lg hover:bg-gray-100 transition-colors">
+              <X className="w-5 h-5" />
             </button>
           </div>
           
@@ -222,11 +237,11 @@ export default function RealisationsManager({ realisations, setRealisations }: R
                 {loading ? (
                   <span className="w-4 h-4 border-2 border-navy-900 border-t-transparent rounded-full animate-spin" />
                 ) : editingItem ? (
-                  '💾'
+                  <Save className="w-4 h-4" />
                 ) : (
-                  '➕'
+                  <Plus className="w-4 h-4" />
                 )}
-                {editingItem ? 'Enregistrer' : 'Créer'}
+                <span>{editingItem ? 'Enregistrer' : 'Créer'}</span>
               </button>
               <button
                 type="button"

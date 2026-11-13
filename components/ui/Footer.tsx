@@ -2,6 +2,7 @@
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
+import { Phone, Mail, MapPin } from 'lucide-react';
 import { useCms } from '@/components/cms/CmsProvider';
 
 export default function Footer() {
@@ -53,25 +54,32 @@ export default function Footer() {
             <p className="text-white/60 text-base leading-relaxed max-w-md mb-6">
               {footer?.description}
             </p>
-            <div className="space-y-2 text-sm text-white/60 mb-6">
+            <div className="space-y-2.5 text-sm text-white/60 mb-6">
               {contact?.phone_primary && (
-                <p>
-                  📞{' '}
-                  <a href={`tel:${contact.phone_primary}`} className="hover:text-gold-400 transition">
-                    {contact.phone_primary}
-                  </a>
-                  {contact?.phone_secondary ? ` / ${contact.phone_secondary}` : ''}
+                <p className="flex items-center gap-2.5">
+                  <Phone className="w-4 h-4 text-gold-400 shrink-0" />
+                  <span>
+                    <a href={`tel:${contact.phone_primary}`} className="hover:text-gold-400 transition">
+                      {contact.phone_primary}
+                    </a>
+                    {contact?.phone_secondary ? ` / ${contact.phone_secondary}` : ''}
+                  </span>
                 </p>
               )}
               {contact?.email_primary && (
-                <p>
-                  ✉️{' '}
+                <p className="flex items-center gap-2.5">
+                  <Mail className="w-4 h-4 text-gold-400 shrink-0" />
                   <a href={`mailto:${contact.email_primary}`} className="hover:text-gold-400 transition">
                     {contact.email_primary}
                   </a>
                 </p>
               )}
-              {contact?.address && <p>📍 {contact.address}</p>}
+              {contact?.address && (
+                <p className="flex items-center gap-2.5">
+                  <MapPin className="w-4 h-4 text-gold-400 shrink-0" />
+                  <span>{contact.address}</span>
+                </p>
+              )}
             </div>
 
             <div className="flex flex-wrap items-center gap-4">

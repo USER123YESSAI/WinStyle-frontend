@@ -1,6 +1,35 @@
 'use client';
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
+import {
+  LayoutDashboard,
+  Sparkles,
+  GraduationCap,
+  Trophy,
+  Handshake,
+  MessageSquareQuote,
+  ClipboardList,
+  UserCheck,
+  Briefcase,
+  Mail,
+  KeyRound,
+  Activity,
+  CheckCircle2,
+  Clock,
+  XCircle,
+  LogOut,
+  Menu,
+  X,
+  Plus,
+  RefreshCw,
+  Search,
+  Lock,
+  Trash2,
+  Pencil,
+  ShieldCheck,
+  User,
+  LucideIcon,
+} from 'lucide-react';
 import api from '@/lib/api';
 import RealisationTab from './_components/RealisationTab';
 import FormationsTab from './_components/FormationsTab';
@@ -22,11 +51,35 @@ const EMPTY_ADMIN = { nom: '', email: '', password: '' };
 
 function ActionBadge({ action }: { action: string }) {
   const a = action.toLowerCase();
-  if (a.includes('connexion'))  return <span className="px-2 py-0.5 rounded-full text-xs font-semibold bg-navy-100 text-navy-700">🔐 {action}</span>;
-  if (a.includes('supprimé'))   return <span className="px-2 py-0.5 rounded-full text-xs font-semibold bg-error-100 text-error-700">🗑️ {action}</span>;
-  if (a.includes('créé'))       return <span className="px-2 py-0.5 rounded-full text-xs font-semibold bg-success-100 text-success-700">➕ {action}</span>;
-  if (a.includes('modifié') || a.includes('statut')) return <span className="px-2 py-0.5 rounded-full text-xs font-semibold bg-warning-100 text-warning-700">✏️ {action}</span>;
-  return <span className="px-2 py-0.5 rounded-full text-xs font-semibold bg-gray-100 text-gray-700">{action}</span>;
+  if (a.includes('connexion'))
+    return (
+      <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-semibold bg-navy-100 text-navy-700">
+        <Lock className="w-3 h-3 shrink-0" />
+        <span>{action}</span>
+      </span>
+    );
+  if (a.includes('supprimé'))
+    return (
+      <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-semibold bg-error-100 text-error-700">
+        <Trash2 className="w-3 h-3 shrink-0" />
+        <span>{action}</span>
+      </span>
+    );
+  if (a.includes('créé'))
+    return (
+      <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-semibold bg-success-100 text-success-700">
+        <Plus className="w-3 h-3 shrink-0" />
+        <span>{action}</span>
+      </span>
+    );
+  if (a.includes('modifié') || a.includes('statut'))
+    return (
+      <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-semibold bg-warning-100 text-warning-700">
+        <Pencil className="w-3 h-3 shrink-0" />
+        <span>{action}</span>
+      </span>
+    );
+  return <span className="px-2.5 py-0.5 rounded-full text-xs font-semibold bg-gray-100 text-gray-700">{action}</span>;
 }
 
 export default function AdminDashboard() {
@@ -155,34 +208,34 @@ export default function AdminDashboard() {
     } finally { setAdminFormLoading(false); }
   };
 
-  const TABS: { key: Tab; label: string; icon: string; superOnly?: boolean }[] = [
-    { key: 'stats',        label: 'Tableau de bord',   icon: '📊' },
-    { key: 'cms',          label: 'Contenu du site',   icon: '✨' },
-    { key: 'formations',   label: 'Formations',        icon: '🎓' },
-    { key: 'realisations', label: 'Réalisations',      icon: '🏆' },
-    { key: 'partenaires',  label: 'Partenaires',       icon: '🤝' },
-    { key: 'temoignages',  label: 'Témoignages',       icon: '💬' },
-    { key: 'inscriptions', label: 'Inscriptions',      icon: '📝' },
-    { key: 'candidatures', label: 'Candidatures',      icon: '👤' },
-    { key: 'services',     label: 'Demandes',          icon: '💼' },
-    { key: 'contacts',     label: 'Messages',          icon: '✉️' },
-    { key: 'admins',       label: 'Admins',            icon: '🔑', superOnly: true },
-    { key: 'logs',         label: 'Logs activité',     icon: '📋', superOnly: true },
+  const TABS: { key: Tab; label: string; icon: LucideIcon; superOnly?: boolean }[] = [
+    { key: 'stats',        label: 'Tableau de bord',   icon: LayoutDashboard },
+    { key: 'cms',          label: 'Contenu du site',   icon: Sparkles },
+    { key: 'formations',   label: 'Formations',        icon: GraduationCap },
+    { key: 'realisations', label: 'Réalisations',      icon: Trophy },
+    { key: 'partenaires',  label: 'Partenaires',       icon: Handshake },
+    { key: 'temoignages',  label: 'Témoignages',       icon: MessageSquareQuote },
+    { key: 'inscriptions', label: 'Inscriptions',      icon: ClipboardList },
+    { key: 'candidatures', label: 'Candidatures',      icon: UserCheck },
+    { key: 'services',     label: 'Demandes',          icon: Briefcase },
+    { key: 'contacts',     label: 'Messages',          icon: Mail },
+    { key: 'admins',       label: 'Admins',            icon: KeyRound, superOnly: true },
+    { key: 'logs',         label: 'Logs activité',     icon: Activity, superOnly: true },
   ];
 
-  const statCards = [
-    { label: 'Contenu CMS',  value: 12,                  icon: '✨', bg: 'bg-gradient-to-br from-navy-800 to-navy-600', tab: 'cms' as Tab },
-    { label: 'Formations',   value: stats?.formations,   icon: '🎓', bg: 'bg-blue-600',   tab: 'formations'   as Tab },
-    { label: 'Inscriptions', value: stats?.inscriptions, icon: '📝', bg: 'bg-green-600',  tab: 'inscriptions' as Tab },
-    { label: 'Candidatures', value: stats?.candidatures, icon: '👤', bg: 'bg-cyan-500',   tab: 'candidatures' as Tab },
-    { label: 'Réalisations', value: stats?.realisations, icon: '🏆', bg: 'bg-purple-600', tab: 'realisations' as Tab },
-    { label: 'Partenaires',  value: stats?.partenaires,  icon: '🤝', bg: 'bg-indigo-600', tab: 'partenaires'  as Tab },
-    { label: 'Témoignages',  value: stats?.temoignages,  icon: '💬', bg: 'bg-amber-600',  tab: 'temoignages'  as Tab },
-    { label: 'Demandes',     value: stats?.services,     icon: '💼', bg: 'bg-yellow-500', tab: 'services'     as Tab },
-    { label: 'Messages',     value: stats?.contacts,     icon: '✉️', bg: 'bg-green-700',  tab: 'contacts'     as Tab },
-    { label: 'Acceptées',  value: candidatures.filter(c => c.statut === 'acceptée').length,   icon: '✅', bg: 'bg-gray-700', tab: undefined },
-    { label: 'En attente', value: candidatures.filter(c => c.statut === 'en attente').length, icon: '⏳', bg: 'bg-gray-900', tab: undefined },
-    { label: 'Refusées',   value: candidatures.filter(c => c.statut === 'refusée').length,    icon: '❌', bg: 'bg-red-600',  tab: undefined },
+  const statCards: { label: string; value: number | undefined; icon: LucideIcon; bg: string; tab?: Tab }[] = [
+    { label: 'Contenu CMS',  value: 12,                  icon: Sparkles,           bg: 'bg-gradient-to-br from-navy-800 to-navy-600', tab: 'cms' as Tab },
+    { label: 'Formations',   value: stats?.formations,   icon: GraduationCap,      bg: 'bg-blue-600',   tab: 'formations'   as Tab },
+    { label: 'Inscriptions', value: stats?.inscriptions, icon: ClipboardList,      bg: 'bg-green-600',  tab: 'inscriptions' as Tab },
+    { label: 'Candidatures', value: stats?.candidatures, icon: UserCheck,          bg: 'bg-cyan-500',   tab: 'candidatures' as Tab },
+    { label: 'Réalisations', value: stats?.realisations, icon: Trophy,             bg: 'bg-purple-600', tab: 'realisations' as Tab },
+    { label: 'Partenaires',  value: stats?.partenaires,  icon: Handshake,          bg: 'bg-indigo-600', tab: 'partenaires'  as Tab },
+    { label: 'Témoignages',  value: stats?.temoignages,  icon: MessageSquareQuote, bg: 'bg-amber-600',  tab: 'temoignages'  as Tab },
+    { label: 'Demandes',     value: stats?.services,     icon: Briefcase,          bg: 'bg-yellow-500', tab: 'services'     as Tab },
+    { label: 'Messages',     value: stats?.contacts,     icon: Mail,               bg: 'bg-green-700',  tab: 'contacts'     as Tab },
+    { label: 'Acceptées',    value: candidatures.filter(c => c.statut === 'acceptée').length,   icon: CheckCircle2, bg: 'bg-gray-700', tab: undefined },
+    { label: 'En attente',   value: candidatures.filter(c => c.statut === 'en attente').length, icon: Clock,        bg: 'bg-gray-900', tab: undefined },
+    { label: 'Refusées',     value: candidatures.filter(c => c.statut === 'refusée').length,    icon: XCircle,      bg: 'bg-red-600',  tab: undefined },
   ];
 
   const filteredLogs = logs.filter(l =>
@@ -221,31 +274,39 @@ export default function AdminDashboard() {
             </div>
             <button
               onClick={() => setSidebarOpen(false)}
-              className="md:hidden text-gray-400 hover:text-white transition-colors text-xl"
+              aria-label="Fermer le menu"
+              className="md:hidden text-gray-400 hover:text-white transition-colors p-1 rounded-lg"
             >
-              ✕
+              <X className="w-5 h-5" />
             </button>
           </div>
         </div>
         <nav className="flex-1 px-3 py-4 space-y-1 overflow-y-auto">
-          {TABS.filter(t => !t.superOnly || isSuperAdmin).map(t => (
-            <button key={t.key} onClick={() => handleTabChange(t.key)}
-              className={`w-full flex items-center gap-3 px-4 py-2.5 rounded-lg text-sm font-medium transition-all ${tab === t.key ? 'bg-gold-400 text-navy-900 shadow-glow' : 'text-gray-400 hover:bg-navy-800 hover:text-white'}`}>
-              <span>{t.icon}</span> <span className="hidden sm:inline">{t.label}</span>
-              {(t.key === 'admins' || t.key === 'logs') && <span className="ml-auto text-xs bg-gold-400 text-navy-900 px-1.5 py-0.5 rounded font-bold">SA</span>}
-            </button>
-          ))}
+          {TABS.filter(t => !t.superOnly || isSuperAdmin).map(t => {
+            const Icon = t.icon;
+            return (
+              <button key={t.key} onClick={() => handleTabChange(t.key)}
+                className={`w-full flex items-center gap-3 px-4 py-2.5 rounded-lg text-sm font-medium transition-all ${tab === t.key ? 'bg-gold-400 text-navy-900 shadow-glow' : 'text-gray-400 hover:bg-navy-800 hover:text-white'}`}>
+                <Icon className="w-4 h-4 shrink-0" />
+                <span className="hidden sm:inline">{t.label}</span>
+                {(t.key === 'admins' || t.key === 'logs') && <span className="ml-auto text-xs bg-gold-400 text-navy-900 px-1.5 py-0.5 rounded font-bold">SA</span>}
+              </button>
+            );
+          })}
         </nav>
         <div className="px-4 py-4 border-t border-navy-700">
           <div className="flex items-center gap-3 mb-3">
-            <div className="w-8 h-8 bg-navy-600 rounded-full flex items-center justify-center text-xs font-bold">{isSuperAdmin ? '★' : 'A'}</div>
+            <div className="w-8 h-8 bg-navy-600 rounded-full flex items-center justify-center text-xs font-bold">
+              {isSuperAdmin ? <ShieldCheck className="w-4 h-4 text-gold-400" /> : 'A'}
+            </div>
             <div className="text-xs">
               <p className="font-medium text-white">{isSuperAdmin ? 'Super Admin' : 'Administrateur'}</p>
               <p className="text-gray-400 hidden sm:block">{isSuperAdmin ? 'superadmin' : 'admin'}</p>
             </div>
           </div>
-          <button onClick={logout} className="w-full flex items-center gap-2 px-3 py-2 rounded-lg text-sm text-gray-400 hover:bg-navy-800 hover:text-white transition">
-            <span>🚪</span> <span className="hidden sm:inline">Déconnexion</span>
+          <button onClick={logout} className="w-full flex items-center gap-2.5 px-3 py-2 rounded-lg text-sm text-gray-400 hover:bg-navy-800 hover:text-white transition">
+            <LogOut className="w-4 h-4 shrink-0" />
+            <span className="hidden sm:inline">Déconnexion</span>
           </button>
         </div>
       </aside>
@@ -256,17 +317,19 @@ export default function AdminDashboard() {
           <div className="flex items-center gap-3 md:gap-2 flex-1 min-w-0">
             <button
               onClick={() => setSidebarOpen(!sidebarOpen)}
-              className="md:hidden flex items-center justify-center w-10 h-10 rounded-lg hover:bg-gray-100 transition-colors text-xl"
+              aria-label="Ouvrir le menu"
+              className="md:hidden flex items-center justify-center w-10 h-10 rounded-lg hover:bg-gray-100 transition-colors"
             >
-              ☰
+              <Menu className="w-5 h-5 text-navy-700" />
             </button>
             <div className="flex items-center gap-2 text-gray-600 text-sm truncate">
-              <span>👤</span>
+              <User className="w-4 h-4 text-navy-600 shrink-0" />
               <span className="font-medium truncate">{isSuperAdmin ? 'Super Administrateur' : 'Administrateur'}</span>
             </div>
           </div>
           <button onClick={logout} className="flex items-center gap-2 border border-error-300 text-error-500 hover:bg-error-50 px-3 md:px-4 py-1.5 rounded-lg text-xs md:text-sm transition-all hover:shadow-md whitespace-nowrap">
-            🚪 <span className="hidden sm:inline">Déconnexion</span>
+            <LogOut className="w-4 h-4 shrink-0" />
+            <span className="hidden sm:inline">Déconnexion</span>
           </button>
         </header>
 
@@ -276,18 +339,26 @@ export default function AdminDashboard() {
           {/* ── STATS ── */}
           {tab === 'stats' && (
             <>
-              <h2 className="text-2xl font-bold text-navy-600 mb-6">📊 Tableau de bord</h2>
+              <h2 className="text-2xl font-bold text-navy-600 mb-6 flex items-center gap-2.5">
+                <LayoutDashboard className="w-6 h-6 text-gold-500" />
+                <span>Tableau de bord</span>
+              </h2>
               <div className="grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3 md:gap-5">
-                {statCards.map(s => (
-                  <button key={s.label} onClick={() => s.tab && handleTabChange(s.tab)}
-                    className={`${s.bg} text-white rounded-xl p-4 md:p-5 text-left shadow-card hover:shadow-card-hover hover:-translate-y-1 transition-all duration-300 flex flex-col items-start justify-between h-full`}>
-                    <div className="w-full">
-                      <p className="text-xs md:text-sm font-medium opacity-90 mb-1 line-clamp-1">{s.label}</p>
-                      <p className="text-2xl md:text-4xl font-bold">{s.value ?? 0}</p>
-                    </div>
-                    <span className="text-2xl md:text-3xl opacity-80 mt-2">{s.icon}</span>
-                  </button>
-                ))}
+                {statCards.map(s => {
+                  const StatIcon = s.icon;
+                  return (
+                    <button key={s.label} onClick={() => s.tab && handleTabChange(s.tab)}
+                      className={`${s.bg} text-white rounded-xl p-4 md:p-5 text-left shadow-card hover:shadow-card-hover hover:-translate-y-1 transition-all duration-300 flex flex-col items-start justify-between h-full`}>
+                      <div className="w-full">
+                        <p className="text-xs md:text-sm font-medium opacity-90 mb-1 line-clamp-1">{s.label}</p>
+                        <p className="text-2xl md:text-4xl font-bold">{s.value ?? 0}</p>
+                      </div>
+                      <div className="w-10 h-10 rounded-lg bg-white/15 flex items-center justify-center mt-3">
+                        <StatIcon className="w-5 h-5 text-white" />
+                      </div>
+                    </button>
+                  );
+                })}
               </div>
             </>
           )}
@@ -343,7 +414,12 @@ export default function AdminDashboard() {
           {/* ── INSCRIPTIONS ── */}
           {tab === 'inscriptions' && (
             <div className="card-modern bg-white rounded-xl border border-gray-200 overflow-hidden">
-              <div className="px-4 md:px-6 py-4 border-b border-gray-100"><h2 className="font-bold text-navy-600 text-sm md:text-base">📝 Inscriptions ({inscriptions.length})</h2></div>
+              <div className="px-4 md:px-6 py-4 border-b border-gray-100">
+                <h2 className="font-bold text-navy-600 text-sm md:text-base flex items-center gap-2">
+                  <ClipboardList className="w-5 h-5 text-gold-500" />
+                  <span>Inscriptions ({inscriptions.length})</span>
+                </h2>
+              </div>
               <div className="overflow-x-auto">
                 <table className="w-full text-xs sm:text-sm">
                   <thead className="bg-gray-50 text-gray-500 text-xs uppercase"><tr>{['Nom','Email','Formation','Date'].map(h => <th key={h} className="px-3 md:px-5 py-3 text-left font-semibold">{h}</th>)}</tr></thead>
@@ -366,7 +442,12 @@ export default function AdminDashboard() {
           {/* ── CANDIDATURES ── */}
           {tab === 'candidatures' && (
             <div className="card-modern bg-white rounded-xl border border-gray-200 overflow-hidden">
-              <div className="px-4 md:px-6 py-4 border-b border-gray-100"><h2 className="font-bold text-navy-600 text-sm md:text-base">👤 Candidatures ({candidatures.length})</h2></div>
+              <div className="px-4 md:px-6 py-4 border-b border-gray-100">
+                <h2 className="font-bold text-navy-600 text-sm md:text-base flex items-center gap-2">
+                  <UserCheck className="w-5 h-5 text-gold-500" />
+                  <span>Candidatures ({candidatures.length})</span>
+                </h2>
+              </div>
               <div className="overflow-x-auto">
                 <table className="w-full text-xs sm:text-sm">
                   <thead className="bg-gray-50 text-gray-500 text-xs uppercase"><tr>{['Nom','Email','Poste','Statut','CV','Actions'].map(h => <th key={h} className="px-3 md:px-5 py-3 text-left font-semibold">{h}</th>)}</tr></thead>
@@ -402,7 +483,12 @@ export default function AdminDashboard() {
           {/* ── SERVICES ── */}
           {tab === 'services' && (
             <div className="card-modern bg-white rounded-xl border border-gray-200 overflow-hidden">
-              <div className="px-4 md:px-6 py-4 border-b border-gray-100"><h2 className="font-bold text-navy-600 text-sm md:text-base">💼 Demandes de service ({services.length})</h2></div>
+              <div className="px-4 md:px-6 py-4 border-b border-gray-100">
+                <h2 className="font-bold text-navy-600 text-sm md:text-base flex items-center gap-2">
+                  <Briefcase className="w-5 h-5 text-gold-500" />
+                  <span>Demandes de service ({services.length})</span>
+                </h2>
+              </div>
               <div className="overflow-x-auto">
                 <table className="w-full text-xs sm:text-sm">
                   <thead className="bg-gray-50 text-gray-500 text-xs uppercase"><tr>{['Nom','Entreprise','Service','Téléphone','Date événement','Message'].map(h => <th key={h} className="px-3 md:px-5 py-3 text-left font-semibold">{h}</th>)}</tr></thead>
@@ -427,7 +513,12 @@ export default function AdminDashboard() {
           {/* ── CONTACTS ── */}
           {tab === 'contacts' && (
             <div className="card-modern bg-white rounded-xl border border-gray-200 overflow-hidden">
-              <div className="px-4 md:px-6 py-4 border-b border-gray-100"><h2 className="font-bold text-navy-600 text-sm md:text-base">✉️ Messages ({contacts.length})</h2></div>
+              <div className="px-4 md:px-6 py-4 border-b border-gray-100">
+                <h2 className="font-bold text-navy-600 text-sm md:text-base flex items-center gap-2">
+                  <Mail className="w-5 h-5 text-gold-500" />
+                  <span>Messages ({contacts.length})</span>
+                </h2>
+              </div>
               <div className="divide-y divide-gray-100">
                 {contacts.map(c => (
                   <div key={c.id} className="px-4 md:px-6 py-4 md:py-5 hover:bg-gray-50 transition-colors">
@@ -448,7 +539,10 @@ export default function AdminDashboard() {
           {tab === 'admins' && isSuperAdmin && (
             <div className="space-y-8">
               <div className="card-modern bg-white rounded-xl border border-gray-200 p-4 md:p-6">
-                <h2 className="font-bold text-navy-600 mb-5 text-sm md:text-base">🔑 Créer un compte administrateur</h2>
+                <h2 className="font-bold text-navy-600 mb-5 text-sm md:text-base flex items-center gap-2">
+                  <KeyRound className="w-5 h-5 text-gold-500" />
+                  <span>Créer un compte administrateur</span>
+                </h2>
                 {adminFormMsg && <div className={`mb-4 px-4 py-3 rounded-lg text-sm font-medium ${adminFormMsg.type === 'success' ? 'bg-success-50 text-success-700 border border-success-200' : 'bg-error-50 text-error-700 border border-error-200'}`}>{adminFormMsg.text}</div>}
                 <form onSubmit={handleCreateAdmin} className="grid grid-cols-1 sm:grid-cols-3 gap-4">
                   {[{ field: 'nom', label: 'Nom complet *', type: 'text', placeholder: 'Ex : Fatou Diallo' }, { field: 'email', label: 'Adresse e-mail *', type: 'email', placeholder: 'fatou@wins-agency.td' }, { field: 'password', label: 'Mot de passe * (min. 8)', type: 'password', placeholder: '••••••••' }].map(({ field, label, type, placeholder }) => (
@@ -462,7 +556,12 @@ export default function AdminDashboard() {
                   ))}
                   <div className="sm:col-span-3">
                     <button type="submit" disabled={adminFormLoading} className="w-full bg-blue-600 hover:bg-blue-700 disabled:opacity-60 text-white px-6 py-2 rounded-lg text-sm font-semibold transition flex items-center justify-center gap-2">
-                      {adminFormLoading ? <span className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" /> : '➕'} Créer le compte
+                      {adminFormLoading ? (
+                        <span className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                      ) : (
+                        <Plus className="w-4 h-4" />
+                      )}
+                      <span>Créer le compte</span>
                     </button>
                   </div>
                 </form>
@@ -493,11 +592,20 @@ export default function AdminDashboard() {
           {tab === 'logs' && isSuperAdmin && (
             <div className="space-y-4">
               <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
-                <h2 className="text-2xl font-bold text-gray-800">📋 Logs d'activité</h2>
-                <button onClick={() => api.get('/auth/logs').then(r => setLogs(r.data))} className="flex items-center justify-center md:justify-start gap-2 text-sm text-blue-600 hover:text-blue-800 font-medium">🔄 Actualiser</button>
+                <h2 className="text-2xl font-bold text-gray-800 flex items-center gap-2.5">
+                  <Activity className="w-6 h-6 text-gold-500" />
+                  <span>Logs d&apos;activité</span>
+                </h2>
+                <button onClick={() => api.get('/auth/logs').then(r => setLogs(r.data))} className="flex items-center justify-center md:justify-start gap-2 text-sm text-blue-600 hover:text-blue-800 font-medium">
+                  <RefreshCw className="w-4 h-4" />
+                  <span>Actualiser</span>
+                </button>
               </div>
               <div className="bg-white rounded-xl border border-gray-200 shadow-sm p-3 md:p-4">
-                <input value={logFilter} onChange={e => setLogFilter(e.target.value)} placeholder="🔍 Filtrer..." className="w-full border border-gray-300 rounded-lg px-4 py-2 text-xs md:text-sm outline-none focus:ring-2 focus:ring-blue-500" />
+                <div className="relative">
+                  <Search className="w-4 h-4 text-gray-400 absolute left-3.5 top-1/2 -translate-y-1/2 pointer-events-none" />
+                  <input value={logFilter} onChange={e => setLogFilter(e.target.value)} placeholder="Filtrer par admin, action ou cible..." className="w-full border border-gray-300 rounded-lg pl-9 pr-4 py-2 text-xs md:text-sm outline-none focus:ring-2 focus:ring-blue-500" />
+                </div>
               </div>
               <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 md:gap-4">
                 {[{ label: 'Total actions', value: logs.length, bg: 'bg-blue-50 text-blue-700' }, { label: 'Connexions', value: logs.filter(l => l.action.includes('Connexion')).length, bg: 'bg-green-50 text-green-700' }, { label: 'Modifications', value: logs.filter(l => l.action.includes('modifié') || l.action.includes('Statut')).length, bg: 'bg-yellow-50 text-yellow-700' }, { label: 'Suppressions', value: logs.filter(l => l.action.includes('supprimé')).length, bg: 'bg-red-50 text-red-700' }].map(s => (

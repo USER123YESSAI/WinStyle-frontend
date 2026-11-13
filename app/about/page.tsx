@@ -2,6 +2,8 @@
 
 import Link from 'next/link';
 import Image from 'next/image';
+import { Trophy, Globe, Calendar, Phone, Mail, MapPin, ArrowRight, ArrowDown } from 'lucide-react';
+import DynamicIcon, { stripLeadingEmoji } from '@/components/ui/DynamicIcon';
 import { useCms, resolveCmsMediaUrl } from '@/components/cms/CmsProvider';
 
 export default function AboutPage() {
@@ -73,7 +75,8 @@ export default function AboutPage() {
                 className="inline-flex items-center gap-2 bg-gold-400/20 border border-gold-400/40
                            text-gold-400 text-sm font-bold px-5 py-2 rounded-full mb-6 uppercase tracking-widest"
               >
-                {hero.badge}
+                <Trophy className="w-4 h-4 text-gold-400 shrink-0" />
+                <span>{stripLeadingEmoji(hero.badge)}</span>
               </div>
             )}
             <h1 className="text-6xl sm:text-7xl lg:text-8xl font-black text-white leading-none mb-3">
@@ -87,8 +90,10 @@ export default function AboutPage() {
             )}
             {hero.mission_text && (
               <div className="max-w-2xl mx-auto glass-dark rounded-2xl px-8 py-6 mb-8">
-                <div className="flex items-center justify-center gap-2 mb-3">
-                  <span className="text-2xl">🌍</span>
+                <div className="flex items-center justify-center gap-2.5 mb-3">
+                  <div className="w-8 h-8 rounded-lg bg-gold-400/20 flex items-center justify-center">
+                    <Globe className="w-4 h-4 text-gold-400" />
+                  </div>
                   <h2 className="text-gold-400 font-bold text-lg uppercase tracking-widest">
                     {hero.mission_title || 'Mission Principale'}
                   </h2>
@@ -97,8 +102,11 @@ export default function AboutPage() {
               </div>
             )}
             {(hero.focus_label || hero.focus_value) && (
-              <div className="inline-flex items-center gap-3 bg-gold-400/15 border border-gold-400/30 rounded-full px-6 py-3 mb-8">
-                <span className="text-gold-400 text-sm font-semibold">{hero.focus_label}</span>
+              <div className="inline-flex items-center gap-2.5 bg-gold-400/15 border border-gold-400/30 rounded-full px-6 py-3 mb-8">
+                <Calendar className="w-4 h-4 text-gold-400 shrink-0" />
+                <span className="text-gold-400 text-sm font-semibold">
+                  {stripLeadingEmoji(hero.focus_label)}
+                </span>
                 <span className="text-white/80 text-sm">{hero.focus_value}</span>
               </div>
             )}
@@ -109,17 +117,18 @@ export default function AboutPage() {
                   className="group bg-gradient-to-r from-gold-400 to-gold-500 hover:from-gold-300 hover:to-gold-400 text-navy-900 font-bold px-8 py-4
                              rounded-xl text-base transition-all duration-300 hover:shadow-glow hover:-translate-y-0.5 flex items-center justify-center gap-2"
                 >
-                  {hero.primary_btn_label}{' '}
-                  <span className="group-hover:translate-x-1 transition-transform">→</span>
+                  <span>{hero.primary_btn_label}</span>
+                  <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
                 </Link>
               )}
               {hero.secondary_btn_label && (
                 <a
                   href={hero.secondary_btn_href || '#winstyle'}
                   className="glass hover:bg-white/20 text-white font-semibold px-8 py-4
-                             rounded-xl text-base transition-all duration-300 border border-white/20 flex items-center justify-center"
+                             rounded-xl text-base transition-all duration-300 border border-white/20 flex items-center justify-center gap-2"
                 >
-                  {hero.secondary_btn_label}
+                  <span>{hero.secondary_btn_label.replace(/\s*↓\s*$/, '')}</span>
+                  <ArrowDown className="w-4 h-4" />
                 </a>
               )}
             </div>
@@ -207,8 +216,10 @@ export default function AboutPage() {
                     style={{ animationDelay: `${i * 100}ms` }}
                     className="card-modern bg-white border border-gray-100 rounded-2xl p-6 hover:shadow-card-hover hover:-translate-y-1 transition-all duration-300 animate-slide-up"
                   >
-                    <div className="flex items-center gap-3 mb-4">
-                      <span className="text-3xl">{s.icon}</span>
+                    <div className="flex items-center gap-3.5 mb-4">
+                      <div className="w-11 h-11 rounded-xl bg-gold-400/15 border border-gold-400/25 flex items-center justify-center shrink-0">
+                        <DynamicIcon name={s.icon} className="w-5 h-5 text-gold-500" />
+                      </div>
                       <div>
                         <span className="text-gold-400 text-xs font-black">{s.num}</span>
                         <h3 className="font-black text-navy-600 text-lg leading-tight">
@@ -257,7 +268,9 @@ export default function AboutPage() {
                   style={{ animationDelay: `${i * 100}ms` }}
                   className="card-modern bg-gray-50 border border-gray-100 rounded-2xl p-6 hover:shadow-card-hover hover:-translate-y-1 transition-all duration-300 animate-slide-up"
                 >
-                  <div className="text-4xl mb-3">{v.icon}</div>
+                  <div className="w-12 h-12 rounded-xl bg-gold-400/15 border border-gold-400/25 flex items-center justify-center mb-4">
+                    <DynamicIcon name={v.icon} className="w-6 h-6 text-gold-500" />
+                  </div>
                   <h3 className="font-bold text-navy-600 text-lg mb-2">{v.titre}</h3>
                   <p className="text-gray-500 text-sm leading-relaxed">{v.desc}</p>
                 </div>
@@ -303,12 +316,12 @@ export default function AboutPage() {
                         }`}
                       >
                         <h3
-                          className={`font-bold mb-1 ${
+                          className={`font-bold mb-1 flex items-center gap-2 ${
                             isHighlight ? 'text-gold-400' : 'text-white'
                           }`}
                         >
-                          {isHighlight && '🏆 '}
-                          {item.titre}
+                          {isHighlight && <Trophy className="w-4 h-4 text-gold-400 shrink-0" />}
+                          <span>{stripLeadingEmoji(item.titre)}</span>
                         </h3>
                         <p className="text-white/55 text-sm leading-relaxed">{item.desc}</p>
                       </div>
@@ -379,9 +392,26 @@ export default function AboutPage() {
                     )}
                     {Array.isArray(fondatrice.contacts) && (
                       <div className="flex flex-wrap gap-3 text-sm text-gray-500">
-                        {fondatrice.contacts.map((c: string, idx: number) => (
-                          <span key={idx}>{c}</span>
-                        ))}
+                        {fondatrice.contacts.map((c: string, idx: number) => {
+                          const cleaned = stripLeadingEmoji(c);
+                          const isEmail = cleaned.includes('@') || c.includes('✉');
+                          const isPhone = /^[+\d\s()-]+$/.test(cleaned) || c.includes('📞');
+                          return (
+                            <span
+                              key={idx}
+                              className="inline-flex items-center gap-1.5 bg-gray-50 border border-gray-100 px-3 py-1.5 rounded-lg text-gray-600"
+                            >
+                              {isEmail ? (
+                                <Mail className="w-3.5 h-3.5 text-gold-500 shrink-0" />
+                              ) : isPhone ? (
+                                <Phone className="w-3.5 h-3.5 text-gold-500 shrink-0" />
+                              ) : (
+                                <MapPin className="w-3.5 h-3.5 text-gold-500 shrink-0" />
+                              )}
+                              <span>{cleaned}</span>
+                            </span>
+                          );
+                        })}
                       </div>
                     )}
                   </div>

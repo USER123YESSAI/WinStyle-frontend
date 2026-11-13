@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import { Search, ArrowRight, X } from 'lucide-react';
 import { useCms, resolveCmsMediaUrl } from '@/components/cms/CmsProvider';
 
 export default function BlogPage() {
@@ -86,13 +87,16 @@ export default function BlogPage() {
               </button>
             ))}
           </div>
-          <input
-            type="search"
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
-            placeholder="🔍 Rechercher un article..."
-            className="border border-gray-200 rounded-xl px-4 py-1.5 text-sm outline-none focus:ring-2 focus:ring-gold-400 w-full sm:w-64"
-          />
+          <div className="relative w-full sm:w-64">
+            <Search className="w-4 h-4 text-gray-400 absolute left-3.5 top-1/2 -translate-y-1/2 pointer-events-none" />
+            <input
+              type="search"
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+              placeholder="Rechercher un article..."
+              className="border border-gray-200 rounded-xl pl-9 pr-4 py-1.5 text-sm outline-none focus:ring-2 focus:ring-gold-400 w-full"
+            />
+          </div>
         </div>
       </section>
 
@@ -151,9 +155,10 @@ export default function BlogPage() {
                       <button
                         type="button"
                         onClick={() => setActiveArticle(art)}
-                        className="text-navy-700 hover:text-gold-500 font-bold text-sm transition-colors"
+                        className="inline-flex items-center gap-1.5 text-navy-700 hover:text-gold-500 font-bold text-sm transition-colors"
                       >
-                        Lire l&apos;article →
+                        <span>Lire l&apos;article</span>
+                        <ArrowRight className="w-4 h-4" />
                       </button>
                     </div>
                   </div>
@@ -186,9 +191,10 @@ export default function BlogPage() {
               <button
                 type="button"
                 onClick={() => setActiveArticle(null)}
+                aria-label="Fermer"
                 className="absolute top-4 right-4 w-10 h-10 rounded-full bg-black/60 hover:bg-black text-white font-bold flex items-center justify-center transition"
               >
-                ✕
+                <X className="w-5 h-5" />
               </button>
               <div className="absolute bottom-6 left-6 right-6 text-white">
                 {activeArticle.categorie && (
